@@ -73,7 +73,7 @@ async def process_menu_dnevnik(callback_query, state):
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
     # await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
-async def process_menu_yapp(callback_query, state):
+async def process_menu_nutri(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="🌿 Спросить Нутри", callback_data="menu_nutri_yapp")],
         [InlineKeyboardButton(text="👩‍🍳 Рецепт", callback_data="menu_nutri_reciepie")],

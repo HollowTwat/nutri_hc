@@ -125,9 +125,9 @@ async def main_process_menu_course(callback_query: CallbackQuery, state: FSMCont
 async def main_process_menu_dnevnik(callback_query: CallbackQuery, state: FSMContext):
     await process_menu_dnevnik(callback_query, state)
 
-@router.callback_query(lambda c: c.data == 'menu_yapp')
-async def main_process_menu_yapp(callback_query: CallbackQuery, state: FSMContext):
-    await process_menu_yapp(callback_query, state)
+@router.callback_query(lambda c: c.data == 'menu_nutri')
+async def main_process_menu_nutri(callback_query: CallbackQuery, state: FSMContext):
+    await process_menu_nutri(callback_query, state)
 
 @router.callback_query(lambda c: c.data == 'menu_settings')
 async def main_process_menu_settings(callback_query: CallbackQuery, state: FSMContext):
