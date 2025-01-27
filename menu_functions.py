@@ -39,6 +39,21 @@ async def menu_handler(message, state) -> None:
     step0txt = "Меню"
     await message.answer(step0txt, reply_markup=keyboard)
 
+async def menu_back_handler(callback_query, state) -> None:
+    await state.update_data(full_sequence=False)
+    buttons = [
+        [InlineKeyboardButton(text="📚 Курс:", callback_data="menu_course")],
+        [InlineKeyboardButton(text="🍽 Дневник питания:", callback_data="menu_dnevnik")],
+        [InlineKeyboardButton(text="💬  Нутри:", callback_data="menu_nutri")],
+        [InlineKeyboardButton(text="⚙️Дополнительное:", callback_data="menu_settings")],
+        ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    step0txt = "Меню"
+    try:
+        await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+    except Exception as e:
+        await callback_query.message.answer(step0txt, reply_markup=keyboard)
+
 async def menu_cb_handler(callback_query, state) -> None:
     await state.update_data(full_sequence=False)
     buttons = [
@@ -55,7 +70,7 @@ async def process_menu_course(message, state):
     buttons = [
         [InlineKeyboardButton(text="📖Начать Урок X", callback_data="menu_course_lesson_x")],
         [InlineKeyboardButton(text="✏️ Программа курса", callback_data="menu_course_info")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "📚 Курс:"
@@ -71,7 +86,7 @@ async def process_menu_dnevnik(message, state):
         [InlineKeyboardButton(text="🔄Редактировать", callback_data="menu_dnevnik_redact")],
         [InlineKeyboardButton(text="📊 Аналитика", callback_data="menu_dnevnik_analysis")],
         [InlineKeyboardButton(text="📸 Инструкция", callback_data="menu_dnevnik_instruction")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "🍽 Дневник питания:"
@@ -86,7 +101,7 @@ async def process_menu_nutri(message, state):
         [InlineKeyboardButton(text="🌿 Спросить Нутри", callback_data="menu_nutri_yapp")],
         [InlineKeyboardButton(text="👩‍🍳 Рецепт", callback_data="menu_nutri_reciepie")],
         [InlineKeyboardButton(text="🔍 Анализ этикетки", callback_data="menu_nutri_etiketka")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "💬  Нутри:"
@@ -101,7 +116,7 @@ async def process_menu_settings(message, state):
         [InlineKeyboardButton(text="📌 Ваш профиль", callback_data="menu_settings_profile")],
         [InlineKeyboardButton(text="🆘 Помощь", callback_data="menu_settings_help")],
         [InlineKeyboardButton(text="💰 Условия подписки", callback_data="menu_settings_sub")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "⚙️Дополнительное:"
@@ -122,7 +137,7 @@ async def process_menu_course_info(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="Посмотреть пройденные уроки", callback_data="menu_course_info_lessons")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_course"), 
-         InlineKeyboardButton(text="⏏️", callback_data="menu")],
+         InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "💚 На первой неделе ты заметишь пищевые привычки, которые тебе мешают. \n💜 На второй получишь базу для формирования новых привычек. \n❤️ На третьей закрепишь новые привычки и начнёшь применять их в реальной жизни."
@@ -150,7 +165,7 @@ async def process_menu_dnevnik_analysis(callback_query, state):
         [InlineKeyboardButton(text="Получить анализ пищи за неделю", callback_data="menu_dnevnik_analysis_rate-week")],
         [InlineKeyboardButton(text="Получить аналитику за 5 дней", callback_data="menu_dnevnik_analysis_5day")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik"), 
-         InlineKeyboardButton(text="⏏️", callback_data="menu")],
+         InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "<b>Ваша статистика на сегодня</b> 🍽\n\nДневная цель: X ккал., X г. белки, X г. жиры, X г. углеводы 💪.   \n\nСегодня вы съели: \nX ккал 🔥.   \n\nБелки: X г. \nЖиры: X г. \nУглеводы:X г.   \n\nТы можешь съесть еще 582 ккал."
@@ -207,7 +222,7 @@ async def process_menu_settings_profile(callback_query, state):
         [InlineKeyboardButton(text="Заполнить анкету заново", callback_data="menu_settings_profile_re-anket")],
         [InlineKeyboardButton(text="Настроить уведомления", callback_data="menu_settings_profile_notif")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_settings"), 
-         InlineKeyboardButton(text="⏏️", callback_data="menu")],
+         InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "<b>Имя, вот твои данные и цель, к которой ты идёшь:</b>   \n\nПол: Не указан \nВозраст: 0 лет \nВес: 0 кг \nРост: 0 см     \n\nЦель: (похудеть и тд) \nЦелевой вес: 0 кг   \n\nТекущая норма калорий: 0 ккал \nТекущая норма БЖУ: x г белков, x г жиров, x г углеводов \nУровень еженедельной активности: 0 часов"
@@ -217,7 +232,7 @@ async def process_menu_settings_help(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="Задать вопрос", callback_data="menu_settings_help_question")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_settings"), 
-         InlineKeyboardButton(text="⏏️", callback_data="menu")],
+         InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "Расскажи, с чем есть проблемы? \nПостараюсь помочь как можно быстрее"
@@ -229,7 +244,7 @@ async def process_menu_settings_sub(callback_query, state):
         [InlineKeyboardButton(text="🆘 Помощь", callback_data="menu_settings_help")],
         [InlineKeyboardButton(text="💰 Условия подписки", callback_data="menu_settings_sub")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_settings"), 
-         InlineKeyboardButton(text="⏏️", callback_data="menu")],
+         InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "Твой текущий тариф:   \n\n☑️ Подписка на сервис Нутри на X мес \n☑️Действует до:  X \n☑️ Дата автоматического продления: X"

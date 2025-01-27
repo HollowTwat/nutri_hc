@@ -117,6 +117,10 @@ async def main_menu_handler(message: Message, state: FSMContext) -> None:
 async def main_menu_cb_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     await menu_cb_handler(callback_query, state)
 
+@router.callback_query(lambda c: c.data == 'menu_back')
+async def main_menu_back_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
+    await menu_back_handler(callback_query, state)
+
 @router.callback_query(lambda c: c.data == 'menu_course')
 async def main_process_menu_course(callback_query: CallbackQuery, state: FSMContext):
     await process_menu_course(callback_query.message, state)
