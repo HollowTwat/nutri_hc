@@ -134,7 +134,7 @@ async def main_process_menu_settings(callback_query: CallbackQuery, state: FSMCo
     await process_menu_settings(callback_query.message, state)
 
 @router.message(Command("1"))
-async def process_menu_course(message: Message, state: FSMContext) -> None:
+async def menu_main_process_menu_course(message: Message, state: FSMContext) -> None:
     await process_menu_course(message, state)
 
 @router.message(Command("2"))
