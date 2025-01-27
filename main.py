@@ -119,19 +119,35 @@ async def main_menu_cb_handler(callback_query: CallbackQuery, state: FSMContext)
 
 @router.callback_query(lambda c: c.data == 'menu_course')
 async def main_process_menu_course(callback_query: CallbackQuery, state: FSMContext):
-    await process_menu_course(callback_query, state)
+    await process_menu_course(callback_query.message, state)
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik')
 async def main_process_menu_dnevnik(callback_query: CallbackQuery, state: FSMContext):
-    await process_menu_dnevnik(callback_query, state)
+    await process_menu_dnevnik(callback_query.message, state)
 
 @router.callback_query(lambda c: c.data == 'menu_nutri')
 async def main_process_menu_nutri(callback_query: CallbackQuery, state: FSMContext):
-    await process_menu_nutri(callback_query, state)
+    await process_menu_nutri(callback_query.message, state)
 
 @router.callback_query(lambda c: c.data == 'menu_settings')
 async def main_process_menu_settings(callback_query: CallbackQuery, state: FSMContext):
-    await process_menu_settings(callback_query, state)
+    await process_menu_settings(callback_query.message, state)
+
+@router.callback_query(lambda c: c.data == '1')
+async def process_menu_course(message: Message, state: FSMContext) -> None:
+    await process_menu_course(message, state)
+
+@router.callback_query(lambda c: c.data == '2')
+async def menu_main_process_menu_dnevnik(message: Message, state: FSMContext) -> None:
+    await process_menu_dnevnik(message, state)
+
+@router.callback_query(lambda c: c.data == '3')
+async def menu_main_process_menu_nutri(message: Message, state: FSMContext) -> None:
+    await process_menu_nutri(message, state)
+
+@router.callback_query(lambda c: c.data == '4')
+async def menu_main_process_menu_settings(message: Message, state: FSMContext) -> None:
+    await process_menu_settings(message, state)
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################

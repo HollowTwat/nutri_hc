@@ -51,17 +51,17 @@ async def menu_cb_handler(callback_query, state) -> None:
     step0txt = "Меню"
     await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
-async def process_menu_course(callback_query, state):
+async def process_menu_course(message, state):
     buttons = [
         [InlineKeyboardButton(text="📖Начать Урок X", callback_data="menu_course_lesson_x")],
         [InlineKeyboardButton(text="✏️ Программа курса", callback_data="menu_course_info")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "📚 Курс:"
-    await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+    await message.edit_text(step0txt, reply_markup=keyboard)
     # await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
-async def process_menu_dnevnik(callback_query, state):
+async def process_menu_dnevnik(message, state):
     buttons = [
         [InlineKeyboardButton(text="🍽 Занести в дневник", callback_data="menu_dnevnik_input")],
         [InlineKeyboardButton(text="🔄Редактировать", callback_data="menu_dnevnik_redact")],
@@ -70,10 +70,10 @@ async def process_menu_dnevnik(callback_query, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "🍽 Дневник питания:"
-    await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+    await message.edit_text(step0txt, reply_markup=keyboard)
     # await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
-async def process_menu_nutri(callback_query, state):
+async def process_menu_nutri(message, state):
     buttons = [
         [InlineKeyboardButton(text="🌿 Спросить Нутри", callback_data="menu_nutri_yapp")],
         [InlineKeyboardButton(text="👩‍🍳 Рецепт", callback_data="menu_nutri_reciepie")],
@@ -81,10 +81,10 @@ async def process_menu_nutri(callback_query, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "💬  Нутри:"
-    await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+    await message.edit_text(step0txt, reply_markup=keyboard)
     # await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
-async def process_menu_settings(callback_query, state):
+async def process_menu_settings(message, state):
     buttons = [
         [InlineKeyboardButton(text="📌 Ваш профиль", callback_data="menu_settings_profile")],
         [InlineKeyboardButton(text="🆘 Помощь", callback_data="menu_settings_help")],
@@ -92,7 +92,7 @@ async def process_menu_settings(callback_query, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "⚙️Дополнительное:"
-    await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+    await message.edit_text(step0txt, reply_markup=keyboard)
     # await callback_query.message.answer(step0txt, reply_markup=keyboard)
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 
