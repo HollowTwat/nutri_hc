@@ -58,7 +58,10 @@ async def process_menu_course(message, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "📚 Курс:"
-    await message.edit_text(step0txt, reply_markup=keyboard)
+    try:
+        await message.edit_text(step0txt, reply_markup=keyboard)
+    except Exception as e:
+        await message.answer(step0txt, reply_markup=keyboard)
     # await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
 async def process_menu_dnevnik(message, state):
@@ -70,7 +73,10 @@ async def process_menu_dnevnik(message, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "🍽 Дневник питания:"
-    await message.edit_text(step0txt, reply_markup=keyboard)
+    try:
+        await message.edit_text(step0txt, reply_markup=keyboard)
+    except Exception as e:
+        await message.answer(step0txt, reply_markup=keyboard)
     # await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
 async def process_menu_nutri(message, state):
@@ -81,7 +87,10 @@ async def process_menu_nutri(message, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "💬  Нутри:"
-    await message.edit_text(step0txt, reply_markup=keyboard)
+    try:
+        await message.edit_text(step0txt, reply_markup=keyboard)
+    except Exception as e:
+        await message.answer(step0txt, reply_markup=keyboard)
     # await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
 async def process_menu_settings(message, state):
@@ -92,7 +101,10 @@ async def process_menu_settings(message, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "⚙️Дополнительное:"
-    await message.edit_text(step0txt, reply_markup=keyboard)
+    try:
+        await message.edit_text(step0txt, reply_markup=keyboard)
+    except Exception as e:
+        await message.answer(step0txt, reply_markup=keyboard)
     # await callback_query.message.answer(step0txt, reply_markup=keyboard)
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 
