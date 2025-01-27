@@ -8,14 +8,14 @@ import aiohttp
 import shelve
 import re
 
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_KEY = os.getenv("OPENAI_KEY")
 VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
 CITY_ASSISTANT_ID = os.getenv('CITY_ASSISTANT_ID')
 ASSISTANT2_ID = os.getenv('ASSISTANT2_ID')
 YAPP_SESH_ASSISTANT_ID = os.getenv('YAPP_SESH_ASSISTANT_ID')
-client = openai.OpenAI(api_key=OPENAI_API_KEY)
-aclient = AsyncOpenAI(api_key=OPENAI_API_KEY)
-openai.api_key = OPENAI_API_KEY
+client = openai.OpenAI(api_key=OPENAI_KEY)
+aclient = AsyncOpenAI(api_key=OPENAI_KEY)
+openai.api_key = OPENAI_KEY
 TELETOKEN_2 = os.getenv('TELEBOT')
 bug_channel = "-1002345895875"
 
