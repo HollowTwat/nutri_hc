@@ -133,19 +133,19 @@ async def main_process_menu_nutri(callback_query: CallbackQuery, state: FSMConte
 async def main_process_menu_settings(callback_query: CallbackQuery, state: FSMContext):
     await process_menu_settings(callback_query.message, state)
 
-@router.callback_query(lambda c: c.data == '1')
+@router.message(Command("1"))
 async def process_menu_course(message: Message, state: FSMContext) -> None:
     await process_menu_course(message, state)
 
-@router.callback_query(lambda c: c.data == '2')
+@router.message(Command("2"))
 async def menu_main_process_menu_dnevnik(message: Message, state: FSMContext) -> None:
     await process_menu_dnevnik(message, state)
 
-@router.callback_query(lambda c: c.data == '3')
+@router.message(Command("3"))
 async def menu_main_process_menu_nutri(message: Message, state: FSMContext) -> None:
     await process_menu_nutri(message, state)
 
-@router.callback_query(lambda c: c.data == '4')
+@router.message(Command("4"))
 async def menu_main_process_menu_settings(message: Message, state: FSMContext) -> None:
     await process_menu_settings(message, state)
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
