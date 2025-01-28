@@ -70,7 +70,7 @@ async def process_step_2(callback_query, state):
 async def process_step_3(callback_query, state):
     await state.set_state(LessonStates.step_4)
     media_files = [
-        InputMediaPhoto(media=IMG1, caption="Here is a video!"),
+        InputMediaPhoto(media=IMG1, caption="<i>💡 Внимательно изучи примеры, как правильно заносить приемы пищи </i>"),
         InputMediaPhoto(media=IMG2),
         InputMediaPhoto(media=IMG3),
         InputMediaPhoto(media=IMG4)
