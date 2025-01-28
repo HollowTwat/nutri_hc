@@ -16,7 +16,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.filters.state import StateFilter
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo, MediaGroup
+from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo
 from openai import AsyncOpenAI, OpenAI
 
 import shelve
@@ -69,19 +69,14 @@ async def process_step_2(callback_query, state):
 
 async def process_step_3(callback_query, state):
     await state.set_state(LessonStates.step_4)
-    media_group = MediaGroup()
+    media_files = [
+        InputMediaPhoto(IMG1, caption="Here is a video!"),
+        InputMediaPhoto(IMG2),
+        InputMediaPhoto(IMG3),
+        InputMediaPhoto(IMG4)
+    ]
 
-    media_group.attach(
-        InputMediaPhoto(
-            media=IMG1,
-            caption="<i>Внимательно изучи примеры, как правильно заносить приемы пищи</i>"
-        )
-    )
-    media_group.attach(InputMediaPhoto(media=IMG2))
-    media_group.attach(InputMediaPhoto(media=IMG3))
-    media_group.attach(InputMediaPhoto(media=IMG4))
-
-    await callback_query.message.answer_media_group(media=media_group)
+    await callback_query.message.answer_media_group(media=media_files)
     await callback_query.message.answer(
         "Дальше — вперёд к гармоничным отношениям с едой. Главное, не забывай делать записи регулярно.\n\nЯ же в ближайшие три недели буду помогать тебе не только помнить про приёмы пищи, но ещё и делать это осознанно.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[

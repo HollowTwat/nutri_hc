@@ -16,7 +16,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.filters.state import StateFilter
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo, MediaGroup
+from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo
 from openai import AsyncOpenAI, OpenAI
 # from stickerlist import STICKERLIST
 import shelve
