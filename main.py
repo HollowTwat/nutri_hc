@@ -25,6 +25,7 @@ import json
 from functions import *
 from functions2 import *
 from menu_functions import *
+from day1 import *
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OPENAI_KEY = os.getenv("OPENAI_KEY")
@@ -52,47 +53,20 @@ class UserState(StatesGroup):
     yapp = State()
     menu = State()
 
-class Questionnaire(StatesGroup):
-    name = State()
-    intro = State()
-    age = State()
-    gender = State()
-    location = State()
-    allergy = State()
-    lifestyle = State()
-    phototype = State()
-    activity = State()
-    water_intake = State()
-    stress = State()
-    habits = State()
-    ethics = State()
+class LessonStates(StatesGroup):
+    step_1 = State()
+    step_2 = State()
+    step_3 = State()
+    step_4 = State()
+    step_5 = State()
+    step_6 = State()
+    step_7 = State()
+    step_8 = State()
+    step_9 = State()
+    step_10 = State()
 
-class QuestionnaireFace(StatesGroup):
-    skin_type = State()
-    skin_condition = State()
-    skin_issues = State()
-    skin_goals = State()
-
-class QuestionnaireBody(StatesGroup):
-    body_skin_type = State()
-    body_skin_sensitivity = State()
-    body_skin_condition = State()
-    body_hair_issues = State()
-    body_attention_areas = State()
-    body_goals = State()
-
-class QuestionnaireHair(StatesGroup):
-    scalp_type = State()
-    hair_thickness = State()
-    hair_length = State()
-    hair_structure = State()
-    hair_condition = State()
-    hair_goals = State()
-    washing_frequency = State()
-    current_products = State()
-    product_texture = State()
-    sensitivity = State()
-    styling_tools = State()
+class ImageUploadState(StatesGroup):
+    waiting_for_image = State()
 
 
 @router.message(CommandStart())
@@ -217,6 +191,68 @@ async def main_process_menu_settings_sub(callback_query: CallbackQuery, state: F
     await process_menu_settings_sub(callback_query, state)
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
+
+@router.message(commands=['lesson_1'])
+async def start_lesson(message: types.Message, state: FSMContext):
+    await state.set_state(LessonStates.step_1)
+    await message.answer(
+        "Welcome to the lesson! Press the button to start.",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Start Lesson", callback_data="start")]
+        ])
+    )
+
+################## LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 ##################
+
+@router.callback_query(StateFilter(LessonStates.step_1), lambda c: True)
+async def main_process_step_1(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_step_1(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates.step_2), lambda c: True)
+async def main_process_step_2(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_step_2(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates.step_3), lambda c: True)
+async def main_process_step_3(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_step_3(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates.step_4), lambda c: True)
+async def main_process_step_4(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_step_4(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates.step_5), lambda c: True)
+async def main_process_step_5(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_step_5(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates.step_6), lambda c: True)
+async def main_process_step_6(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_step_6(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates.step_7), lambda c: True)
+async def main_process_step_7(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_step_7(callback_query, state)
+
+################## LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 ##################
+
+@router.message(Command("upload_image"))
+async def upload_image_command(message: types.Message, state: FSMContext):
+    await state.set_state(ImageUploadState.waiting_for_image)
+    await message.answer("Please send me an image, and I'll give you its file_id.")
+
+@router.message(ImageUploadState.waiting_for_image, lambda message: message.photo)
+async def handle_image_upload(message: types.Message, state: FSMContext):
+    file_id = message.photo[-1].file_id
+
+    await message.answer(f"Here is the file_id of your image:\n\n<code>{file_id}</code>\n\n"
+                         "You can use this file_id to send the image in your bot.")
+
+    await state.clear()
+
+@router.message(ImageUploadState.waiting_for_image)
+async def handle_invalid_content(message: types.Message):
+    await message.answer("Please send an image to get its file_id.")
+
+
 # @router.message(StateFilter(Questionnaire.name))
 # async def process_name(message: types.Message, state: FSMContext):
 #     await state.update_data(name=message.text)
