@@ -16,7 +16,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.filters.state import StateFilter
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo
+from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo, MediaGroup
 from openai import AsyncOpenAI, OpenAI
 
 import shelve
@@ -24,6 +24,11 @@ import json
 
 from functions import *
 from functions2 import *
+
+IMG1 = "AgACAgIAAxkBAANBZ5lgYwEpPE_Io6f8HNjvQcDzA94AAs_lMRsKINBI0WwjOw6l8GEBAAMCAAN5AAM2BA"
+IMG2 = "AgACAgIAAxkBAANFZ5lgm-ygzgfXpqc3ve7HKnbVvKIAAtDlMRsKINBI4fFmr856K5oBAAMCAAN5AAM2BA"
+IMG3 = "AgACAgIAAxkBAANJZ5lgpFx0Zas0CNi_hymLjq5sCHgAAtHlMRsKINBI3BEh1d5asj8BAAMCAAN5AAM2BA"
+IMG4 = "AgACAgIAAxkBAANNZ5lgrpra2SqjwqeN0A3sCYz7I4kAAtLlMRsKINBIBd3vqFSbtvkBAAMCAAN5AAM2BA"
 
 class LessonStates(StatesGroup):
     step_1 = State()
@@ -64,10 +69,23 @@ async def process_step_2(callback_query, state):
 
 async def process_step_3(callback_query, state):
     await state.set_state(LessonStates.step_4)
+    media_group = MediaGroup()
+
+    media_group.attach(
+        InputMediaPhoto(
+            media=IMG1,
+            caption="<i>Внимательно изучи примеры, как правильно заносить приемы пищи</i>"
+        )
+    )
+    media_group.attach(InputMediaPhoto(media=IMG2))
+    media_group.attach(InputMediaPhoto(media=IMG3))
+    media_group.attach(InputMediaPhoto(media=IMG4))
+
+    await callback_query.message.answer_media_group(media=media_group)
     await callback_query.message.answer(
-        "Step 3: This is the third step of the lesson.",
+        "Дальше — вперёд к гармоничным отношениям с едой. Главное, не забывай делать записи регулярно.\n\nЯ же в ближайшие три недели буду помогать тебе не только помнить про приёмы пищи, но ещё и делать это осознанно.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Next", callback_data="next")]
+            [InlineKeyboardButton(text="Как ты будешь учить меня осознанному питанию?", callback_data="next")]
         ])
     )
     await callback_query.answer()
