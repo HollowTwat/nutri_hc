@@ -30,6 +30,11 @@ IMG2 = "AgACAgIAAxkBAANFZ5lgm-ygzgfXpqc3ve7HKnbVvKIAAtDlMRsKINBI4fFmr856K5oBAAMC
 IMG3 = "AgACAgIAAxkBAANJZ5lgpFx0Zas0CNi_hymLjq5sCHgAAtHlMRsKINBI3BEh1d5asj8BAAMCAAN5AAM2BA"
 IMG4 = "AgACAgIAAxkBAANNZ5lgrpra2SqjwqeN0A3sCYz7I4kAAtLlMRsKINBIBd3vqFSbtvkBAAMCAAN5AAM2BA"
 
+IMG5 = "AgACAgIAAxkBAAPsZ5pp5PjRJkbwMjuM0ISDp27sAAFaAALK6DEbCiDYSGA3s2txTrNjAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAPwZ5pqK7B4wt64mjMfK2LbzmfL310AAszoMRsKINhIAa-NxsllhSABAAMCAAN5AAM2BA"
+IMG7 = "AgACAgIAAxkBAAP0Z5pqMq3mh1bNXEOAxyS5H0xTnr0AAs3oMRsKINhIF42rKcKsb6oBAAMCAAN5AAM2BA"
+IMG8 = "AgACAgIAAxkBAAP4Z5pqOjP47UJjcDnh1O6Lh9FPrXgAAs7oMRsKINhIV6uh9y1UtesBAAMCAAN5AAM2BA"
+
 IMG18 = "AgACAgIAAxkBAANyZ5lqKVO1CJVNZJb9VZvDpUzLeG4AAtflMRsKINBI7SfuvxvVtqEBAAMCAAN5AAM2BA"
 IMG19 = "AgACAgIAAxkBAAN2Z5lqM0QtKa39OjLxNqUYbrmWg6MAAtjlMRsKINBIlOl8FjXWH4IBAAMCAAN5AAM2BA"
 IMG20 = "AgACAgIAAxkBAAN6Z5lqPhZp7wWYrAMo9t9IeBoaLxQAAtnlMRsKINBIkrwZSpYgx94BAAMCAAN5AAM2BA"
@@ -106,10 +111,10 @@ async def process_step_4(callback_query, state):
 async def process_step_5(callback_query, state):
     await state.set_state(LessonStates.step_6)
     media_files = [
-        InputMediaPhoto(media=IMG1, caption="<i>ПРОПАЛИ КАРТОЧКИ ДЛЯ ЭТОГО ШАГА!!!!!!!!!!!</i>\n\n\n  За эти три недели ты разберёшься в принципах осознанного питания и заложишь фундамент для нового подхода к отношениям с едой.\n\n💚 На первой неделе ты заметишь пищевые привычки, которые тебе мешают.\n💜 На второй получишь базу для формирования новых привычек.\n❤️ На третьей закрепишь новые привычки и начнёшь применять их в реальной жизни."),
-        InputMediaPhoto(media=IMG2),
-        InputMediaPhoto(media=IMG3),
-        InputMediaPhoto(media=IMG4)
+        InputMediaPhoto(media=IMG5, caption="За эти три недели ты разберёшься в принципах осознанного питания и заложишь фундамент для нового подхода к отношениям с едой.\n\n💚 На первой неделе ты заметишь пищевые привычки, которые тебе мешают.\n💜 На второй получишь базу для формирования новых привычек.\n❤️ На третьей закрепишь новые привычки и начнёшь применять их в реальной жизни."),
+        InputMediaPhoto(media=IMG6),
+        InputMediaPhoto(media=IMG7),
+        InputMediaPhoto(media=IMG8)
     ]
     await callback_query.message.answer_media_group(media=media_files)
     
