@@ -36,6 +36,7 @@ class Questionnaire(StatesGroup):
     f_breastfeed = State()
     height = State()
     weight = State()
+    age = State()
     water = State()
     booze = State()
     meals = State()
