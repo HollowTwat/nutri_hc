@@ -20,6 +20,9 @@ TELETOKEN_2 = os.getenv('TELEBOT')
 bug_channel = "-1002345895875"
 
 
+async def check_mail(mail):
+    return True
+
 async def remove_reference(input_string):
     # Use regular expression to match text between 【 and 】, including the symbols
     result = re.sub(r'【.*?】', '', input_string)
@@ -263,7 +266,7 @@ async def use_vision64(file_path):
 
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {OPENAI_API_KEY}"
+        "Authorization": f"Bearer {OPENAI_KEY}"
     }
 
     payload = {
