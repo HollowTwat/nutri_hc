@@ -297,7 +297,7 @@ async def main_process_name(message: Message, state: FSMContext):
 
 @router.callback_query(StateFilter(Questionnaire.gender), lambda c: True)
 async def main_process_gender(callback_query: types.CallbackQuery, state: FSMContext):
-    gender = callback_query.message.text
+    gender = callback_query.data
     print(gender)
     if gender == "female":
         await process_gender(callback_query.message, state)
@@ -305,7 +305,8 @@ async def main_process_gender(callback_query: types.CallbackQuery, state: FSMCon
     elif gender == "male":
         await process_f_breastfeed(callback_query.message, state)
         await state.set_state(Questionnaire.height)
-
+    else: 
+        await callback_query.message.answer("Что-то не так с полом")
 @router.callback_query(StateFilter(Questionnaire.f_preg), lambda c: True)
 async def main_process_f_preg(callback_query: types.CallbackQuery, state: FSMContext):
     await process_f_preg(callback_query.message, state)
