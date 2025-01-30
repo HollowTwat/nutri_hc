@@ -98,8 +98,8 @@ async def process_name(message, state):
 async def process_gender(message, state):
     text = "Тогда еще пара важных вопросов, которые влияют на рекомендации (например, можно ли вам алкоголь).\n\nТы беременна?"
     buttons = [
-        [InlineKeyboardButton(text="Женский", callback_data="female")],
-        [InlineKeyboardButton(text="Мужской", callback_data="male")],
+        [InlineKeyboardButton(text="Да", callback_data="True")],
+        [InlineKeyboardButton(text="Нет", callback_data="False")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.edit_text(text, reply_markup=keyboard)
@@ -107,8 +107,8 @@ async def process_gender(message, state):
 async def process_f_preg(message, state):
     text = "Кормишь грудью?"
     buttons = [
-        [InlineKeyboardButton(text="Женский", callback_data="female")],
-        [InlineKeyboardButton(text="Мужской", callback_data="male")],
+        [InlineKeyboardButton(text="Да", callback_data="True")],
+        [InlineKeyboardButton(text="Нет", callback_data="False")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.edit_text(text, reply_markup=keyboard)
