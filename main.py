@@ -298,6 +298,7 @@ async def main_process_name(message: Message, state: FSMContext):
 @router.callback_query(StateFilter(Questionnaire.gender), lambda c: True)
 async def main_process_gender(callback_query: types.CallbackQuery, state: FSMContext):
     gender = callback_query.message.text
+    print(gender)
     if gender == "female":
         await process_gender(callback_query.message, state)
         await state.set_state(Questionnaire.f_preg)
