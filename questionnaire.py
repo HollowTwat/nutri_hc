@@ -174,10 +174,10 @@ async def process_first(message, state):
 async def process_mail(message, state):
     answer = await check_mail(message.from_user.id, message.text)
     print(answer)
-    if answer == True:
+    if answer == "true":
         text = "<b>Как тебя зовут?</b>"
         await message.answer(text)
-    elif answer == False:
+    elif answer == "false":
         await state.clear()
         text = "К сожалению, я не нашла твою почту. Напиши пожалуйста в тех поддержку  @nutri_care"
         buttons = [

@@ -22,9 +22,9 @@ bug_channel = "-1002345895875"
 
 async def check_mail(id, mail):
     link = f"https://nutridb-production.up.railway.app/api/Subscription/ActivateUser?userTgId={id}&userEmail={mail}"
-    headers = {"accept": "text/plain"}
+    # headers = {"accept": "text/plain"}
     response = requests.post(
-        link, headers=headers)
+        link)
     return response.text
 
 
