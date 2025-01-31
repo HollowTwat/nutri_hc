@@ -452,9 +452,9 @@ async def main_process_w_loss_amount(message: Message, state: FSMContext):
             elif goal == "-": goal_txt = "сбросить вес"
             text1 = f"Чтобы помочь тебе в достижении твоей цели {goal_txt}, я рассчитала, сколько калорий тебе нужно есть в день. Я использую формулу Mifflin-St Jeor, так как она считается одной из самых точных.\n\n\nТвои результаты следующие:\nБазовый уровень метаболизма (BMR): примерно <b>{bmr}</b> ккал/день.\nОбщая суточная потребность в энергии (TDEE) при умеренной активности: примерно <b>{tdee}</b> ккал/день."
             await message.answer(text1)
+            await give_plan(message, state, input_text)
     await state.set_state(Questionnaire.city)
-    
-    
+
 
 @router.message(StateFilter(Questionnaire.city))
 async def main_process_city(message: Message, state: FSMContext):
