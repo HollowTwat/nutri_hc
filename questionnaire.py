@@ -413,7 +413,8 @@ async def process_morning_ping(message, state):
 async def process_evening_ping(message, state):
     text = "Хочу пригласить тебя в наше сообщество <b>Нутри Ai: как есть, чтобы лучше жить!</b>\n\nТебя будут поддерживать и мотивировать нутрициологи, диетологи и другие специалисты.\n\nТолько для участников сообщества — прямые эфиры с экспертами, ответы на вопросы, полезные гайды и чек-листы. \n\nПодпишись на @nutri_community 💖 в Telegram"
     buttons = [
-        [InlineKeyboardButton(text="Да", url="t.me/nutri_community")],
+        [InlineKeyboardButton(text="Перейти", url="t.me/nutri_community")],
+        [InlineKeyboardButton(text="Ок, готово", callback_data="next")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer(text, reply_markup=keyboard)
