@@ -298,6 +298,7 @@ async def main_process_name(message: Message, state: FSMContext):
 @router.callback_query(StateFilter(Questionnaire.gender), lambda c: True)
 async def main_process_gender(callback_query: types.CallbackQuery, state: FSMContext):
     gender = callback_query.data
+    await state.update_data(gender=gender)
     print(gender)
     if gender == "female":
         await process_gender(callback_query.message, state)
@@ -307,43 +308,52 @@ async def main_process_gender(callback_query: types.CallbackQuery, state: FSMCon
         await state.set_state(Questionnaire.height)
     else: 
         await callback_query.message.answer("Что-то не так с полом")
+
 @router.callback_query(StateFilter(Questionnaire.f_preg), lambda c: True)
 async def main_process_f_preg(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(pregnancy=callback_query.data)
     await process_f_preg(callback_query.message, state)
     await state.set_state(Questionnaire.f_breastfeed)
 
 @router.callback_query(StateFilter(Questionnaire.f_breastfeed), lambda c: True)
 async def main_process_f_breastfeed(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(breastfeeding=callback_query.data)
     await process_f_breastfeed(callback_query.message, state)
     await state.set_state(Questionnaire.height)
 
 @router.message(StateFilter(Questionnaire.height))
 async def main_process_geight(message: Message, state: FSMContext):
+    await state.update_data(height=message.text)
     await process_height(message, state)
     await state.set_state(Questionnaire.weight)
 
 @router.message(StateFilter(Questionnaire.weight))
 async def main_process_weight(message: Message, state: FSMContext):
+    await state.update_data(weight=message.text)
     await process_weight(message, state)
     await state.set_state(Questionnaire.age)
 
 @router.message(StateFilter(Questionnaire.age))
 async def main_process_age(message: Message, state: FSMContext):
+    await state.update_data(age=message.text)
     await process_age(message, state)
     await state.set_state(Questionnaire.water)
 
 @router.callback_query(StateFilter(Questionnaire.water), lambda c: True)
 async def main_process_water(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(water=callback_query.data)
     await process_water(callback_query.message, state)
     await state.set_state(Questionnaire.booze)
 
 @router.callback_query(StateFilter(Questionnaire.booze), lambda c: True)
 async def main_process_booze(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(booze=callback_query.data)
     await process_booze(callback_query.message, state)
     await state.set_state(Questionnaire.meals)
 
 @router.callback_query(StateFilter(Questionnaire.meals), lambda c: True)
 async def main_process_meals(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(meals=callback_query.data)
     await process_meals(callback_query.message, state)
     await state.set_state(Questionnaire.meals_extra)
 
@@ -351,8 +361,10 @@ async def main_process_meals(callback_query: types.CallbackQuery, state: FSMCont
 @router.callback_query(StateFilter(Questionnaire.meals_extra))
 async def main_process_meals_extra(message_or_callback: types.Message | types.CallbackQuery, state: FSMContext):
     if isinstance(message_or_callback, types.Message):
+        await state.update_data(meals_extra=message_or_callback.text)
         await process_meals_extra(message_or_callback, state)
     elif isinstance(message_or_callback, types.CallbackQuery):
+        await state.update_data(meals_extra=message_or_callback.data)
         await process_meals_extra(message_or_callback.message, state)
     await state.set_state(Questionnaire.allergies)
 
@@ -360,8 +372,10 @@ async def main_process_meals_extra(message_or_callback: types.Message | types.Ca
 @router.callback_query(StateFilter(Questionnaire.allergies))
 async def main_process_allergies(message_or_callback: types.Message | types.CallbackQuery, state: FSMContext):
     if isinstance(message_or_callback, types.Message):
+        await state.update_data(allergies=message_or_callback.text)
         await process_allergies(message_or_callback, state)
     elif isinstance(message_or_callback, types.CallbackQuery):
+        await state.update_data(allergies=message_or_callback.data)
         await process_allergies(message_or_callback.message, state)
     await state.set_state(Questionnaire.part3)
 
@@ -372,28 +386,34 @@ async def main_process_part3(callback_query: types.CallbackQuery, state: FSMCont
 
 @router.message(StateFilter(Questionnaire.jogging))
 async def main_process_jogging(message: Message, state: FSMContext):
+    await state.update_data(jogging=message.text)
     await process_jogging(message, state)
     await state.set_state(Questionnaire.lifting)
 
 @router.message(StateFilter(Questionnaire.lifting))
 async def main_process_lifting(message: Message, state: FSMContext):
+    await state.update_data(lifting=message.text)
     await process_lifting(message, state)
     await state.set_state(Questionnaire.stress)
 
 @router.callback_query(StateFilter(Questionnaire.stress), lambda c: True)
 async def main_process_stress(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(stress=callback_query.data)
     await process_stress(callback_query.message, state)
     await state.set_state(Questionnaire.sleep)
 
 @router.callback_query(StateFilter(Questionnaire.sleep), lambda c: True)
 async def main_process_sleep(callback_query: types.CallbackQuery, state: FSMContext):
+    await state.update_data(sleep=callback_query.data)
     await process_sleep(callback_query.message, state)
     await state.set_state(Questionnaire.goal)
 
 @router.callback_query(StateFilter(Questionnaire.goal), lambda c: True)
 async def main_process_goal(callback_query: types.CallbackQuery, state: FSMContext):
     goal1 = callback_query.data
-    state.update_data(goal=goal1)
+    await state.update_data(goal=goal1)
+    user_data = await state.get_data()
+    goal = user_data['goal']
     await calculate(state)
 
     if goal in ["+", "-"]:
