@@ -304,6 +304,8 @@ async def main_process_gender(callback_query: types.CallbackQuery, state: FSMCon
         await process_gender(callback_query.message, state)
         await state.set_state(Questionnaire.f_preg)
     elif gender == "male":
+        await state.update_data(pregnancy=False)
+        await state.update_data(breasfeeding=False)
         await process_f_breastfeed(callback_query.message, state)
         await state.set_state(Questionnaire.height)
     else: 
@@ -412,9 +414,10 @@ async def main_process_sleep(callback_query: types.CallbackQuery, state: FSMCont
 async def main_process_goal(callback_query: types.CallbackQuery, state: FSMContext):
     goal1 = callback_query.data
     await state.update_data(goal=goal1)
+
+    await calculate(state)
     user_data = await state.get_data()
     goal = user_data['goal']
-    await calculate(state)
 
     if goal in ["+", "-"]:
         await process_goal(callback_query.message, state, goal)
@@ -433,9 +436,21 @@ async def main_process_w_loss(callback_query: types.CallbackQuery, state: FSMCon
 async def main_process_w_loss_amount(message: Message, state: FSMContext):
     user_data = await state.get_data()
     goal = user_data["goal"]
+    tdee = user_data['tdee']
+    bmr = user_data['bmr']
+    pregnancy = user_data['pregnancy']
     await process_w_loss_amount(message, state, goal)
     input_text = await gen_text(state)
-    await give_plan(message, state, input_text)
+    if pregnancy == "True":
+        await give_plan(message, state, input_text)
+    else:
+        if goal in ["+","-"]:
+            if goal == "+": goal_txt = "набрать вес"
+            elif goal == "-": goal_txt = "сбросить вес"
+            text1 = f"Чтобы помочь тебе в достижении твоей цели {goal_txt}, я рассчитала, сколько калорий тебе нужно есть в день. Я использую формулу Mifflin-St Jeor, так как она считается одной из самых точных.\n\n\nТвои результаты следующие:\nБазовый уровень метаболизма (BMR): примерно <b>{bmr}</b> ккал/день.\nОбщая суточная потребность в энергии (TDEE) при умеренной активности: примерно <b>{tdee}</b> ккал/день."
+            await message.answer(text1)
+    
+    
 
 @router.message(StateFilter(Questionnaire.city))
 async def main_process_city(message: Message, state: FSMContext):
