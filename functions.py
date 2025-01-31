@@ -25,7 +25,7 @@ async def check_mail(id, mail):
     headers = {"accept": "text/plain"}
     response = requests.post(
         link, headers=headers)
-    return response
+    return response.text
 
 
 async def remove_reference(input_string):
