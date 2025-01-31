@@ -304,8 +304,8 @@ async def main_process_gender(callback_query: types.CallbackQuery, state: FSMCon
         await process_gender(callback_query.message, state)
         await state.set_state(Questionnaire.f_preg)
     elif gender == "male":
-        await state.update_data(pregnancy=False)
-        await state.update_data(breastfeeding=False)
+        await state.update_data(pregnancy="False")
+        await state.update_data(breastfeeding="False")
         await process_f_breastfeed(callback_query.message, state)
         await state.set_state(Questionnaire.height)
     else: 
