@@ -55,6 +55,98 @@ class Questionnaire(StatesGroup):
     evening_ping = State()
     community_invite = State()
 
+IMG1 = "AgACAgIAAxkBAAIBNGeb_tu4yBOsz2-sDzPYYXUnWgzKAAIo4jEbaQvgSAw5usWAGBI6AQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAIBOGeb_uF2DBu8vwy4yAtDOuwtepHRAAIp4jEbaQvgSAcx4I3mM6pdAQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAIBRGeb_vhtj5spM5DEL2Y_C--j2ipUAAIs4jEbaQvgSNUedpEuLn5CAQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAIBPGeb_un_uAwNoElxdjt9xHOCiLoYAAIq4jEbaQvgSA7-22yWnlE8AQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAIBQGeb_vH5BhY44cE4Y1bGKja0YmxiAAIr4jEbaQvgSLUl0FYt3LRJAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAIBSGeb_wTvPaRty8giiJ4ty4hgIOScAAIt4jEbaQvgSHP4M3wlKZt_AQADAgADeQADNgQ"
+IMG7 = "AgACAgIAAxkBAAIBTGeb_wvV4EvYfmQ7yVV1PeZtgKoLAAIu4jEbaQvgSBsBOYuwPPQRAQADAgADeQADNgQ"
+IMG8 = "AgACAgIAAxkBAAIBUGeb_xIecDerLszcSJ64OSbyPNyxAAIv4jEbaQvgSFANxSVekJwlAQADAgADeQADNgQ"
+IMG9 = "AgACAgIAAxkBAAIBVGeb_xj5C7ZigNR0vMIyoBaut02gAAIw4jEbaQvgSMu7vY1tCdzJAQADAgADeQADNgQ"
+
+IMG10 = "AgACAgIAAxkBAAIBWGecA5dsf2OriobXiC-17r5_8K6gAAIx4jEbaQvgSNZxXaMawsFFAQADAgADeQADNgQ"
+IMG11 = "AgACAgIAAxkBAAIBXGecA54_-uc29nPhwteLnjrCoN0fAAIy4jEbaQvgSFMxd_Xx3bDuAQADAgADeQADNgQ"
+IMG12 = "AgACAgIAAxkBAAIBXmecA6SMl4eYAl8erQKWr9pXsc24AAIz4jEbaQvgSOCio8PwbvnVAQADAgADeQADNgQ"
+IMG13 = "AgACAgIAAxkBAAIBZmecA7TbMfRBey4LiWOT-0ZXZVoVAAI04jEbaQvgSK4foXut4QcOAQADAgADeQADNgQ"
+IMG14 = "AgACAgIAAxkBAAIBamecA7xiY7cWzt6gtsRJDbsbzHVeAAI14jEbaQvgSFz65Zzip3MIAQADAgADeQADNgQ"
+IMG15 = "AgACAgIAAxkBAAIBbmecA8LjgQH_0EALNLVX3blTE3JRAAI24jEbaQvgSOqy6E3LZAb_AQADAgADeQADNgQ"
+IMG16 = "AgACAgIAAxkBAAIBcmecA8cEgt_UPCbzAqKVKTtPJwNKAAI34jEbaQvgSFo2OCCBpuJeAQADAgADeQADNgQ"
+
+async def calculate(state):
+    user_data = await state.get_data()
+    goal = user_data['goal']
+    weight = int(user_data['weight'])
+    height = int(user_data['height'])
+    age = int(user_data['age'])
+    gender = user_data['gender']
+    pregnancy = user_data['pregnancy']
+
+    bmr1 = round(10*weight + 6.25*height - 5*age)
+
+    if gender == "male":
+        bmr = bmr1 +5
+    elif gender == "female":
+        bmr = bmr1 -161
+
+    await state.update_data(bmr=bmr)
+
+    tdee1 = round(bmr*1.55)
+    if pregnancy == "true":
+        tdee = tdee1+500
+    else:
+        tdee = tdee1
+    await state.update_data(tdee=tdee)
+
+    height_m = height/100
+    height_m_sq = round(height_m^2)
+    bmi = round(weight/height_m_sq)
+    ideal_weight_low = round(height_m_sq*18.5)
+    ideal_weight_high = round(height_m_sq*25)
+    await state.update_data(bmi=bmi)
+    await state.update_data(ideal_weight_low=ideal_weight_low)
+    await state.update_data(ideal_weight_high=ideal_weight_high)
+    if goal == "?":
+        if bmi > 25:
+            goal = "-"
+        elif 18.5 <= bmi <= 25:
+            goal = "="
+        elif bmi <18.5:
+            goal = "+"
+    await state.update_data(goal=goal)
+
+
+async def gen_text(state):
+    user_data = await state.get_data()
+    goal = user_data['goal']
+    tdee = user_data['tdee']
+    pregnancy = user_data['pregnancy']
+    breastfeeding = user_data['breastfeeding']
+    calories_per_gram_carbs = 4
+    calories_per_gram_proteins = 4
+    calories_per_gram_fats = 9
+    carbs_percentage = 0.55
+    proteins_percentage = 0.225
+    fats_percentage = 0.275
+    if goal == "+":
+        target_calories = tdee + 500
+    elif goal == "-":
+        target_calories = tdee - 500
+    elif goal == "=":
+        target_calories = tdee
+    proteins_grams = round((target_calories*proteins_percentage)/calories_per_gram_proteins)
+    carbs_grams = round((target_calories*carbs_percentage)/calories_per_gram_carbs)
+    fats_grams = round((target_calories*fats_percentage)/calories_per_gram_fats)
+    
+    text_preg = f""
+    text_gain = f""
+    text_gain_bf = f""
+    text_loss = f""
+    text_loss_bf = f""
+    text_keep = f"C удовольствием помогу тебе правильно питаться и чувствовать себя лучше с каждым днём. Чтобы оставаться в текущем весе, рекомендую тебе есть около <b>{target_calories}</b> ккал/день — это как раз твоя суточная потребность в энергии.\n\nРаспределение макронутриентов при таком количестве калорий <b>{target_calories}</b> ккал/день:\n\n• Углеводы: примерно <b>{carbs_grams}</b> грамм (55% от общего количества калорий).\n• Белки: примерно <b>{proteins_grams}</b> грамм (22.5% от общего количества калорий).\n• Жиры: примерно <b>{fats_grams}</b> грамм (27.5% от общего количества калорий).\n\nПостараемся вместе сделать твоё питание более разнообразным и сбалансированным!"
+    
+
+
 async def process_prefirst(message, state):
     text = f"{message.from_user.first_name},\n\nЯ очень рада, что теперь у меня есть такой приятный собеседник как ты!\n\nСделаю всё, чтобы ты смог(ла) комфортно прийти к своим целям!\n\nНо сначала эти цели нужно правильно поставить. Для этого я задам несколько важных вопросов.\n\nОтветы займут не больше 5 минут и помогут мне создать персональный план питания под твои параметры и запросы.\n\nРасскажешь мне о себе?"
     buttons = [
@@ -188,53 +280,147 @@ async def process_meals_extra(message, state):
         await message.answer(text, reply_markup=keyboard)
 
 async def process_allergies(message, state):
-    # Empty function for allergies step
-    pass
+    link1 = "https://pmc.ncbi.nlm.nih.gov/articles/PMC5964031/"
+    link2 = "https://pmc.ncbi.nlm.nih.gov/articles/PMC9031614/"
+    link3 = "https://www.sciencedaily.com/releases/2009/08/090803185712.htm"
+    text = f"<b>Часть 3/3 \n4 вопроса об образе жизни</b>\nОсознанное питание — это не только еда. Чтобы выстроить здоровые отношения с едой, важно <a href=\'{link1}\'>научиться работать с эмоциями</a>, <a href=\'{link2}\'>наладить режим сна</a>, <a href=\'{link3}\'>установить контакт с телом</a>, быть физически активными.\n\nЭтому мы будем учиться на курсе, который мы составили вместе с нутрициологами. Но сначала мне нужно понять: какой ритм жизни у тебя сейчас?\n\nБуквально 4 вопроса, и мы размеренно и с удовольствием пойдём вперед к твоим целям!"
+    buttons = [
+        [InlineKeyboardButton(text="Задавай!", callback_data="next")],
+        ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    try:
+        await message.edit_text(text, reply_markup=keyboard)
+    except Exception as e:
+        await message.answer(text, reply_markup=keyboard)
 
 async def process_part3(message, state):
-    # Empty function for part3 step
-    pass
+    text = "🔵⚪️⚪️⚪️ \nСколько часов в неделю ты уделяешь лёгким и средним физическим нагрузкам: бегу, быстрой ходьбе, йоге, плаванию, танцам или другим игровым видам спорта? В общем, что угодно, кроме силовых и выосокинтенсивных функциональных тренировок.\n\nЭто важно для расчёта КБЖУ!"
+    await message.edit_text(text, reply_markup=None)
 
 async def process_jogging(message, state):
-    # Empty function for jogging step
-    pass
+    text = "🔵🔵⚪️⚪️\nРасскажи, сколько часов в неделю ты занимаешься силовыми или высокоинтенсивными функциональными тренировками.   \nЕсли не занимаешься вообще, напиши «0»  \nЕсли число не целое, напиши через запятую. Например, «1,5»."
+    await message.answer(text, reply_markup=None)
 
 async def process_lifting(message, state):
-    # Empty function for lifting step
-    pass
+    text = "🔵🔵🔵⚪️\nКстати, как ты оцениваешь свой текущий уровень стресса?  \nСпойлер: длительный стресс <u>мешает</u> сбрасывать вес."
+    buttons = [
+        [InlineKeyboardButton(text="Низкий", callback_data="low")],
+        [InlineKeyboardButton(text="Средний", callback_data="mid")],
+        [InlineKeyboardButton(text="Высокий", callback_data="high")],
+        ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    await message.answer(text, reply_markup=keyboard)
 
 async def process_stress(message, state):
-    # Empty function for stress step
-    pass
+    link = "https://pmc.ncbi.nlm.nih.gov/articles/PMC9031614/"
+    text = f"🔵🔵🔵🔵\nА сколько часов ты спишь в будние дни?   \nСпойлер №2: из-за недосыпа мы <a href=\'{link}\'>переедаем.</a>"
+    buttons = [
+        [InlineKeyboardButton(text="6–8 часов", callback_data="6-8"), InlineKeyboardButton(text="Меньше 6 часов", callback_data="<6")],
+        [InlineKeyboardButton(text="8 и больше часов", callback_data=">8"), InlineKeyboardButton(text="Нет режима сна", callback_data="random")],
+        ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    await message.edit_text(text, reply_markup=keyboard)
 
 async def process_sleep(message, state):
-    # Empty function for sleep step
-    pass
+    text = "Ура, мы закончили! Теперь самое главное: определимся с целью. Моя задача — помочь тебе выстроить гармоничные отношения с едой.  \nНо это довольно абстрактная цель, к такой тяжело идти. Попробуем придумать что-то более конкретное!   \n\nИтак, к какой цели мы будем идти ближайший месяц?"
+    buttons = [
+        [InlineKeyboardButton(text="Похудеть", callback_data="-")],
+        [InlineKeyboardButton(text="Набрать мышечную массу", callback_data="+")],
+        [InlineKeyboardButton(text="Сохранить вес, выстроить рацион", callback_data="=")],
+        [InlineKeyboardButton(text="Нутри, поставь цель за меня", callback_data="?")],
+        ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    await message.edit_text(text, reply_markup=keyboard)
 
-async def process_goal(message, state):
-    # Empty function for goal step
-    pass
+async def process_goal(message, state, goal):
+    text_add = "Знаешь, сколько кг хочешь набрать?"
+    text_remove = "Знаешь, сколько кг хочешь скинуть?"
+    if goal == "+":
+        text = text_add
+    elif goal == "-":
+        text = text_remove
+    buttons = [
+        [InlineKeyboardButton(text="Да", callback_data="yes")],
+        [InlineKeyboardButton(text="Нет, Нутри, посчитай за менй", callback_data="no")],
+        ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    await message.edit_text(text, reply_markup=keyboard)
 
-async def process_w_loss(message, state):
-    # Empty function for w_loss step
-    pass
+async def process_w_loss(message, state, goal):
+    text_add = "Знаешь, сколько кг хочешь набрать?"
+    text_remove = "Знаешь, сколько кг хочешь скинуть?"
+    if goal == "+":
+        text = text_add
+    elif goal == "-":
+        text = text_remove
+    await message.answer(text)
 
-async def process_w_loss_amount(message, state):
-    # Empty function for w_loss_amount step
-    pass
+async def process_w_loss_amount(message, state, goal):
+    text11 = "Считаю комфортную скорость похудения, чтобы результат закрепился надолго, а процесс тебе понравился!"
+    text12 = "C удовольствием помогу тебе правильно питаться и чувствовать себя всё лучше с каждым днём!"
+    if goal in ['+', '-']:
+        text1 = text11
+    elif goal in ['?', '=']:
+        text1 = text12
+    await message.answer(text1)
+
+async def give_plan(message, state, input_text):
+    text = "Пока я составляю твой персональный план, почитай про общие принципы, которых мы будем придерживаться в ближайший месяц.\n\nОни помогут тебе не просто похудеть, но закрепить результат и не вернуться к исходному весу через полгода."
+    media_files = [
+        InputMediaPhoto(media=IMG1, caption=text),
+        InputMediaPhoto(media=IMG2),
+        InputMediaPhoto(media=IMG3),
+        InputMediaPhoto(media=IMG4),
+        InputMediaPhoto(media=IMG5),
+        InputMediaPhoto(media=IMG6),
+        InputMediaPhoto(media=IMG7),
+        InputMediaPhoto(media=IMG8),
+        InputMediaPhoto(media=IMG9),
+    ]
+    await message.answer_media_group(media=media_files)
+    link = ""
+    text2 = f"<b>8 принципов осознанного питания: чему мы будем учиться</b>\n\nНа картинках — главные принципы осознанного питания, на основе которых я даю рекомендации.\n\nОни довольно простые, но вот сделать их привычкой — настоящий челлендж. Но мы будем выполнять его вместе — и так победим ❤️ \n\nИсточники — <a href=\'{link}\'>по ссылке</a>."
+    await message.answer(text2)
+    text3 = input_text
+    await message.answer(text3)
+    text4 = "План составлен! У нас есть тактика! Но как теперь её придерживаться? 🤔 Есть несколько идей на этот счёт!"
+    await message.answer(text4)
+    text5 = "Я буду присылать тебе напоминания о том, что нам пора пообщаться!\n\nПодскажи, в каком городе ты живёшь?\n\nСпрашиваю, чтобы напоминать о себе только в дневные часы."
+    await message.answer(text5)
 
 async def process_city(message, state):
-    # Empty function for city step
-    pass
+    text1 = ""
+    text2 = "Я буду писать два раза в день: перед завтраком и после ужина.   \n\nВ какое время тебе удобно получать от меня утренний план на день?   \n\nИдеально, если это будет перед едой: так ты сможешь делать все мои задания вовремя.   \n\nУкажи время в формате ЧЧ:ММ \nНапример 10:00"
+
+    await message.answer(text1),
+    await message.answer(text2)
 
 async def process_morning_ping(message, state):
-    # Empty function for morning_ping step
-    pass
+    text = "Договорились! А во сколько присылать вечерние итоги?   \b\bУкажи время в формате ЧЧ:ММ \bНапример, 20:00"
+    await message.answer(text)
 
 async def process_evening_ping(message, state):
-    # Empty function for evening_ping step
-    pass
+    text = "Хочу пригласить тебя в наше сообщество <b>Нутри Ai: как есть, чтобы лучше жить!</b>\n\nТебя будут поддерживать и мотивировать нутрициологи, диетологи и другие специалисты.\n\nТолько для участников сообщества — прямые эфиры с экспертами, ответы на вопросы, полезные гайды и чек-листы. \n\nПодпишись на @nutri_community 💖 в Telegram"
+    buttons = [
+        [InlineKeyboardButton(text="Да", url="t.me/nutri_community")],
+        ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    await message.answer(text, reply_markup=keyboard)
 
 async def process_community_invite(message, state):
-    # Empty function for community_invite step
-    pass
+    text = "И снова договорились!\n\nИдея вторая. Я буду учить тебя пользоваться моими фичами. Все они помогают поесть вкусно и при этом не переесть. Постепенно мы будем учиться использовать каждую из функций.\n\nВ карточках рассказываю про каждую из них.\n\nСамостоятельно ты можешь вызвать любую функцию, кликнув на графу «Меню» в левом нижнем углу экрана. Помимо этого основные некоторые функции, например, «Дневник питания», всегда будут у тебя на виду внизу экрана."
+    media_files = [
+        InputMediaPhoto(media=IMG10),
+        InputMediaPhoto(media=IMG11),
+        InputMediaPhoto(media=IMG12),
+        InputMediaPhoto(media=IMG13),
+        InputMediaPhoto(media=IMG14),
+        InputMediaPhoto(media=IMG15),
+        InputMediaPhoto(media=IMG16),
+    ]
+    await message.answer_media_group(media=media_files)
+    buttons = [
+        [InlineKeyboardButton(text="Хочу начать путь к своей цели!", callback_data="lesson_0_done")],
+        ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    await message.answer(text, reply_markup=keyboard)

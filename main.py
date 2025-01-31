@@ -320,26 +320,32 @@ async def main_process_f_breastfeed(callback_query: types.CallbackQuery, state: 
 @router.message(StateFilter(Questionnaire.height))
 async def main_process_geight(message: Message, state: FSMContext):
     await process_height(message, state)
+    await state.set_state(Questionnaire.weight)
 
 @router.message(StateFilter(Questionnaire.weight))
 async def main_process_weight(message: Message, state: FSMContext):
     await process_weight(message, state)
+    await state.set_state(Questionnaire.age)
 
 @router.message(StateFilter(Questionnaire.age))
 async def main_process_age(message: Message, state: FSMContext):
     await process_age(message, state)
+    await state.set_state(Questionnaire.water)
 
 @router.callback_query(StateFilter(Questionnaire.water), lambda c: True)
 async def main_process_water(callback_query: types.CallbackQuery, state: FSMContext):
     await process_water(callback_query.message, state)
+    await state.set_state(Questionnaire.booze)
 
 @router.callback_query(StateFilter(Questionnaire.booze), lambda c: True)
 async def main_process_booze(callback_query: types.CallbackQuery, state: FSMContext):
     await process_booze(callback_query.message, state)
+    await state.set_state(Questionnaire.meals)
 
 @router.callback_query(StateFilter(Questionnaire.meals), lambda c: True)
 async def main_process_meals(callback_query: types.CallbackQuery, state: FSMContext):
     await process_meals(callback_query.message, state)
+    await state.set_state(Questionnaire.meals_extra)
 
 @router.message(StateFilter(Questionnaire.meals_extra))
 @router.callback_query(StateFilter(Questionnaire.meals_extra))
@@ -348,6 +354,7 @@ async def main_process_meals_extra(message_or_callback: types.Message | types.Ca
         await process_meals_extra(message_or_callback, state)
     elif isinstance(message_or_callback, types.CallbackQuery):
         await process_meals_extra(message_or_callback.message, state)
+    await state.set_state(Questionnaire.allergies)
 
 @router.message(StateFilter(Questionnaire.allergies))
 @router.callback_query(StateFilter(Questionnaire.allergies))
@@ -356,38 +363,59 @@ async def main_process_allergies(message_or_callback: types.Message | types.Call
         await process_allergies(message_or_callback, state)
     elif isinstance(message_or_callback, types.CallbackQuery):
         await process_allergies(message_or_callback.message, state)
+    await state.set_state(Questionnaire.part3)
 
 @router.callback_query(StateFilter(Questionnaire.part3), lambda c: True)
 async def main_process_part3(callback_query: types.CallbackQuery, state: FSMContext):
     await process_part3(callback_query.message, state)
+    await state.set_state(Questionnaire.jogging)
 
 @router.message(StateFilter(Questionnaire.jogging))
 async def main_process_jogging(message: Message, state: FSMContext):
     await process_jogging(message, state)
+    await state.set_state(Questionnaire.lifting)
 
 @router.message(StateFilter(Questionnaire.lifting))
 async def main_process_lifting(message: Message, state: FSMContext):
     await process_lifting(message, state)
+    await state.set_state(Questionnaire.stress)
 
 @router.callback_query(StateFilter(Questionnaire.stress), lambda c: True)
 async def main_process_stress(callback_query: types.CallbackQuery, state: FSMContext):
     await process_stress(callback_query.message, state)
+    await state.set_state(Questionnaire.sleep)
 
 @router.callback_query(StateFilter(Questionnaire.sleep), lambda c: True)
 async def main_process_sleep(callback_query: types.CallbackQuery, state: FSMContext):
     await process_sleep(callback_query.message, state)
+    await state.set_state(Questionnaire.goal)
 
 @router.callback_query(StateFilter(Questionnaire.goal), lambda c: True)
 async def main_process_goal(callback_query: types.CallbackQuery, state: FSMContext):
-    await process_goal(callback_query.message, state)
+    goal1 = callback_query.data
+    state.update_data(goal=goal1)
+    await calculate(state)
+
+    if goal in ["+", "-"]:
+        await process_goal(callback_query.message, state, goal)
+    elif goal == "=":
+        await process_w_loss_amount(callback_query.message, state, goal)
+        input_text = await gen_text(state)
+        await give_plan(callback_query.message, state, input_text)
 
 @router.callback_query(StateFilter(Questionnaire.w_loss), lambda c: True)
 async def main_process_w_loss(callback_query: types.CallbackQuery, state: FSMContext):
-    await process_w_loss(callback_query.message, state)
+    user_data = await state.get_data()
+    goal = user_data["goal"]
+    await process_w_loss(callback_query.message, state, goal)
 
 @router.message(StateFilter(Questionnaire.w_loss_amount))
 async def main_process_w_loss_amount(message: Message, state: FSMContext):
-    await process_w_loss_amount(message, state)
+    user_data = await state.get_data()
+    goal = user_data["goal"]
+    await process_w_loss_amount(message, state, goal)
+    input_text = await gen_text(state)
+    await give_plan(message, state, input_text)
 
 @router.message(StateFilter(Questionnaire.city))
 async def main_process_city(message: Message, state: FSMContext):
