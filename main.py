@@ -473,8 +473,8 @@ async def main_process_evening_ping(message: Message, state: FSMContext):
     await state.set_state(Questionnaire.community_invite)
 
 @router.callback_query(StateFilter(Questionnaire.community_invite), lambda c: True)
-async def main_process_community_invite(message: Message, state: FSMContext):
-    await process_community_invite(message, state)
+async def main_process_community_invite(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_community_invite(callback_query.message, state)
     await state.clear()
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
