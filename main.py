@@ -1,4 +1,5 @@
 import asyncio
+import re
 import aiogram
 import random
 import os
@@ -271,10 +272,14 @@ async def main_process_step_7(callback_query: types.CallbackQuery, state: FSMCon
 
 ################## LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 ##################
 
+################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
+
+################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
+
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
 @router.message(Command('questionaire'))
-async def main_rerty_mail(message: Message, state: FSMContext):
+async def main_questionaire_mail(message: Message, state: FSMContext):
     await state.set_state(Questionnaire.prefirst)
     await message.answer("напиши ченить")
 
@@ -295,8 +300,13 @@ async def main_process_first(callback_query: types.CallbackQuery, state: FSMCont
 
 @router.message(StateFilter(Questionnaire.mail))
 async def main_process_mail(message: Message, state: FSMContext):
-    await process_mail(message, state)
-    await state.set_state(Questionnaire.name)
+    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if re.match(pattern, message.text):
+        await process_mail(message, state)
+        await state.set_state(Questionnaire.name)
+    else:
+        await message.answer("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно")
+    
 
 @router.message(StateFilter(Questionnaire.name))
 async def main_process_name(message: Message, state: FSMContext):
@@ -308,7 +318,6 @@ async def main_process_name(message: Message, state: FSMContext):
 async def main_process_gender(callback_query: types.CallbackQuery, state: FSMContext):
     gender = callback_query.data
     await state.update_data(gender=gender)
-    print(gender)
     if gender == "female":
         await process_gender(callback_query.message, state)
         await state.set_state(Questionnaire.f_preg)

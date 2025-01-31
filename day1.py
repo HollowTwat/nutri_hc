@@ -107,7 +107,6 @@ async def process_step_4(callback_query, state):
     )
     await callback_query.answer()
 
-
 async def process_step_5(callback_query, state):
     await state.set_state(LessonStates.step_6)
     media_files = [
@@ -152,8 +151,7 @@ async def process_step_6(callback_query, state):
 async def process_step_7(callback_query, state):
     await state.clear()
     await callback_query.message.answer("Начнём осваивать эти принципы уже завтра!\nБудем разбираться, как почувствовать голод и как не переедать.")
-    await callback_query.message.answer(
-        "А на сегодня информации достаточно. Осталось задание — небольшое и приятное — поболтать с Нутри!\n\nХотя день был насыщенным, у тебя наверняка остались ко мне вопросы. Нажми кнопку <b>«Задать вопрос»</b> спроси всё, что хочешь.\n\nНапример: <i>«Сколько раз в день нужно есть?»</i> или <i>«Нужно ли планировать приёмы пищи?»</i>\n\nЭто можно сделать с помощью текста или голосового сообщения.",
+    await callback_query.message.answer("А на сегодня информации достаточно. Осталось задание — небольшое и приятное — поболтать с Нутри!\n\nХотя день был насыщенным, у тебя наверняка остались ко мне вопросы. Нажми кнопку <b>«Задать вопрос»</b> спроси всё, что хочешь.\n\nНапример: <i>«Сколько раз в день нужно есть?»</i> или <i>«Нужно ли планировать приёмы пищи?»</i>\n\nЭто можно сделать с помощью текста или голосового сообщения.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="Задать вопрос", callback_data="menu_nutri_yapp")]
         ])
