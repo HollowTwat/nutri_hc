@@ -305,7 +305,7 @@ async def main_process_gender(callback_query: types.CallbackQuery, state: FSMCon
         await state.set_state(Questionnaire.f_preg)
     elif gender == "male":
         await state.update_data(pregnancy=False)
-        await state.update_data(breasfeeding=False)
+        await state.update_data(breastfeeding=False)
         await process_f_breastfeed(callback_query.message, state)
         await state.set_state(Questionnaire.height)
     else: 
@@ -421,16 +421,19 @@ async def main_process_goal(callback_query: types.CallbackQuery, state: FSMConte
 
     if goal in ["+", "-"]:
         await process_goal(callback_query.message, state, goal)
+        await state.set_state(Questionnaire.w_loss)
     elif goal == "=":
         await process_w_loss_amount(callback_query.message, state, goal)
         input_text = await gen_text(state)
         await give_plan(callback_query.message, state, input_text)
+        await state.set_state(Questionnaire.city)
 
 @router.callback_query(StateFilter(Questionnaire.w_loss), lambda c: True)
 async def main_process_w_loss(callback_query: types.CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     goal = user_data["goal"]
     await process_w_loss(callback_query.message, state, goal)
+    await state.set_state(Questionnaire.w_loss_amount)
 
 @router.message(StateFilter(Questionnaire.w_loss_amount))
 async def main_process_w_loss_amount(message: Message, state: FSMContext):
@@ -449,6 +452,7 @@ async def main_process_w_loss_amount(message: Message, state: FSMContext):
             elif goal == "-": goal_txt = "сбросить вес"
             text1 = f"Чтобы помочь тебе в достижении твоей цели {goal_txt}, я рассчитала, сколько калорий тебе нужно есть в день. Я использую формулу Mifflin-St Jeor, так как она считается одной из самых точных.\n\n\nТвои результаты следующие:\nБазовый уровень метаболизма (BMR): примерно <b>{bmr}</b> ккал/день.\nОбщая суточная потребность в энергии (TDEE) при умеренной активности: примерно <b>{tdee}</b> ккал/день."
             await message.answer(text1)
+    await state.set_state(Questionnaire.city)
     
     
 
