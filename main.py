@@ -220,6 +220,7 @@ async def main_process_menu_settings_sub(callback_query: CallbackQuery, state: F
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
 
+@router.callback_query(lambda c: c.data == 'lesson_0_done')
 @router.message(Command('lesson_1'))
 async def start_lesson(message: types.Message, state: FSMContext):
     await state.set_state(LessonStates.step_1)

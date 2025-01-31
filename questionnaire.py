@@ -400,7 +400,7 @@ async def give_plan(message, state, input_text):
     await message.answer(text5)
 
 async def process_city(message, state):
-    text1 = ""
+    text1 = "ответ гпт про город"
     text2 = "Я буду писать два раза в день: перед завтраком и после ужина.   \n\nВ какое время тебе удобно получать от меня утренний план на день?   \n\nИдеально, если это будет перед едой: так ты сможешь делать все мои задания вовремя.   \n\nУкажи время в формате ЧЧ:ММ \nНапример 10:00"
 
     await message.answer(text1),
@@ -435,3 +435,4 @@ async def process_community_invite(message, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer(text, reply_markup=keyboard)
+    await state.clear()
