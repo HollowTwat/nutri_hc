@@ -181,8 +181,8 @@ async def process_mail(message, state):
         await state.clear()
         text = "К сожалению, я не нашла твою почту. Напиши пожалуйста в тех поддержку  @nutri_care"
         buttons = [
-        [InlineKeyboardButton(text="Поддержка", callback_data="retry_mail")],
-        [InlineKeyboardButton(text="Попробовать еще раз", url="t.me/nutri_care")],
+        [InlineKeyboardButton(text="Попробовать еще раз", callback_data="retry_mail")],
+        [InlineKeyboardButton(text="Поддержка", url="t.me/nutri_care")],
         ]
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
         await message.answer(text, reply_markup=keyboard)
