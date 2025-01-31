@@ -99,7 +99,7 @@ async def calculate(state):
     await state.update_data(tdee=tdee)
 
     height_m = height/100
-    height_m_sq = round(height_m^2)
+    height_m_sq = round(height_m*height_m)
     bmi = round(weight/height_m_sq)
     ideal_weight_low = round(height_m_sq*18.5)
     ideal_weight_high = round(height_m_sq*25)
