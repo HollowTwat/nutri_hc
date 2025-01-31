@@ -435,4 +435,3 @@ async def process_community_invite(message, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer(text, reply_markup=keyboard)
-    await state.clear()

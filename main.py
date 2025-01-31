@@ -460,18 +460,22 @@ async def main_process_w_loss_amount(message: Message, state: FSMContext):
 @router.message(StateFilter(Questionnaire.city))
 async def main_process_city(message: Message, state: FSMContext):
     await process_city(message, state)
+    await state.set_state(Questionnaire.morning_ping)
 
 @router.message(StateFilter(Questionnaire.morning_ping))
 async def main_process_morning_ping(message: Message, state: FSMContext):
     await process_morning_ping(message, state)
+    await state.set_state(Questionnaire.evening_ping)
 
 @router.message(StateFilter(Questionnaire.evening_ping))
 async def main_process_evening_ping(message: Message, state: FSMContext):
     await process_evening_ping(message, state)
+    await state.set_state(Questionnaire.community_invite)
 
 @router.message(StateFilter(Questionnaire.community_invite))
 async def main_process_community_invite(message: Message, state: FSMContext):
     await process_community_invite(message, state)
+    await state.clear()
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
