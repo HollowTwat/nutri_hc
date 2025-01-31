@@ -406,15 +406,23 @@ async def main_process_part3(callback_query: types.CallbackQuery, state: FSMCont
 
 @router.message(StateFilter(Questionnaire.jogging))
 async def main_process_jogging(message: Message, state: FSMContext):
-    await state.update_data(jogging=message.text)
-    await process_jogging(message, state)
-    await state.set_state(Questionnaire.lifting)
+    pattern = r'^[0-9.,]+$'
+    if re.match(pattern, message.text):
+        await state.update_data(jogging=message.text)
+        await process_jogging(message, state)
+        await state.set_state(Questionnaire.lifting)
+    else: 
+        await message.answer("Попробуй ввести число ещё раз, с первого раза я не поняла.")
 
 @router.message(StateFilter(Questionnaire.lifting))
 async def main_process_lifting(message: Message, state: FSMContext):
-    await state.update_data(lifting=message.text)
-    await process_lifting(message, state)
-    await state.set_state(Questionnaire.stress)
+    pattern = r'^[0-9.,]+$'
+    if re.match(pattern, message.text):
+        await state.update_data(lifting=message.text)
+        await process_lifting(message, state)
+        await state.set_state(Questionnaire.stress)
+    else: 
+        await message.answer("Попробуй ввести число ещё раз, с первого раза я не поняла.")
 
 @router.callback_query(StateFilter(Questionnaire.stress), lambda c: True)
 async def main_process_stress(callback_query: types.CallbackQuery, state: FSMContext):
@@ -455,6 +463,9 @@ async def main_process_w_loss(callback_query: types.CallbackQuery, state: FSMCon
 
 @router.message(StateFilter(Questionnaire.w_loss_amount))
 async def main_process_w_loss_amount(message: Message, state: FSMContext):
+    pattern = r'^\d+$'
+    if not re.match(pattern, message.text):
+        pass
     user_data = await state.get_data()
     goal = user_data["goal"]
     tdee = user_data['tdee']
@@ -481,13 +492,21 @@ async def main_process_city(message: Message, state: FSMContext):
 
 @router.message(StateFilter(Questionnaire.morning_ping))
 async def main_process_morning_ping(message: Message, state: FSMContext):
-    await process_morning_ping(message, state)
-    await state.set_state(Questionnaire.evening_ping)
+    pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
+    if re.match(pattern, message.text):
+        await process_morning_ping(message, state)
+        await state.set_state(Questionnaire.evening_ping)
+    else:
+        await message.answer("Не поняла, попробуй, пожалуйста, ещё раз")
 
 @router.message(StateFilter(Questionnaire.evening_ping))
 async def main_process_evening_ping(message: Message, state: FSMContext):
-    await process_evening_ping(message, state)
-    await state.set_state(Questionnaire.community_invite)
+    pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
+    if re.match(pattern, message.text):
+        await process_evening_ping(message, state)
+        await state.set_state(Questionnaire.community_invite)
+    else:
+        await message.answer("Не поняла, попробуй, пожалуйста, ещё раз")
 
 @router.callback_query(StateFilter(Questionnaire.community_invite), lambda c: True)
 async def main_process_community_invite(callback_query: types.CallbackQuery, state: FSMContext):

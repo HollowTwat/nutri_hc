@@ -173,6 +173,7 @@ async def process_first(message, state):
 
 async def process_mail(message, state):
     answer = await check_mail(message.text)
+    print(answer)
     if answer == True:
         text = "<b>Как тебя зовут?</b>"
         await message.answer(text)

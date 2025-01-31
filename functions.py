@@ -20,8 +20,13 @@ TELETOKEN_2 = os.getenv('TELEBOT')
 bug_channel = "-1002345895875"
 
 
-async def check_mail(mail):
-    return True
+async def check_mail(id, mail):
+    link = f"https://nutridb-production.up.railway.app/api/Subscription/ActivateUser?userTgId={id}&userEmail={mail}"
+    headers = {"accept": "text/plain"}
+    response = requests.post(
+        link, headers=headers)
+    return response
+
 
 async def remove_reference(input_string):
     # Use regular expression to match text between 【 and 】, including the symbols
