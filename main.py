@@ -222,14 +222,22 @@ async def main_process_menu_settings_sub(callback_query: CallbackQuery, state: F
 
 @router.callback_query(lambda c: c.data == 'lesson_0_done')
 @router.message(Command('lesson_1'))
-async def start_lesson(message: types.Message, state: FSMContext):
+async def start_lesson(message_or_callback: types.Message | types.CallbackQuery, state: FSMContext):
     await state.set_state(LessonStates.step_1)
-    await message.answer(
-        "Welcome to the lesson! Press the button to start.",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Start Lesson", callback_data="start")]
-        ])
-    )
+    if isinstance(message_or_callback, types.Message):
+        await message_or_callback.answer(
+            "Welcome to the lesson! Press the button to start.",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="Start Lesson", callback_data="start")]
+            ])
+        )
+    elif isinstance(message_or_callback, types.CallbackQuery):
+        await message_or_callback.message.answer(
+            "Welcome to the lesson! Press the button to start.",
+            reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+                [InlineKeyboardButton(text="Start Lesson", callback_data="start")]
+            ])
+        )
 
 ################## LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 ##################
 
