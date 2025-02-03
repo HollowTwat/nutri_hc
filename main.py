@@ -27,6 +27,7 @@ from functions import *
 from functions2 import *
 from menu_functions import *
 from day1 import *
+from day2 import *
 from questionnaire import *
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -274,6 +275,21 @@ async def main_process_step_7(callback_query: types.CallbackQuery, state: FSMCon
 
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
 
+@router.callback_query(StateFilter(LessonStates.step_1), lambda c: True)
+async def main_process_l2_step_1(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "next":
+       await process_l2_step_1(callback_query, state)
+    elif callback_query.data == "stop":
+       await process_l2_step_1(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates.step_2), lambda c: True)
+async def main_process_l2_step_2(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_l2_step_2(callback_query, state)
+
+################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
+
+################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
+
 @router.callback_query(StateFilter(LessonStates.step_7), lambda c: True)
 async def main_process_step_L2(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "callback1":
@@ -281,7 +297,7 @@ async def main_process_step_L2(callback_query: types.CallbackQuery, state: FSMCo
     elif callback_query.data in ["callback2", "callback2"]:
        pass #await process_step_L2(callback_query, state)
 
-################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
+################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
