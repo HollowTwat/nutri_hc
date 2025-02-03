@@ -273,9 +273,14 @@ async def main_process_step_7(callback_query: types.CallbackQuery, state: FSMCon
 ################## LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 ##################
 
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
-#HUYTAMMOYSLOT#testchage
-#test3
-#test4
+
+@router.callback_query(StateFilter(LessonStates.step_7), lambda c: True)
+async def main_process_step_L2(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "callback1":
+       pass #await process_step_L2(callback_query, state)
+    elif callback_query.data in ["callback2", "callback2"]:
+       pass #await process_step_L2(callback_query, state)
+
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
