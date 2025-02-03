@@ -30,7 +30,7 @@ from functions2 import *
 async def menu_handler(message, state) -> None:
     await state.update_data(full_sequence=False)
     buttons = [
-        [InlineKeyboardButton(text="📚 Курс:", callback_data="menu_course")],
+        [InlineKeyboardButton(text="📚 gурс:", callback_data="menu_course")],
         [InlineKeyboardButton(text="🍽 Дневник питания:", callback_data="menu_dnevnik")],
         [InlineKeyboardButton(text="💬  Нутри:", callback_data="menu_nutri")],
         [InlineKeyboardButton(text="⚙️Дополнительное:", callback_data="menu_settings")],
