@@ -73,6 +73,12 @@ class LessonStates2(StatesGroup):
     step_5 = State()
     step_6 = State()
     step_7 = State()
+    step_11 = State()
+    step_12 = State()
+    step_13 = State()
+    step_14 = State()
+    step_15 = State()
+    step_16 = State()
 
 class Questionnaire(StatesGroup):
     prefirst = State()
@@ -301,19 +307,22 @@ async def lessons_manage_command(message: types.Message, state: FSMContext):
     await state.clear()
     buttons = [
         [InlineKeyboardButton(text='Урок1', callback_data='d1')],
-        [InlineKeyboardButton(text='Урок2', callback_data='d2')]
+        [InlineKeyboardButton(text='Урок2', callback_data='d2'), InlineKeyboardButton(text='Урок2_2', callback_data='d2_2')]
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer("pick a lesson", reply_markup=keyboard)
 
 
-@router.callback_query(lambda c: c.data in ["d1", "d2"])
+@router.callback_query(lambda c: c.data in ["d1", "d2", "d2_2"])
 async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "d1":
         await state.set_state(LessonStates.step_1)
     elif callback_query.data == "d2":
         await state.set_state(LessonStates2.step_1)
         await process_l2_step_1(callback_query, state)
+    elif callback_query.data == "d2_2":
+        await state.set_state(LessonStates2.step_11)
+        await process_l2_step_11(callback_query, state)
 ##################### GETTING INTO THE LESSONS
 
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
@@ -324,7 +333,7 @@ async def main_process_l2_step_1(callback_query: types.CallbackQuery, state: FSM
        await process_l2_step_2(callback_query, state)
     elif callback_query.data == "stop":
        await process_l2_step_2_2(callback_query, state)
-       
+
 @router.message(StateFilter(LessonStates2.step_3))
 async def main_process_l2_step_3(message: Message, state: FSMContext):
     await dnevnik_layover(message,state,xyz)
@@ -341,6 +350,14 @@ async def main_process_l2_step_4(callback_query: types.CallbackQuery, state: FSM
 async def main_process_l2_step_5(callback_query: types.CallbackQuery, state: FSMContext):
     await main_menu_cb_handler(callback_query, state)
 
+@router.callback_query(StateFilter(LessonStates2.step_11), lambda c: True)
+async def main_process_l2_step_12(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "next":
+       await process_l2_step_12(callback_query, state)
+    elif callback_query.data == "stop":
+       await process_l2_step_13(callback_query, state)
+
+
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
 
 ################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
@@ -351,6 +368,28 @@ async def main_process_l2_step_5(callback_query: types.CallbackQuery, state: FSM
 #        await process_step_L2(callback_query, state)
 #     elif callback_query.data in ["callback2", "callback2"]:
 #        await process_step_L2(callback_query, state)
+
+
+# @router.callback_query(lambda c: c.data == 'd2_2')
+# @router.message(Command('lesson_1'))
+# async def start_lesson(message_or_callback: types.Message | types.CallbackQuery, state: FSMContext):
+#     await state.set_state(LessonStates.step_1)
+#     if isinstance(message_or_callback, types.Message):
+#         await message_or_callback.answer(
+#             "Welcome to the lesson! Press the button to start.",
+#             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+#                 [InlineKeyboardButton(text="Start Lesson", callback_data="start")]
+#             ])
+#         )
+#     elif isinstance(message_or_callback, types.CallbackQuery):
+#         await message_or_callback.message.answer(
+#             "Welcome to the lesson! Press the button to start.",
+#             reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+#                 [InlineKeyboardButton(text="Start Lesson", callback_data="start")]
+#             ])
+#         )
+
+
 
 ################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
 

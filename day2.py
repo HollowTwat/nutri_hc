@@ -44,12 +44,15 @@ IMG10 = "AgACAgIAAxkBAAOJZ6JF25nDe-gpt_IDLtxxfaHDhggAAn3tMRundBFJ_tZtghfiAzgBAAM
 class LessonStates2(StatesGroup):
     step_1 = State()
     step_2 = State()
-    step_2_2 = State()
     step_3 = State()
     step_4 = State()
     step_5 = State()
-    step_6 = State()
-    step_7 = State()
+    step_11 = State()
+    step_12 = State()
+    step_13 = State()
+    step_14 = State()
+    step_15 = State()
+    step_16 = State()
 
 async def process_l2_step_1(callback_query, state):
     await state.set_state(LessonStates2.step_2)
@@ -143,3 +146,9 @@ async def process_l2_step_4(callback_query, state):
     await callback_query.answer()
 
     ############ EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING #############
+
+async def process_l2_step_11(callback_query, state):
+    await callback_query.message.answer(
+        "Завершился второй день с Нутри, и ты по-прежнему здесь! 🎉 Кажется, у тебя серьёзные намерения! \n\nКак тебе наше общение? Удалось ли сделать задание дня и хотя бы разочек определить уровень насыщения?",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Да!", callback_data="next"),InlineKeyboardButton(text="Нет, давай сделаем сейчас", callback_data="stop")]]))
+    await callback_query.answer()
