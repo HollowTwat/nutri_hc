@@ -148,7 +148,6 @@ async def process_l2_step_4(callback_query, state):
     ############ EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING #############
 
 async def process_l2_step_11(callback_query, state):
-    await state.set_state(LessonStates2.step_12)
     await callback_query.message.answer(
         "Завершился второй день с Нутри, и ты по-прежнему здесь! 🎉 Кажется, у тебя серьёзные намерения! \n\nКак тебе наше общение? Удалось ли сделать задание дня и хотя бы разочек определить уровень насыщения?",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Да!", callback_data="next"),InlineKeyboardButton(text="Нет, давай сделаем сейчас", callback_data="stop")]]))
@@ -159,12 +158,12 @@ async def process_l2_step_12(callback_query, state):
     await callback_query.answer()
 
 async def process_l2_step_13(callback_query, state):
-    await state.set_state(LessonStates2.step_14)
+    await state.set_state(LessonStates2.step_12)
     await callback_query.message.answer("Занеси последний приём пищи в дневник питания с помощью текста или голосового сообщения. \n\nОпиши состав блюда и примерный вес ⚖️ \n\n<n>Например: Чебурек с мясом, примерно 300 граммов.</n>")
     await callback_query.answer()
 
 async def xyz2(message, state):
-    await state.set_state(LessonStates2.step_14)
+    await state.set_state(LessonStates2.step_13)
     await message.answer(
         "Записала! А теперь прислушайся к себе и отметь, на сколько баллов ты чувствуешь насыщение.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
