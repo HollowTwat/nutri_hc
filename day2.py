@@ -96,10 +96,9 @@ async def process_l2_step_2_2(callback_query, state):
     )
 
 
-
-async def dnevnik(message,state):
-    await state.set_state(LessonStates2.step_4)
-    await message.message.answer(
+async def xyz(message,state):
+    await state.set_state(LessonStates2.step_5)
+    await message.answer(
         "Записала! А теперь прислушайся к себе и отметь, на сколько баллов ты чувствуешь насыщение.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="4–5: по-прежнему есть лёгкий голод", callback_data="next"), 
@@ -111,20 +110,20 @@ async def dnevnik(message,state):
     await message.answer()
 
 async def process_l2_step_4(callback_query, state):
-    await state.set_state(LessonStates2.step_5)
+    await state.set_state(LessonStates2.step_6)
     await callback_query.message.answer(
         "Отличная работа, горжусь тобой! Продолжай есть медленно и тщательно пережёвывать в следующие приёмы пищи, чтобы не случилось перееданий!"
     )
 
 async def process_l2_step_4_2(callback_query, state):
-    await state.set_state(LessonStates2.step_5)
+    await state.set_state(LessonStates2.step_6)
     link = "https://www.medicalnewstoday.com/articles/14085"
     text = f"Так бывает! \nВот что советую прямо сейчас: \n\n1.<b>Не кори себя</b> Ты только в начале пути, и мы только начали учиться. \n\n2.<b>Не ложись спать Поговорка «после плотного обеда по закону Архимеда полагается поспать» вводит в заблуждение.</b> \n\nДа, это хочется сделать после переедания. Но так ты увеличиваешь риск того, что что кислота из желудка <a href=\'{link}\'>начнёт забрасываться</a> в пищевод. Это может вызвать изжогу, станет только хуже. \n\n3.<b>Лучше погуляй</b> Даже 15 минут помогут почувствовать себя лучше. \n\n4/<b>В следующий раз ешь медленнее</b> Думай о том, правда ли хочешь съесть следующий кусочек. Доедать не обязательно."
     await callback_query.message.answer(text, disable_web_page_preview=True)
     await callback_query.answer()
 
 async def process_l2_step_5(callback_query, state):
-    await state.set_state(LessonStates2.step_6)
+    await state.set_state(LessonStates2.step_7)
     await callback_query.message.answer(
         "Не забудь занести в дневник питания следующий приём пищи! \n\nЕсли хочешь заранее проверить калорийность блюда, можешь прислать его фото или описание в чат, и я дам совет."
     )
