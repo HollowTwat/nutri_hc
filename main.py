@@ -357,6 +357,17 @@ async def main_process_l2_step_12(callback_query: types.CallbackQuery, state: FS
     elif callback_query.data == "stop":
        await process_l2_step_13(callback_query, state)
 
+@router.message(StateFilter(LessonStates2.step_13))
+async def main_process_l2_step_13(message: Message, state: FSMContext):
+    await dnevnik_layover(message,state,xyz2)
+
+@router.callback_query(StateFilter(LessonStates2.step_14), lambda c: True)
+async def main_process_l2_step_14(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "next":
+       await process_l2_step_14_1(callback_query, state)
+    elif callback_query.data == "stop":
+       await process_l2_step_14_2(callback_query, state)
+    await process_l2_step_14(callback_query, state)
 
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
 
