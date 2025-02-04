@@ -264,9 +264,9 @@ async def audio_file(file_id: str) -> str:
 
 @router.message(StateFilter(UserState.yapp_new, UserState.yapp))
 async def yapp_functional(message: Message, state: FSMContext):
-    if state.get_state() == UserState.yapp_new:
+    if await state.get_state() == UserState.yapp_new:
         new_thread = True
-    elif state.get_state() == UserState.yapp:
+    elif await state.get_state() == UserState.yapp:
         new_thread = False
     id = str(message.from_user.id)
     buttons = [[InlineKeyboardButton(text='Меню', callback_data='menu')]]
