@@ -30,8 +30,8 @@ from day1 import *
 # from day2 import *
 from questionnaire import *
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-OPENAI_KEY = os.getenv("OPENAI_KEY")
+BOT_TOKEN = os.getenv("BOT_TOKEN")                    ##ACTUALISED
+OPENAI_KEY = os.getenv("OPENAI_KEY")                  ##ACTUALISED
 
 #ASSISTANTS FFS HOW MANY CAN THERE BE MAAAAAN
 VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
@@ -46,7 +46,7 @@ RATE_TWONE_ASS_ID = os.getenv('RATE_TWONE_ASS_ID')
 ETIK_ASS_ID = os.getenv('ETIK_ASS_ID')
 RECIPE_ASS_ID = os.getenv('RECIPE_ASS_ID')
 RATE_TRIAL_ASS_ID = os.getenv('RATE_TRIAL_ASS_ID')
-VISION_ASS_ID_2 = os.getenv("VISION_ASS_ID_2")
+VISION_ASS_ID_2 = os.getenv("VISION_ASS_ID_2")        ##ACTUALISED
 
 TOKEN = BOT_TOKEN
 
@@ -314,7 +314,7 @@ async def dnevnik_functional(message: Message, state: FSMContext):
         if Iserror:
             await message.answer(f"офибка!!! \n{pretty}")
         else: 
-            state.update_data(latest_food = food)
+            await state.update_data(latest_food = food)
             await message.answer(pretty)
             await message.answer(confirm_text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             await state.set_state(UserState.saving_confirmation)
