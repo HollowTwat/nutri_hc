@@ -259,16 +259,17 @@ async def get_url(file_id: str) -> str:
 
 @router.message(StateFilter(UserState.yapp))
 async def yapp_functional(message: Message, state: FSMContext):
+    id = str(message.from_user.id)
     buttons = [[InlineKeyboardButton(text='Меню', callback_data='menu')]]
     errormessage = "Гпт вернул ошибку"
     if message.text:
-        flag, response = yapp(message.from_user.id, message.text, False)
+        flag, response = yapp(id, message.text, False)
         if flag:
             await message.answer(f"{response}\n\nТы можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         else: message.answer(errormessage)
     elif message.voice:
         transcription = await audio_file(message.voice.file_id)
-        flag, response = yapp(message.from_user.id, transcription, False)
+        flag, response = yapp(id, transcription, False)
         if flag:
             await message.answer(f"response\n\n Ты можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         else: message.answer(errormessage)
@@ -281,6 +282,7 @@ async def yapp_functional(message: Message, state: FSMContext):
 
 @router.message(StateFilter(UserState.recognition))
 async def dnevnik_functional(message: Message, state: FSMContext):
+    id = str(message.from_user.id)
     confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
     buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
                [InlineKeyboardButton(text="Все хорошо", callback_data="save")]]
@@ -297,7 +299,7 @@ async def dnevnik_functional(message: Message, state: FSMContext):
             await state.set_state(UserState.saving_confirmation)
     elif message.voice:
         transcription = await audio_file(message.voice.file_id)
-        vision = await generate_response(transcription, message.from_user.id, VISION_ASS_ID_2)
+        vision = await generate_response(transcription, id, VISION_ASS_ID_2)
         Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
         if Iserror:
             await message.answer(f"офибка!!! \n{pretty}")
@@ -307,7 +309,7 @@ async def dnevnik_functional(message: Message, state: FSMContext):
             await message.answer(confirm_text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             await state.set_state(UserState.saving_confirmation)
     elif message.text:
-        vision = await generate_response(message.text, message.from_user.id, VISION_ASS_ID_2)
+        vision = await generate_response(message.text, id, VISION_ASS_ID_2)
         Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
         if Iserror:
             await message.answer(f"офибка!!! \n{pretty}")
