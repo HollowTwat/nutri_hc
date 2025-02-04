@@ -322,7 +322,7 @@ async def main_process_l2_step_1(callback_query: types.CallbackQuery, state: FSM
 async def main_process_l2_step_2(callback_query: types.CallbackQuery, state: FSMContext):
     await process_l2_step_2(callback_query, state)
 
-@router.meassage(StateFilter(LessonStates2.step_3))
+@router.message(StateFilter(LessonStates2.step_3))
 async def main_process_l2_step_3(message: Message, state: FSMContext):
     await dnevnik_layover(message,state,xyz)
 
