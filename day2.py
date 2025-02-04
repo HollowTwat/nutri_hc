@@ -158,12 +158,11 @@ async def process_l2_step_12(callback_query, state):
     await callback_query.answer()
 
 async def process_l2_step_13(callback_query, state):
-    await state.set_state(LessonStates2.step_12)
     await callback_query.message.answer("Занеси последний приём пищи в дневник питания с помощью текста или голосового сообщения. \n\nОпиши состав блюда и примерный вес ⚖️ \n\n<n>Например: Чебурек с мясом, примерно 300 граммов.</n>")
     await callback_query.answer()
 
 async def xyz2(message, state):
-    await state.set_state(LessonStates2.step_13)
+    await state.set_state(LessonStates2.step_12)
     await message.answer(
         "Записала! А теперь прислушайся к себе и отметь, на сколько баллов ты чувствуешь насыщение.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
@@ -173,18 +172,15 @@ async def xyz2(message, state):
              InlineKeyboardButton(text="10: съел (а) так много, что мне плохо", callback_data="stop")]
         ])
     )
-    await message.answer()
 
 async def process_l2_step_14_1(callback_query, state):
-    await state.set_state(LessonStates2.step_16)
     await callback_query.message.answer(
         "Отличная работа, горжусь тобой! Продолжай есть медленно и тщательно пережёвывать в следующие приёмы пищи, чтобы не случилось перееданий!"
     )
 
 async def process_l2_step_14_2(callback_query, state):
-    await state.set_state(LessonStates2.step_16)
     link = "https://www.medicalnewstoday.com/articles/14085"
-    text = f"Так бывает! \nВот что советую прямо сейчас: \n\n1.<b>Не кори себя</b> Ты только в начале пути, и мы только начали учиться. \n\n2.<b>Не ложись спать Поговорка «после плотного обеда по закону Архимеда полагается поспать» вводит в заблуждение.</b> \n\nДа, это хочется сделать после переедания. Но так ты увеличиваешь риск того, что что кислота из желудка <a href=\'{link}\'>начнёт забрасываться</a> в пищевод. Это может вызвать изжогу, станет только хуже. \n\n3.<b>Лучше погуляй</b> Даже 15 минут помогут почувствовать себя лучше. \n\n4/<b>В следующий раз ешь медленнее</b> Думай о том, правда ли хочешь съесть следующий кусочек. Доедать не обязательно."
+    text = f"Так бывает! \nВот что советую прямо сейчас: \n\n1.<b>Не кори себя</b> \nТы только в начале пути, и мы только начали учиться. \n\n2.<b>Не ложись спать сразу после еды</b>  \n\nДа, это хочется сделать после переедания. Но так ты увеличиваешь риск того, что что кислота из желудка <a href=\'{link}\'>начнёт забрасываться</a> в пищевод. Это может вызвать изжогу, станет только хуже. \n\n3.<b>Лучше погуляй</b> \nДаже 15 минут помогут почувствовать себя лучше. \n\n4.<b>В следующий раз ешь медленнее</b> \nДумай о том, правда ли хочешь съесть следующий кусочек. Доедать не обязательно."
     await callback_query.message.answer(text, disable_web_page_preview=True)
 
 async def process_l2_step_14(callback_query, state):
