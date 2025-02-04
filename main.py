@@ -297,7 +297,10 @@ async def main_process_step_7(callback_query: types.CallbackQuery, state: FSMCon
 @router.message(Command("lessons_manage"))
 async def lessons_manage_command(message: types.Message, state: FSMContext):
     await state.clear()
-    await message.answer("pick a lesson", reply_markup=[[InlineKeyboardButton(text="d1", callback_data="d1")], [InlineKeyboardButton(text="d2", callback_data="d2")]])
+    keyboard=InlineKeyboardMarkup([
+        [InlineKeyboardButton(text="d1", callback_data="d1")], 
+        [InlineKeyboardButton(text="d2", callback_data="d2")]])
+    await message.answer("pick a lesson", reply_markup=keyboard)
 
 
 @router.callback_query(lambda c: c.data in ["d1", "d2"])
