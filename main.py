@@ -255,7 +255,7 @@ async def get_url(file_id: str) -> str:
     return file_url
 
 async def audio_file(file_id: str) -> str:
-    file_url = get_url(file_id)
+    file_url = await get_url(file_id)
     transcription = await transcribe_audio_from_url(file_url)
     return transcription
 
