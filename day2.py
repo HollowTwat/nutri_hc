@@ -47,8 +47,9 @@ class LessonStates2(StatesGroup):
 async def process_l2_step_1(callback_query, state):
     await callback_query.answer("дошли до функции")
     await state.set_state(LessonStates2.step_2)
+    text="Доброе утро! \n\nКажется, распознавать сигналы тела легко:  хочешь есть — поешь, наелся — перестань. Но на деле всё сложнее. \n\nИногда мы пропускаем приёмы пищи и набрасываемся на еду из-за сильного голода. А иногда зачем-то едим, когда совершенно не хочется есть.</i>"
     media_files = [
-        InputMediaPhoto(media=IMG1, caption=f"Доброе утро! \n\nКажется, распознавать сигналы тела легко:  хочешь есть — поешь, наелся — перестань. Но на деле всё сложнее. \n\nИногда мы пропускаем приёмы пищи и набрасываемся на еду из-за сильного голода. А иногда зачем-то едим, когда совершенно не хочется есть.</i>"),
+        InputMediaPhoto(media=IMG1),
         InputMediaPhoto(media=IMG2)
     ]
     await callback_query.message.answer_media_group(media=media_files)
