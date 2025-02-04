@@ -280,8 +280,9 @@ async def yapp_functional(message: Message, state: FSMContext):
     elif message.voice:
         transcription = await audio_file(message.voice.file_id)
         flag, response = await yapp(id, transcription, new_thread)
+        print(f"flag:{flag} response:{response}")
         if flag:
-            await message.answer(f"response\n\n Ты можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            await message.answer(f"{response}\n\n Ты можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             await state.set_state(UserState.yapp)
         else: message.answer(errormessage)
     else:

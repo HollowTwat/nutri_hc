@@ -34,12 +34,14 @@ async def yapp(id, question, new_thread):
         if response != "error":
             isError = False
             final_response = f"Ответ: {response}"
+            if debug == 1:
+                print(f"{isError} {final_response}")
         else:
             isError = True
             final_response = "Ошибка: неверный запрос"
+            if debug == 1:
+                print(f"{isError} {final_response}")
         
-        if debug == 1:
-            print(f"{isError} {final_response}")
         return isError, final_response
 
     except Exception as e:
