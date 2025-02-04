@@ -124,7 +124,9 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 @router.message(Command("menu"))
 async def main_menu_handler(message: Message, state: FSMContext) -> None:
+    await state.clear()
     await menu_handler(message, state)
+
 
 @router.callback_query(lambda c: c.data == 'menu')
 async def main_menu_cb_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
@@ -337,6 +339,10 @@ async def main_process_l2_step_4(callback_query: types.CallbackQuery, state: FSM
        await process_l2_step_4(callback_query, state)
     elif callback_query.data == "stop":
        await process_l2_step_4_2(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates2.step_5), lambda c: True)
+async def main_process_l2_step_5(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_l2_step_5(callback_query, state)
 
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
 
