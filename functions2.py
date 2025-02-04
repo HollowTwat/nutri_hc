@@ -16,7 +16,7 @@ from datetime import datetime, timedelta
 
 from functions import *
 
-debug = 1
+debug = 0
 
 
 async def yapp(id, question, new_thread):
