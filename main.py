@@ -65,6 +65,15 @@ class LessonStates(StatesGroup):
     step_6 = State()
     step_7 = State()
 
+class LessonStates2(StatesGroup):
+    step_1 = State()
+    step_2 = State()
+    step_3 = State()
+    step_4 = State()
+    step_5 = State()
+    step_6 = State()
+    step_7 = State()
+
 class Questionnaire(StatesGroup):
     prefirst = State()
     first = State()
@@ -273,16 +282,32 @@ async def main_process_step_7(callback_query: types.CallbackQuery, state: FSMCon
 
 ################## LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 ##################
 
+##################### GETTING INTO THE LESSONS
+
+@router.message(Command("lessons_manage"))
+async def lessons_manage_command(message: types.Message, state: FSMContext):
+    await state.clear(LessonStates.step_1)
+    await message.answer("pick a lesson", reply_markup=[[InlineKeyboardButton(text="d1", callback_data="d1")], [InlineKeyboardButton(text="d2", callback_data="d2")]])
+
+
+@router.callback_query(lambda c: c.data in ["d1", "d2"])
+async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "d1":
+        await state.set_state(LessonStates.step_1)
+    elif callback_query.data == "d2":
+        await state.set_state(LessonStates2.step_1)
+##################### GETTING INTO THE LESSONS
+
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
 
-@router.callback_query(StateFilter(LessonStates.step_1), lambda c: True)
+@router.callback_query(StateFilter(LessonStates2.step_1), lambda c: True)
 async def main_process_l2_step_1(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "next":
        await process_l2_step_1(callback_query, state)
     elif callback_query.data == "stop":
        await process_l2_step_1(callback_query, state)
 
-@router.callback_query(StateFilter(LessonStates.step_2), lambda c: True)
+@router.callback_query(StateFilter(LessonStates2.step_2), lambda c: True)
 async def main_process_l2_step_2(callback_query: types.CallbackQuery, state: FSMContext):
     await process_l2_step_2(callback_query, state)
 

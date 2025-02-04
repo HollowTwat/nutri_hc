@@ -35,7 +35,7 @@ IMG5 = "AgACAgIAAxkBAAMcZ6EeY6Cpo88iEVUuKp94QnS3IoMAAuj2MRundAlJCB5-3Qoyr9YBAAMC
 
 
 
-class LessonStates(StatesGroup):
+class LessonStates2(StatesGroup):
     step_1 = State()
     step_2 = State()
     step_3 = State()
@@ -45,7 +45,7 @@ class LessonStates(StatesGroup):
     step_7 = State()
 
 async def process_l2_step_1(callback_query, state):
-    await state.set_state(LessonStates.step_2)
+    await state.set_state(LessonStates2.step_2)
     media_files = [
         InputMediaPhoto(media=IMG1, caption="Доброе утро! \n\nКажется, распознавать сигналы тела легко:  хочешь есть — поешь, наелся — перестань. Но на деле всё сложнее. \n\nИногда мы пропускаем приёмы пищи и набрасываемся на еду из-за сильного голода. А иногда зачем-то едим, когда совершенно не хочется есть.</i>"),
         InputMediaPhoto(media=IMG2)
@@ -60,7 +60,7 @@ async def process_l2_step_1(callback_query, state):
     await callback_query.answer()
 
 async def process_l2_step_2(callback_query, state):
-    await state.set_state(LessonStates.step_3)
+    await state.set_state(LessonStates2.step_3)
     media_files = [
         InputMediaPhoto(media=IMG3),
         InputMediaPhoto(media=IMG4)
