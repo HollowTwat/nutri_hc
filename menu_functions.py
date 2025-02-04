@@ -200,7 +200,7 @@ async def process_menu_dnevnik_instruction(callback_query, state):
 ################## YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU ##################
 
 async def process_menu_nutri_yapp(callback_query, state):
-    await state.set_state(UserState.yapp)
+    await state.set_state(UserState.yapp_new)
     step0txt = "Задай мне любой вопрос в части питания. Текстом или 🎤 аудио\nНапример: <i>Какие перекусы ты мне рекомендуешь исходя из моей цели?</i>"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
