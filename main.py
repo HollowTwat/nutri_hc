@@ -323,7 +323,7 @@ async def main_process_l2_step_1(callback_query: types.CallbackQuery, state: FSM
     if callback_query.data == "next":
        await process_l2_step_2(callback_query, state)
     elif callback_query.data == "stop":
-       await main_menu_cb_handler(callback_query, state)
+       await process_l2_step_2_2(callback_query, state)
 
 @router.callback_query(StateFilter(LessonStates2.step_2), lambda c: True)
 async def main_process_l2_step_2(callback_query: types.CallbackQuery, state: FSMContext):
@@ -343,6 +343,10 @@ async def main_process_l2_step_4(callback_query: types.CallbackQuery, state: FSM
 @router.callback_query(StateFilter(LessonStates2.step_5), lambda c: True)
 async def main_process_l2_step_5(callback_query: types.CallbackQuery, state: FSMContext):
     await process_l2_step_5(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates2.step_6), lambda c: True)
+async def main_process_l2_step_5(callback_query: types.CallbackQuery, state: FSMContext):
+    await main_menu_cb_handler(callback_query, state)
 
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
 
