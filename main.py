@@ -27,6 +27,7 @@ from functions import *
 from functions2 import *
 from menu_functions import *
 from day1 import *
+# from day2 import *
 from questionnaire import *
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -56,6 +57,15 @@ class UserState(StatesGroup):
     menu = State()
 
 class LessonStates(StatesGroup):
+    step_1 = State()
+    step_2 = State()
+    step_3 = State()
+    step_4 = State()
+    step_5 = State()
+    step_6 = State()
+    step_7 = State()
+
+class LessonStates2(StatesGroup):
     step_1 = State()
     step_2 = State()
     step_3 = State()
@@ -169,10 +179,25 @@ async def main_process_menu_course_info(callback_query: CallbackQuery, state: FS
 
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
+async def dnevnik_layover(message, state, nextfunc):
+    prev_state = await state.get_state()
+    print(f"{prev_state}")
+    step0txt = "in dev распознание еды"
+    await message.answer(step0txt, reply_markup=None)
+
+
+    await state.set_state(prev_state)
+    await nextfunc
+
+
+
 ################## DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU ##################
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_input')
 async def main_process_menu_dnevnik_input(callback_query: CallbackQuery, state: FSMContext):
+
+    await dnevnik_layover(callback_query.message, state, process_menu_dnevnik_redact)
+
     await process_menu_dnevnik_input(callback_query, state)
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_redact')
@@ -272,9 +297,48 @@ async def main_process_step_7(callback_query: types.CallbackQuery, state: FSMCon
 
 ################## LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 LESSON_1 ##################
 
+##################### GETTING INTO THE LESSONS
+
+@router.message(Command("lessons_manage"))
+async def lessons_manage_command(message: types.Message, state: FSMContext):
+    await message.photo(media="", caption= "dsdsdsds")
+    await state.clear(LessonStates.step_1)
+    await message.answer("pick a lesson", reply_markup=[[InlineKeyboardButton(text="d1", callback_data="d1")], [InlineKeyboardButton(text="d2", callback_data="d2")]])
+
+
+@router.callback_query(lambda c: c.data in ["d1", "d2"])
+async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "d1":
+        await state.set_state(LessonStates.step_1)
+    elif callback_query.data == "d2":
+        await state.set_state(LessonStates2.step_1)
+##################### GETTING INTO THE LESSONS
+
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
-#HUYTAMMOYSLOT
+
+@router.callback_query(StateFilter(LessonStates2.step_1), lambda c: True)
+async def main_process_l2_step_1(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "next":
+       await process_l2_step_1(callback_query, state)
+    elif callback_query.data == "stop":
+       await process_l2_step_1(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates2.step_2), lambda c: True)
+async def main_process_l2_step_2(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_l2_step_2(callback_query, state)
+
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
+
+################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
+
+@router.callback_query(StateFilter(LessonStates.step_7), lambda c: True)
+async def main_process_step_L2(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "callback1":
+       pass #await process_step_L2(callback_query, state)
+    elif callback_query.data in ["callback2", "callback2"]:
+       pass #await process_step_L2(callback_query, state)
+
+################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
