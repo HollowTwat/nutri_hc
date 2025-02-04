@@ -44,15 +44,16 @@ IMG10 = "AgACAgIAAxkBAAOJZ6JF25nDe-gpt_IDLtxxfaHDhggAAn3tMRundBFJ_tZtghfiAzgBAAM
 class LessonStates2(StatesGroup):
     step_1 = State()
     step_2 = State()
+    step_2_2 = State()
     step_3 = State()
     step_4 = State()
     step_5 = State()
+    step_5_5 = State()
     step_6 = State()
     step_7 = State()
 
 async def process_l2_step_1(callback_query, state):
     await callback_query.answer()
-    await state.set_state(LessonStates2.step_2)
     text="Доброе утро! \n\nКажется, распознавать сигналы тела легко:  хочешь есть — поешь, наелся — перестань. Но на деле всё сложнее. \n\nИногда мы пропускаем приёмы пищи и набрасываемся на еду из-за сильного голода. А иногда зачем-то едим, когда совершенно не хочется есть."
     media_files = [
         InputMediaPhoto(media=IMG1, caption=text),
@@ -65,6 +66,10 @@ async def process_l2_step_1(callback_query, state):
             [InlineKeyboardButton(text="Давай!", callback_data="next"), InlineKeyboardButton(text="Сегодня возьму выходной", callback_data="stop")]
         ])
     )
+    if callback_query.data == "next":
+       await state.set_state(LessonStates2.step_2)
+    elif callback_query.data == "stop":
+       await state.set_state(LessonStates2.step_2_2)
     await callback_query.answer()
 
 async def process_l2_step_2(callback_query, state):
@@ -140,3 +145,5 @@ async def process_l2_step_5(callback_query, state):
     await callback_query.message.answer(text, disable_web_page_preview=True, 
     reply_markup=InlineKeyboardMarkup(inline_keyboard=[InlineKeyboardButton(text="Меню", callback_data="menu")]))
     await callback_query.answer()
+
+    ############ EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING #############
