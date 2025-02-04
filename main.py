@@ -337,7 +337,7 @@ async def state_switch(callback_query: CallbackQuery, state: FSMContext):
 @router.callback_query(StateFilter(UserState.saving))
 async def saving(callback_query: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    str_food = str(data["food"])
+    str_food = str(data["latest_food"])
     await callback_query.message.edit_text(f"Тут будет сохранение приема пищи {callback_query.data} с инфой: \n {str_food}")
 
 ################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
