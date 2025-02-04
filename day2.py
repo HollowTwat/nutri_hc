@@ -45,7 +45,7 @@ class LessonStates2(StatesGroup):
     step_7 = State()
 
 async def process_l2_step_1(callback_query, state):
-    await callback_query.answer("дошли до функции")
+    await callback_query.answer()
     await state.set_state(LessonStates2.step_2)
     text="Доброе утро! \n\nКажется, распознавать сигналы тела легко:  хочешь есть — поешь, наелся — перестань. Но на деле всё сложнее. \n\nИногда мы пропускаем приёмы пищи и набрасываемся на еду из-за сильного голода. А иногда зачем-то едим, когда совершенно не хочется есть."
     media_files = [
@@ -84,5 +84,27 @@ async def process_l2_step_2(callback_query, state):
     await callback_query.answer()
 
 
-async def xyz(message,state):
-    pass
+async def dnevnik(message,state):
+    await state.set_state(LessonStates2.step_4)
+    await message.message.answer(
+        "Записала! А теперь прислушайся к себе и отметь, на сколько баллов ты чувствуешь насыщение.",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="4–5: по-прежнему есть лёгкий голод", callback_data="next"), 
+             InlineKeyboardButton(text="6–7: наелся (лась), в самый раз", callback_data="next"), 
+             InlineKeyboardButton(text="8–9: я переел (а), есть тяжесть", callback_data="stop"),
+             InlineKeyboardButton(text="10: съел (а) так много, что мне плохо", callback_data="stop")]
+        ])
+    )
+    await message.answer()
+
+async def process_l2_step_4(callback_query, state):
+    await state.set_state(LessonStates2.step_5)
+    await callback_query.message.answer(
+        "Отличная работа, горжусь тобой! Продолжай есть медленно и тщательно пережёвывать в следующие приёмы пищи, чтобы не случилось перееданий!"
+    )
+
+async def process_l2_step_4_2(callback_query, state):
+    await state.set_state(LessonStates2.step_5)
+    link = "https://www.medicalnewstoday.com/articles/14085"
+    text = f"Так бывает! \nВот что советую прямо сейчас: \n\n1.<b>Не кори себя</b> Ты только в начале пути, и мы только начали учиться. \n\n2.<b>Не ложись спать Поговорка «после плотного обеда по закону Архимеда полагается поспать» вводит в заблуждение.</b> \n\nДа, это хочется сделать после переедания. Но так ты увеличиваешь риск того, что что кислота из желудка <a href=\'{link}\'>начнёт забрасываться</a> в пищевод. Это может вызвать изжогу, станет только хуже. \n\n3.<b>Лучше погуляй</b> Даже 15 минут помогут почувствовать себя лучше. \n\n4/<b>В следующий раз ешь медленнее</b> Думай о том, правда ли хочешь съесть следующий кусочек. Доедать не обязательно."
+    await callback_query.message.answer(text, disable_web_page_preview=True)
