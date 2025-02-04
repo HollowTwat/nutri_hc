@@ -357,7 +357,7 @@ async def main_process_l2_step_12(callback_query: types.CallbackQuery, state: FS
     elif callback_query.data == "stop":
        await process_l2_step_13(callback_query, state)
 
-@router.message(StateFilter(LessonStates2.step_13))
+@router.message(StateFilter(LessonStates2.step_12))
 async def main_process_l2_step_13(message: Message, state: FSMContext):
     await dnevnik_layover(message,state,xyz2)
 
