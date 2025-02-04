@@ -28,8 +28,12 @@ from functions2 import *
 class UserState(StatesGroup):
     info_coll = State()
     recognition = State()
+    redact = State()
+    yapp_new = State()
     yapp = State()
     menu = State()
+    saving_confirmation = State()
+    saving = State()
 
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 
