@@ -179,15 +179,15 @@ async def main_process_menu_course_info(callback_query: CallbackQuery, state: FS
 
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
-async def dnevnik_layover(message, state, nextfunc):
+async def dnevnik_layover(callback_query, state, nextfunc):
     prev_state = await state.get_state()
     print(f"{prev_state}")
     step0txt = "in dev распознание еды"
-    await message.answer(step0txt, reply_markup=None)
+    await callback_query.message.answer(step0txt, reply_markup=None)
 
 
     await state.set_state(prev_state)
-    await nextfunc
+    await nextfunc(callback_query, state)
 
 
 
@@ -196,7 +196,7 @@ async def dnevnik_layover(message, state, nextfunc):
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_input')
 async def main_process_menu_dnevnik_input(callback_query: CallbackQuery, state: FSMContext):
 
-    await dnevnik_layover(callback_query.message, state, process_menu_dnevnik_redact)
+    await dnevnik_layover(callback_query, state, process_menu_dnevnik_redact)
 
     await process_menu_dnevnik_input(callback_query, state)
 
