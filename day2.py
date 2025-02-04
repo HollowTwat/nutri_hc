@@ -48,7 +48,6 @@ class LessonStates2(StatesGroup):
     step_3 = State()
     step_4 = State()
     step_5 = State()
-    step_5_5 = State()
     step_6 = State()
     step_7 = State()
 
@@ -95,7 +94,7 @@ async def process_l2_step_2_2(callback_query, state):
     await state.clear()
     await callback_query.message.answer(
         "Хорошо! Но обязательно возвращайся завтра 💔   \n\nА сегодня в свободную минутку обязательно заполни дневник питания.   \n\nНажимай на кнопку после приёма пищи, чтобы проанализировать свой завтрак, обед или ужин.   \n\nЕсли хочешь посоветоваться с Нутри перед едой, сфотографируй тарелку или пришли её описания текстом или голосовым сообщением.",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[InlineKeyboardButton(text="Меню", callback_data="menu")]))
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
     await callback_query.answer()
     
 
@@ -106,8 +105,8 @@ async def xyz(message,state):
         "Записала! А теперь прислушайся к себе и отметь, на сколько баллов ты чувствуешь насыщение.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="4–5: по-прежнему есть лёгкий голод", callback_data="next"), 
-             InlineKeyboardButton(text="6–7: наелся (лась), в самый раз", callback_data="next"), 
-             InlineKeyboardButton(text="8–9: я переел (а), есть тяжесть", callback_data="stop"),
+             InlineKeyboardButton(text="8–9: я переел (а), есть тяжесть", callback_data="stop")],
+             [InlineKeyboardButton(text="6–7: наелся (лась), в самый раз", callback_data="next"), 
              InlineKeyboardButton(text="10: съел (а) так много, что мне плохо", callback_data="stop")]
         ])
     )
@@ -140,7 +139,7 @@ async def process_l2_step_4(callback_query, state):
     link = "https://telegra.ph/Kak-naedatsya-no-ne-pereedat-istochniki-informacii-07-21"
     text = f"<b>Как наедаться, но не переедать</b> \n\n«Нутри, а что делать, если я вроде бы наедаюсь, но через полчаса опять приходит чувство голода? Или вроде бы голода нет, но всё равно хочется чего-нибудь сладкого или солёного?» \n\nКак поесть так, чтобы наесться — действительно целая наука. Ближайшие 3 недели мы будем её изучать. А пока листай к карточки с самыми простыми правилами, которые помогут тебе утолить голод и при этом не переесть. \n\nИсточники информации, по которым мы написали эти карточки — <a href=\'{link}\'>по ссылке.</a>"
     await callback_query.message.answer(text, disable_web_page_preview=True, 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[InlineKeyboardButton(text="Меню", callback_data="menu")]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
     await callback_query.answer()
 
     ############ EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING #############
