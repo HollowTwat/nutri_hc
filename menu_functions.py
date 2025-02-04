@@ -165,7 +165,7 @@ async def process_menu_course_info(callback_query, state):
 ################## DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU ##################
 
 async def process_menu_dnevnik_input(callback_query, state):
-    step0txt = "in dev распознание еды"
+    step0txt = "Отправь фото еды.\nТакже можешь воспользоваться 🎤 аудио или ввести текстом в формате:\n<i>Яичница из 2 яиц, чай без сахара</i>"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
 async def process_menu_dnevnik_redact(callback_query, state):

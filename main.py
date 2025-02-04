@@ -214,9 +214,7 @@ async def dnevnik_layover(message, state, nextfunc):
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_input')
 async def main_process_menu_dnevnik_input(callback_query: CallbackQuery, state: FSMContext):
-
-    await dnevnik_layover(callback_query, state, process_menu_dnevnik_redact)
-
+    await state.set_state(UserState.recognition)
     await process_menu_dnevnik_input(callback_query, state)
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_redact')
