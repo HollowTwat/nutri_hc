@@ -61,17 +61,15 @@ async def process_l2_step_1(callback_query, state):
 
 async def process_l2_step_2(callback_query, state):
     await state.set_state(LessonStates2.step_3)
+    text1 = "Первый секрет — настоящий голод не наступает внезапно. \n\nОн подкрадывается издалека и постепенно усиливается. На карточках — чек-лист с признаками голода. Они подскажут тебе, что пора поесть и откладывать дальше некуда."
     media_files = [
-        InputMediaPhoto(media=IMG3),
+        InputMediaPhoto(media=IMG3, caption = text1),
         InputMediaPhoto(media=IMG4)
     ]
     await callback_query.message.answer(
         "<b>Урок 2</b> \n\n<b>Как понять, что пора поесть, и как — что пора остановиться</b> \n\nСегодня будем искать ответ на вопрос жизни, вселенной и всего такого: «Есть или не есть?». Говоря проще, будем весь день прислушиваться к себе и определять, когда чувствуем голод, а когда уже наелись."
     )
     await callback_query.message.answer_media_group(media=media_files)
-    await callback_query.message.answer(
-        "Первый секрет — настоящий голод не наступает внезапно. \n\nОн подкрадывается издалека и постепенно усиливается. На карточках — чек-лист с признаками голода. Они подскажут тебе, что пора поесть и откладывать дальше некуда."
-    )
     await callback_query.message.answer_media_group(media=IMG5)
     await callback_query.message.answer(
         "Второй секрет — важно вовремя заметить не только голод, но и насыщение. Для этого ешь медленно и старайся оценить уровень сытости по 10-балльной шкале с картинки. В норме после еды должно оставаться ощущение комфорта, а вот тяжести быть не должно."

@@ -286,7 +286,7 @@ async def main_process_step_7(callback_query: types.CallbackQuery, state: FSMCon
 
 @router.message(Command("lessons_manage"))
 async def lessons_manage_command(message: types.Message, state: FSMContext):
-    await state.clear(LessonStates.step_1)
+    await state.clear()
     await message.answer("pick a lesson", reply_markup=[[InlineKeyboardButton(text="d1", callback_data="d1")], [InlineKeyboardButton(text="d2", callback_data="d2")]])
 
 
@@ -296,6 +296,7 @@ async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContex
         await state.set_state(LessonStates.step_1)
     elif callback_query.data == "d2":
         await state.set_state(LessonStates2.step_1)
+        await process_l2_step_1(callback_query, state)
 ##################### GETTING INTO THE LESSONS
 
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
@@ -303,9 +304,9 @@ async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContex
 @router.callback_query(StateFilter(LessonStates2.step_1), lambda c: True)
 async def main_process_l2_step_1(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "next":
-       await process_l2_step_1(callback_query, state)
+       await process_l2_step_2(callback_query, state)
     elif callback_query.data == "stop":
-       await process_l2_step_1(callback_query, state)
+       await main_menu_cb_handler(callback_query, state)
 
 @router.callback_query(StateFilter(LessonStates2.step_2), lambda c: True)
 async def main_process_l2_step_2(callback_query: types.CallbackQuery, state: FSMContext):
