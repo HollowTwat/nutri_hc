@@ -339,7 +339,7 @@ async def main_process_l2_step_4(callback_query: types.CallbackQuery, state: FSM
        await process_l2_step_4_1(callback_query, state)
     elif callback_query.data == "stop":
        await process_l2_step_4_2(callback_query, state)
-    await process_step_4(callback_query, state)
+    await process_l2_step_4(callback_query, state)
 
 @router.callback_query(StateFilter(LessonStates2.step_5), lambda c: True)
 async def main_process_l2_step_5(callback_query: types.CallbackQuery, state: FSMContext):
