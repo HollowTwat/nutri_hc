@@ -76,6 +76,17 @@ class LessonStates2(StatesGroup):
     step_11 = State()
     step_12 = State()
     step_13 = State()
+
+
+class LessonStates3(StatesGroup):
+    step_1 = State()
+    step_2 = State()
+    step_3 = State()
+    step_4 = State()
+    step_5 = State()
+    step_11 = State()
+    step_12 = State()
+    step_13 = State()
     step_14 = State()
     step_15 = State()
     step_16 = State()
@@ -370,6 +381,10 @@ async def main_process_l2_step_14(callback_query: types.CallbackQuery, state: FS
     await process_l2_step_14(callback_query, state)
 
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
+
+################## LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 #################
+
+################## LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 #################
 
 ################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
 

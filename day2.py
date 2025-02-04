@@ -50,9 +50,6 @@ class LessonStates2(StatesGroup):
     step_11 = State()
     step_12 = State()
     step_13 = State()
-    step_14 = State()
-    step_15 = State()
-    step_16 = State()
 
 async def process_l2_step_1(callback_query, state):
     await state.set_state(LessonStates2.step_2)
