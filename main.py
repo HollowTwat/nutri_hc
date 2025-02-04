@@ -179,6 +179,16 @@ async def main_process_menu_course_info(callback_query: CallbackQuery, state: FS
 
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
+async def dnevnik_layover(message, state, nextfunc):
+    prev_state = await state.get_state()
+    print(f"{prev_state}")
+    step0txt = "in dev распознание еды"
+    await message.answer(step0txt, reply_markup=None)
+
+
+    await state.set_state(prev_state)
+    await nextfunc(message, state)
+
 ################## DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU ##################
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_input')
@@ -312,16 +322,20 @@ async def main_process_l2_step_1(callback_query: types.CallbackQuery, state: FSM
 async def main_process_l2_step_2(callback_query: types.CallbackQuery, state: FSMContext):
     await process_l2_step_2(callback_query, state)
 
+@router.meassage(StateFilter(LessonStates2.step_3))
+async def main_process_l2_step_3(message: Message, state: FSMContext):
+    await dnevnik_layover(message,state,xyz)
+
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
 
 ################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
 
-@router.callback_query(StateFilter(LessonStates.step_7), lambda c: True)
-async def main_process_step_L2(callback_query: types.CallbackQuery, state: FSMContext):
-    if callback_query.data == "callback1":
-       pass #await process_step_L2(callback_query, state)
-    elif callback_query.data in ["callback2", "callback2"]:
-       pass #await process_step_L2(callback_query, state)
+# @router.callback_query(StateFilter(LessonStates.step_7), lambda c: True)
+# async def main_process_step_L2(callback_query: types.CallbackQuery, state: FSMContext):
+#     if callback_query.data == "callback1":
+#        await process_step_L2(callback_query, state)
+#     elif callback_query.data in ["callback2", "callback2"]:
+#        await process_step_L2(callback_query, state)
 
 ################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
 
