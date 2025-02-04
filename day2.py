@@ -25,8 +25,8 @@ import json
 from functions import *
 from functions2 import *
 
-IMG1 = "AgACAgIAAxkBAAMOZ6EVhp9382-4v3bZPR3Z3SesYZcAArT2MRundAlJtkOuMQO3rYUBAAMCAAN5AAM2BA"
-IMG2 = "AgACAgIAAxkBAAMSZ6EVkZ5m5u3p4Rxfr7AJe7bxszwAArX2MRundAlJVla3yTEcwsIBAAMCAAN5AAM2BA"
+IMG1 = "AgACAgIAAxkBAANAZ6Izhb3-oRwlYaP2VqDUaNj2B40AAr3sMRundBFJUR0CTkcujnEBAAMCAAN5AAM2BA"
+IMG2 = "AgACAgIAAxkBAANEZ6Izix5un3K9FJFIkhnYohD1ndoAAr7sMRundBFJIg8zZa_LlZ4BAAMCAAN5AAM2BA"
 
 IMG3 = "AgACAgIAAxkBAAMWZ6EeHHZlQuvULWbsJ0pM73-eQGUAAuL2MRundAlJ1lkQgI65WD8BAAMCAAN5AAM2BA"
 IMG4 = "AgACAgIAAxkBAAMaZ6EeInSKWO2MV5QgfFFTinbKz78AAuP2MRundAlJraM0a_v0fWoBAAMCAAN5AAM2BA"
@@ -45,7 +45,7 @@ class LessonStates2(StatesGroup):
     step_7 = State()
 
 async def process_l2_step_1(callback_query, state):
-    print("xnj eujlyj")
+    await callback_query.answer("дошли до функции")
     await state.set_state(LessonStates2.step_2)
     media_files = [
         InputMediaPhoto(media=IMG1, caption=f"Доброе утро! \n\nКажется, распознавать сигналы тела легко:  хочешь есть — поешь, наелся — перестань. Но на деле всё сложнее. \n\nИногда мы пропускаем приёмы пищи и набрасываемся на еду из-за сильного голода. А иногда зачем-то едим, когда совершенно не хочется есть.</i>"),
