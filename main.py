@@ -272,13 +272,13 @@ async def yapp_functional(message: Message, state: FSMContext):
     buttons = [[InlineKeyboardButton(text='Меню', callback_data='menu')]]
     errormessage = "Гпт вернул ошибку"
     if message.text:
-        flag, response = yapp(id, message.text, new_thread)
+        flag, response = await yapp(id, message.text, new_thread)
         if flag:
             await message.answer(f"{response}\n\nТы можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         else: message.answer(errormessage)
     elif message.voice:
         transcription = await audio_file(message.voice.file_id)
-        flag, response = yapp(id, transcription, new_thread)
+        flag, response = await yapp(id, transcription, new_thread)
         if flag:
             await message.answer(f"response\n\n Ты можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         else: message.answer(errormessage)
