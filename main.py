@@ -37,7 +37,7 @@ OPENAI_KEY = os.getenv("OPENAI_KEY")                  ##ACTUALISED
 VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
 CITY_ASSISTANT_ID = os.getenv('CITY_ASSISTANT_ID')
 ASSISTANT2_ID = os.getenv('ASSISTANT2_ID')
-YAPP_SESH_ASSISTANT_ID = os.getenv('YAPP_SESH_ASSISTANT_ID')
+YAPP_SESH_ASSISTANT_ID = os.getenv('YAPP_SESH_ASSISTANT_ID')    ##ACTUALISED 
 RATE_DAY_ASS_ID = os.getenv('RATE_DAY_ASS_ID')
 RATE_MID_ASS_ID = os.getenv('RATE_MID_ASS_ID')
 RATE_SMOL_ASS_ID = os.getenv('RATE_SMOL_ASS_ID')
@@ -69,6 +69,7 @@ class UserState(StatesGroup):
     info_coll = State()
     recognition = State()
     redact = State()
+    yapp_new = State()
     yapp = State()
     menu = State()
     saving_confirmation = State()
@@ -247,29 +248,37 @@ async def main_process_menu_nutri_etiketka(callback_query: CallbackQuery, state:
 
 ################## YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU ##################
 
+async def get_url(file_id: str) -> str:
+    file = await bot.get_file(file_id)
+    file_path = file.file_path
+    file_url = f"https://api.telegram.org/file/bot{bot.token}/{file_path}"
+    return file_url
+
 async def audio_file(file_id: str) -> str:
-    file_url = await bot.get_file_url(file_id)
+    file_url = get_url(file_id)
     transcription = await transcribe_audio_from_url(file_url)
     return transcription
 
-async def get_url(file_id: str) -> str:
-    url = await bot.get_file_url(file_id)
 
 ################## YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP ##################
 
-@router.message(StateFilter(UserState.yapp))
+@router.message(StateFilter(UserState.yapp_new, UserState.yapp))
 async def yapp_functional(message: Message, state: FSMContext):
+    if state.get_state() == UserState.yapp_new:
+        new_thread = True
+    elif state.get_state() == UserState.yapp:
+        new_thread = False
     id = str(message.from_user.id)
     buttons = [[InlineKeyboardButton(text='Меню', callback_data='menu')]]
     errormessage = "Гпт вернул ошибку"
     if message.text:
-        flag, response = yapp(id, message.text, False)
+        flag, response = yapp(id, message.text, new_thread)
         if flag:
             await message.answer(f"{response}\n\nТы можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         else: message.answer(errormessage)
     elif message.voice:
         transcription = await audio_file(message.voice.file_id)
-        flag, response = yapp(id, transcription, False)
+        flag, response = yapp(id, transcription, new_thread)
         if flag:
             await message.answer(f"response\n\n Ты можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         else: message.answer(errormessage)

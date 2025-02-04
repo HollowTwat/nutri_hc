@@ -17,27 +17,25 @@ from datetime import datetime, timedelta
 from functions import *
 
 
-async def yapp(id, question, delete_thread):
+async def yapp(id, question, new_thread):
     print('day1_yapp triggered')
-    if delete_thread:
+    
+    if new_thread:
         await remove_thread(id)
+        await create_thread_with_extra_info("user_info_is_empty_for_now", id, YAPP_SESH_ASSISTANT_ID)
+    
     try:
         response = await yapp_assistant(question, id, YAPP_SESH_ASSISTANT_ID)
+        
         if response != "error":
-            Iserror = False
-            Jsoned = {
-                    "extra": str(response)
-                }
-        elif response == "error":
-            Iserror = True
-            Jsoned = {
-                    "error": str(response)
-                }
-        Final = json.dumps(
-            {
-                "IsError": str(Iserror),
-                "Answer": Jsoned    
-        })
-        return Final, 201
+            isError = False
+            final_response = f"Ответ: {response}"
+        else:
+            isError = True
+            final_response = "Ошибка: неверный запрос"
+        
+        return isError, final_response
+
     except Exception as e:
-        return False
+        print(f"Error occurred: {e}")
+        return True, "Ошибка обработки запроса"
