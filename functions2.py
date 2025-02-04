@@ -16,6 +16,8 @@ from datetime import datetime, timedelta
 
 from functions import *
 
+debug = 1
+
 
 async def yapp(id, question, new_thread):
     print('day1_yapp triggered')
@@ -26,6 +28,8 @@ async def yapp(id, question, new_thread):
     
     try:
         response = await yapp_assistant(question, id, YAPP_SESH_ASSISTANT_ID)
+        if debug == 1:
+            print(response)
         
         if response != "error":
             isError = False
@@ -34,6 +38,8 @@ async def yapp(id, question, new_thread):
             isError = True
             final_response = "Ошибка: неверный запрос"
         
+        if debug == 1:
+            print(f"{isError} {final_response}")
         return isError, final_response
 
     except Exception as e:
