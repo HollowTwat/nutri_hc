@@ -7,6 +7,7 @@ import asyncio
 import aiohttp
 import shelve
 import re
+import json
 
 OPENAI_KEY = os.getenv("OPENAI_KEY")
 VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
@@ -26,6 +27,41 @@ async def check_mail(id, mail):
     response = requests.post(
         link)
     return response.text
+
+
+async def prettify_and_count(data, detailed_format=True):
+    if data == "error":
+        print("error in input of prettify")
+        return True, [], "Ошибка в данных"
+
+    json_data = json.loads(data)
+
+    if not json_data.get("food", []):
+        return True, [], "Не могу найти еду"
+
+    pretty_list = []
+    for item in json_data["food"]:
+        nutritional_value = item["nutritional_value"]
+        fats = round(nutritional_value["fats"])
+        carbs = round(nutritional_value["carbs"])
+        protein = round(nutritional_value["protein"])
+        
+        if detailed_format:
+            kcal = round(nutritional_value["kcal"])
+        else:
+            kcal = round(fats * 9 + carbs * 4 + protein * 4)
+
+        pretty_str = (
+            f"{item['description']} {item['weight']} г:</b>\n"
+            f" {kcal} ккал ({fats}г жиров / {carbs}г углеводов / {protein}г белков);\n"
+        )
+        pretty_list.append(pretty_str)
+
+    pretty_output = "<b>Прием пищи:</b>\n\n" + "\n".join(
+        [f"{i+1}.<b> {item}" for i, item in enumerate(pretty_list)]
+    )
+
+    return False, json_data["food"], pretty_output
 
 
 async def remove_reference(input_string):
@@ -59,6 +95,7 @@ async def generate_response(message_body, usr_id, assistant):
     return new_message
 
 
+
 async def process_url(url, usr_id, assistant):
     thread_id = await check_if_thread_exists(usr_id)
 
@@ -89,6 +126,7 @@ async def process_url(url, usr_id, assistant):
     new_message = await run_assistant(thread, assistant)
 
     return new_message
+
 
 
 async def process_url_etik(url, allergies, usr_id, assistant):

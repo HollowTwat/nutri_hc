@@ -33,6 +33,21 @@ from questionnaire import *
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OPENAI_KEY = os.getenv("OPENAI_KEY")
 
+#ASSISTANTS FFS HOW MANY CAN THERE BE MAAAAAN
+VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
+CITY_ASSISTANT_ID = os.getenv('CITY_ASSISTANT_ID')
+ASSISTANT2_ID = os.getenv('ASSISTANT2_ID')
+YAPP_SESH_ASSISTANT_ID = os.getenv('YAPP_SESH_ASSISTANT_ID')
+RATE_DAY_ASS_ID = os.getenv('RATE_DAY_ASS_ID')
+RATE_MID_ASS_ID = os.getenv('RATE_MID_ASS_ID')
+RATE_SMOL_ASS_ID = os.getenv('RATE_SMOL_ASS_ID')
+RATE_WEEK_ASS_ID = os.getenv('RATE_WEEK_ASS_ID')
+RATE_TWONE_ASS_ID = os.getenv('RATE_TWONE_ASS_ID')
+ETIK_ASS_ID = os.getenv('ETIK_ASS_ID')
+RECIPE_ASS_ID = os.getenv('RECIPE_ASS_ID')
+RATE_TRIAL_ASS_ID = os.getenv('RATE_TRIAL_ASS_ID')
+VISION_ASS_ID_2 = os.getenv("VISION_ASS_ID_2")
+
 TOKEN = BOT_TOKEN
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(
@@ -53,8 +68,11 @@ class StateMiddleware(BaseMiddleware):
 class UserState(StatesGroup):
     info_coll = State()
     recognition = State()
+    redact = State()
     yapp = State()
     menu = State()
+    saving_confirmation = State()
+    saving = State()
 
 class LessonStates(StatesGroup):
     step_1 = State()
@@ -124,6 +142,7 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 @router.message(Command("menu"))
 async def main_menu_handler(message: Message, state: FSMContext) -> None:
+    await state.clear()
     await menu_handler(message, state)
 
 @router.callback_query(lambda c: c.data == 'menu')
@@ -179,15 +198,15 @@ async def main_process_menu_course_info(callback_query: CallbackQuery, state: FS
 
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
-async def dnevnik_layover(callback_query, state, nextfunc):
+async def dnevnik_layover(message, state, nextfunc):
     prev_state = await state.get_state()
     print(f"{prev_state}")
     step0txt = "in dev распознание еды"
-    await callback_query.message.answer(step0txt, reply_markup=None)
+    await message.answer(step0txt, reply_markup=None)
 
 
     await state.set_state(prev_state)
-    await nextfunc(callback_query, state)
+    await nextfunc(message, state)
 
 
 
@@ -229,6 +248,99 @@ async def main_process_menu_nutri_etiketka(callback_query: CallbackQuery, state:
     await process_menu_nutri_etiketka(callback_query, state)
 
 ################## YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU ##################
+
+async def audio_file(file_id: str) -> str:
+    file_url = await bot.get_file_url(file_id)
+    transcription = await transcribe_audio_from_url(file_url)
+    return transcription
+
+async def get_url(file_id: str) -> str:
+    url = await bot.get_file_url(file_id)
+
+################## YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP ##################
+
+@router.message(StateFilter(UserState.yapp))
+async def yapp_functional(message: Message, state: FSMContext):
+    buttons = [[InlineKeyboardButton(text='Меню', callback_data='menu')]]
+    errormessage = "Гпт вернул ошибку"
+    if message.text:
+        flag, response = yapp(message.from_user.id, message.text, False)
+        if flag:
+            await message.answer(f"{response}\n\nТы можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        else: message.answer(errormessage)
+    elif message.voice:
+        transcription = await audio_file(message.voice.file_id)
+        flag, response = yapp(message.from_user.id, transcription, False)
+        if flag:
+            await message.answer(f"response\n\n Ты можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        else: message.answer(errormessage)
+    else:
+        message.answer("Я читаю только текст/аудио")
+
+################## YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP ##################
+
+################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
+
+@router.message(StateFilter(UserState.recognition))
+async def dnevnik_functional(message: Message, state: FSMContext):
+    confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
+    buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
+               [InlineKeyboardButton(text="Все хорошо", callback_data="save")]]
+    if message.photo:
+        url = await get_url(message.photo[-1].file_id)
+        vision = await process_url(url, id, VISION_ASS_ID_2)
+        Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
+        if Iserror:
+            await message.answer(f"офибка!!! \n{pretty}")
+        else: 
+            state.update_data(latest_food = food)
+            await message.answer(pretty)
+            await message.answer(confirm_text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            await state.set_state(UserState.saving_confirmation)
+    elif message.voice:
+        transcription = await audio_file(message.voice.file_id)
+        vision = await generate_response(transcription, message.from_user.id, VISION_ASS_ID_2)
+        Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
+        if Iserror:
+            await message.answer(f"офибка!!! \n{pretty}")
+        else: 
+            state.update_data(latest_food = food)
+            await message.answer(pretty)
+            await message.answer(confirm_text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            await state.set_state(UserState.saving_confirmation)
+    elif message.text:
+        vision = await generate_response(message.text, message.from_user.id, VISION_ASS_ID_2)
+        Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
+        if Iserror:
+            await message.answer(f"офибка!!! \n{pretty}")
+        else: 
+            state.update_data(latest_food = food)
+            await message.answer(pretty)
+            await message.answer(confirm_text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            await state.set_state(UserState.saving_confirmation)
+    else: message.answer("0_o")
+
+@router.callback_query(StateFilter(UserState.saving_confirmation))
+async def state_switch(callback_query: CallbackQuery, state: FSMContext):
+    if callback_query.data == "redact":
+        await state.clear()
+        await callback_query.message.edit_text("Тут будет редакция", reply_markup=None)
+    elif callback_query.data == "save":
+        mealtype_buttons = [
+            [InlineKeyboardButton(text="Завтрак", callback_data="0"), InlineKeyboardButton(text="Обед", callback_data="2")],
+            [InlineKeyboardButton(text="Ужин", callback_data="4"), InlineKeyboardButton(text="Перекус", callback_data="5")]
+            ]
+        mealtype_keyboard = InlineKeyboardMarkup(inline_keyboard=mealtype_buttons)
+        await state.set_state(UserState.saving)
+        await callback_query.message.edit_text("Какой это прием пищи?", reply_markup=mealtype_keyboard)
+
+@router.callback_query(StateFilter(UserState.saving))
+async def saving(callback_query: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    str_food = str(data["food"])
+    await callback_query.message.edit_text(f"Тут будет сохранение приема пищи {callback_query.data} с инфой: \n {str_food}")
+
+################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
 
@@ -299,13 +411,6 @@ async def main_process_step_7(callback_query: types.CallbackQuery, state: FSMCon
 
 ##################### GETTING INTO THE LESSONS
 
-@router.message(Command("lessons_manage"))
-async def lessons_manage_command(message: types.Message, state: FSMContext):
-    await message.photo(media="", caption= "dsdsdsds")
-    await state.clear(LessonStates.step_1)
-    await message.answer("pick a lesson", reply_markup=[[InlineKeyboardButton(text="d1", callback_data="d1")], [InlineKeyboardButton(text="d2", callback_data="d2")]])
-
-
 @router.callback_query(lambda c: c.data in ["d1", "d2"])
 async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "d1":
@@ -316,16 +421,7 @@ async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContex
 
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
 
-@router.callback_query(StateFilter(LessonStates2.step_1), lambda c: True)
-async def main_process_l2_step_1(callback_query: types.CallbackQuery, state: FSMContext):
-    if callback_query.data == "next":
-       await process_l2_step_1(callback_query, state)
-    elif callback_query.data == "stop":
-       await process_l2_step_1(callback_query, state)
 
-@router.callback_query(StateFilter(LessonStates2.step_2), lambda c: True)
-async def main_process_l2_step_2(callback_query: types.CallbackQuery, state: FSMContext):
-    await process_l2_step_2(callback_query, state)
 
 ################## LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 LESSON_2 ##################
 
