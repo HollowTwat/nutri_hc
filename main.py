@@ -89,9 +89,6 @@ class LessonStates3(StatesGroup):
     step_11 = State()
     step_12 = State()
     step_13 = State()
-    step_14 = State()
-    step_15 = State()
-    step_16 = State()
 
 class Questionnaire(StatesGroup):
     prefirst = State()
