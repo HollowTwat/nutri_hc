@@ -321,7 +321,7 @@ async def lessons_manage_command(message: types.Message, state: FSMContext):
     buttons = [
         [InlineKeyboardButton(text='Урок1', callback_data='d1')],
         [InlineKeyboardButton(text='Урок2', callback_data='d2'), InlineKeyboardButton(text='Урок2_2', callback_data='d2_2')],
-        [InlineKeyboardButton(text='Урок3', callback_data='d3')]
+        [InlineKeyboardButton(text='Урок3', callback_data='d3'),InlineKeyboardButton(text='Урок3_2', callback_data='d3_2')]
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer("pick a lesson", reply_markup=keyboard)
@@ -433,9 +433,9 @@ async def main_process_l3_step_12(callback_query: types.CallbackQuery, state: FS
     if callback_query.data == "1":
        await process_l3_step_13(callback_query, state)
     elif callback_query.data == "2":
-       await process_l3_step_5_13_2(callback_query, state)
+       await process_l3_step_13_2(callback_query, state)
     elif callback_query.data == "3":
-       await process_l3_step_5_13_3(callback_query, state)
+       await process_l3_step_13_3(callback_query, state)
 
 @router.callback_query(StateFilter(LessonStates3.step_13), lambda c: True)
 async def main_process_l3_step_13(callback_query: types.CallbackQuery, state: FSMContext):
