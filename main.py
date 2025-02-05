@@ -483,9 +483,9 @@ async def main_process_l4_step_3(callback_query: types.CallbackQuery, state: FSM
 @router.callback_query(StateFilter(LessonStates4.step_12), lambda c: True)
 async def main_process_l4_step_11(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "next":
-       await process_l4_step_11(callback_query, state)
+       await process_l4_step_12(callback_query, state)
     elif callback_query.data == "stop":
-       await process_l4_step_11_2(callback_query, state)
+       await process_l4_step_12_2(callback_query, state)
 
 ################## LESSON_4 LESSON_4 LESSON_4 LESSON_4 LESSON_4 LESSON_4 LESSON_4 LESSON_4 LESSON_4 LESSON_4 LESSON_4 LESSON_4 #################
 
