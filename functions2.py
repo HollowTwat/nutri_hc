@@ -163,7 +163,7 @@ def generate_day_buttons(data):
         text = f"{emote} {day['DisplayDay'][:5]} - {day['TotalKkal']} ккал"
         callback_data = f"day_{day['DisplayDay']}"
         buttons.append([InlineKeyboardButton(text=text, callback_data=callback_data)])
-    buttons.append([InlineKeyboardButton(text="🔼", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik")])
+    buttons.append([InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik")])
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
 
@@ -181,6 +181,6 @@ def generate_meal_buttons(data, day):
             text = f"{emote} {meal_mapping[meal['Type']]}"
             callback_data = f"meal_{day}_{meal['Type']}"
             buttons.append([InlineKeyboardButton(text=text, callback_data=callback_data)])
-    buttons.append([InlineKeyboardButton(text="🔼", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik_edit_same")])
+    buttons.append([InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik_edit_same")])
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
