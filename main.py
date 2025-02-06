@@ -149,6 +149,7 @@ async def main_menu_handler(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(lambda c: c.data == 'menu')
 async def main_menu_cb_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
+    await state.clear()
     await menu_cb_handler(callback_query, state)
 
 @router.callback_query(lambda c: c.data == 'menu_back')
@@ -378,7 +379,24 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
     ]
     await callback_query.message.edit_text(f"{pretty} \n\nМеняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
+@router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("meal_"))
+async def delete_meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
+    id = str(callback_query.from_user.id)
+    meal_id = callback_query.data.split("_")[1]
+    Iserror, response = await delete_meal(id, meal_id)
+    print(f"{Iserror}, {response}")
+    buttons = [
+        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik_edit_same")]
+    ]
+    if Iserror : 
+        await callback_query.message.edit_text("Что-то пошло не так", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        pass
+    if response == "true":
+        await callback_query.message.edit_text("Успешно удалено", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    elif response == "false": 
+        await callback_query.message.edit_text("Не вышло удалить", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
+    
 ################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################

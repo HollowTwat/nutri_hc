@@ -234,6 +234,6 @@ async def delete_meal(id, meal_id):
         try:
             async with session.post(url=url) as response:
                 data = await response.text()
-                return meal_id
+                return False, data
         except aiohttp.ClientError as e:
-            print(e)
+            return True, e
