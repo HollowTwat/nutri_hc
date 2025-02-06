@@ -67,7 +67,7 @@ async def prettify_and_count(data, detailed_format=True):
         [f"{i+1}.<b> {item}" for i, item in enumerate(pretty_list)]
     )
 
-    return False, json_data["food"], pretty_output
+    return False, food, pretty_output
 
 
 async def remove_reference(input_string):
