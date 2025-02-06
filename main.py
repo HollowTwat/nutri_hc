@@ -379,7 +379,7 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
     ]
     await callback_query.message.edit_text(f"{pretty} \n\nМеняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
-@router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("meal_"))
+@router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("deletemeal_"))
 async def delete_meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
     id = str(callback_query.from_user.id)
     meal_id = callback_query.data.split("_")[1]
