@@ -52,7 +52,7 @@ async def process_l5_step_2(callback_query, state):
     
     
     await bot.send_poll(
-        chat_id=callback_query.chat.id,
+        chat_id=callback_query.message.chat.id,
         question="Викторина 1: Какой язык программирования вы используете?",
         options=["Python", "JavaScript", "C++"],
         is_anonymous=False
@@ -63,7 +63,7 @@ async def process_l5_step_2(callback_query, state):
 async def process_l5_step_3(callback_query, state):
     await state.set_state(LessonStates5.step_4)
     await bot.send_poll(
-        chat_id=callback_query.user.id,
+        chat_id=callback_query.message.chat.id,
         question="Викторина 2: Какой фреймворк вы используете?",
         options=["Django", "Flask", "FastAPI", "Aiogram"],
         is_anonymous=False
