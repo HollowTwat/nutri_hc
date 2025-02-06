@@ -162,9 +162,9 @@ def generate_day_buttons(data):
         emote = "⭕️" if day["isEmpty"] else "✅"
         text = f"{emote} {day['DisplayDay'][:5]} - {day['TotalKkal']} ккал"
         callback_data = f"day_{day['DisplayDay']}"
-        buttons.append(InlineKeyboardButton(text=text, callback_data=callback_data))
-    buttons.append(InlineKeyboardButton(text="🔼", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik"))
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[buttons])
+        buttons.append([InlineKeyboardButton(text=text, callback_data=callback_data)])
+    buttons.append([InlineKeyboardButton(text="🔼", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik")])
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
 
 def generate_meal_buttons(data, day):
@@ -180,7 +180,7 @@ def generate_meal_buttons(data, day):
             emote = "⭕️" if meal["isEmpty"] else "✅"
             text = f"{emote} {meal_mapping[meal['Type']]}"
             callback_data = f"meal_{day}_{meal['Type']}"
-            buttons.append(InlineKeyboardButton(text, callback_data=callback_data))
-    buttons.append(InlineKeyboardButton("🔼", callback_data="menu"), InlineKeyboardButton("◀️", callback_data="menu_dnevnik_edit_same"))
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[buttons])
+            buttons.append([InlineKeyboardButton(text, callback_data=callback_data)])
+    buttons.append([InlineKeyboardButton("🔼", callback_data="menu"), InlineKeyboardButton("◀️", callback_data="menu_dnevnik_edit_same")])
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
