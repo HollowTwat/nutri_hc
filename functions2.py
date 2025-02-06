@@ -210,9 +210,9 @@ def parse_meal_data(response_json):
 async def get_singe_meal(id, date, mealtype):
     url = "https://nutridb-production.up.railway.app/api/TypesCRUD/GetSingleUserMeal"
     meal_data = {
-        "userTgId": id,
-        "dayStr": date,
-        "typemeal": mealtype
+        "userTgId": f"{id}",
+        "dayStr": f"{date}",
+        "typemeal": f"{mealtype}"
     }
     req_headers = {
         "Content-Type": "application/json"
