@@ -169,9 +169,13 @@ async def process_menu_dnevnik_edit(callback_query, state):
         id = str(callback_query.from_user.id)
         API_URL = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserWeekMealsStatus?userTgId={id}"
         async with aiohttp.ClientSession() as session:
-            async with session.get(API_URL) as response:
-                data = await response.json()
-                await state.update_data(data=data)
+            try:
+                async with session.get(API_URL) as response:
+                    data = await response.json()
+                    await state.update_data(data=data)
+            except aiohttp.ClientError as e:
+                await callback_query.edit_text(f"Error fetching data: {str(e)}")
+                return
     else:
         user_data = await state.get_data()
         data = user_data.get("data", [])
