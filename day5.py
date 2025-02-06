@@ -56,7 +56,7 @@ async def process_l5_step_2(callback_query, state):
         chat_id=callback_query.message.chat.id,
         question="<b>Вопрос 1</b> \n«Еду нельзя выбрасывать!» Правда ведь?",
         options=["Правда", "Неправда. Можно выбрасывать."],
-        correct_option_id=2,
+        correct_option_id=1,
         is_anonymous=False,
         type="quiz",
         explanation="К этому сложно привыкнуть, но еду правда можно выбрасывать!"
@@ -75,7 +75,7 @@ async def process_l5_step_3(poll_answer, state):
         chat_id=poll_answer.user.id,
         question="<b>Вопрос 2</b> \n«Опаздываю на работу, нет времени садиться и завтракать. Съем завтрак по дороге». Бывало такое?",
         options=["Конечно. А что ещё остаётся…", "Стараюсь не есть на ходу"],
-        correct_option_id=2,
+        correct_option_id=1,
         is_anonymous=False,
         type="quiz",
         explanation="Если есть на ходу, риски поправиться выше! Читай про это в тексте, который пришлю после этого квиза."
@@ -87,7 +87,7 @@ async def process_l5_step_4(poll_answer, state):
         chat_id=poll_answer.user.id,
         question="<b>Вопрос 3</b> \n«А такое случается? «На работе полный завал, пообедаю попозже. Ой, уже ужин? Как-то незаметно время пролетело…»",
         options=["Случается", "Ну нет. Обед — это святое"],
-        correct_option_id=2,
+        correct_option_id=1,
         is_anonymous=False,
         type="quiz",
         explanation="Пропуски приёмов пищи увеличивают риски сердечно-сосудистых заболеваний и набора веса."
@@ -99,7 +99,7 @@ async def process_l5_step_5(poll_answer, state):
         chat_id=poll_answer.user.id,
         question="<b>Вопрос 4</b> \n«А теперь другой вариант. «До обеда ещё час, надо что-то перекусить. У меня как раз есть сникерс». Перекусываешь сладостями?",
         options=["Случается", "Нет"],
-        correct_option_id=2,
+        correct_option_id=1,
         is_anonymous=False,
         type="quiz",
         explanation="Сладости — это простые углеводы. Организм быстро их усвоит, и есть захочется снова ещё до наступления обеда."
@@ -111,7 +111,7 @@ async def process_l5_step_6(poll_answer, state):
         chat_id=poll_answer.user.id,
         question="<b>Вопрос 5</b> \n«В целом есть не очень хочется. Не буду накладывать еду в тарелку. Съем буквально пару кусочков из сковородки». Делаешь так?",
         options=["Да! Есть из сковородки очень приятно!", "Нет, люблю разложить всё по тарелочкам"],
-        correct_option_id=2,
+        correct_option_id=1,
         is_anonymous=False,
         type="quiz",
         explanation="Сковородки и кастрюли коварны! С ними риск переесть гораздо выше, чем с тарелками!"
@@ -123,7 +123,7 @@ async def process_l5_step_7(poll_answer, state):
         chat_id=poll_answer.user.id,
         question="<b>Вопрос 6</b> \n«Мне очень грустно. Этот чизкейк явно меня порадует». Съесть вкусное, когда грустно. Как тебе такой план?",
         options=["Нормальный план, это работает", "Мою грусть сладости и фастфуд не лечат"],
-        correct_option_id=1,
+        correct_option_id=0,
         is_anonymous=False,
         type="quiz",
         explanation="Это и правда работает! Но лучше искать источники радости не только в еде, но и в общении, движении, разных хобби."
@@ -135,7 +135,7 @@ async def process_l5_step_8(poll_answer, state):
         chat_id=poll_answer.user.id,
         question="<b>Вопрос 7</b> \nПора в гости к родным. Застолье. Наложили полную тарелку, хотя есть не хочется. Твои действия?",
         options=["Поем. Отказываться — себе дороже", "Наберусь терпения и объясню, что не хочу есть"],
-        correct_option_id=2,
+        correct_option_id=1,
         is_anonymous=False,
         type="quiz",
         explanation="Нутри знает, как сложно отказать маме, бабушке или тёте! Но это важно делать, чтобы заботиться о себе."
