@@ -110,6 +110,10 @@ class LessonStates5(StatesGroup):
     step_4 = State()
     step_5 = State()
     step_6 = State()
+    step_7 = State()
+    step_8 = State()
+    step_9 = State()
+    step_10 = State()
     step_11 = State()
     step_12 = State()
     step_13 = State()
@@ -526,6 +530,38 @@ async def main_process_l5_step_2(poll_answer: types.PollAnswer, state: FSMContex
 async def main_process_l5_step_3(poll_answer: types.PollAnswer, state: FSMContext):
     await process_l5_step_4(poll_answer, state)
 
+@router.poll_answer(StateFilter(LessonStates5.step_5), lambda c: True)
+async def main_process_l5_step_4(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l5_step_5(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates5.step_6), lambda c: True)
+async def main_process_l5_step_5(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l5_step_6(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates5.step_7), lambda c: True)
+async def main_process_l5_step_6(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l5_step_7(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates5.step_8), lambda c: True)
+async def main_process_l5_step_7(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l5_step_8(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates5.step_9), lambda c: True)
+async def main_process_l5_step_8(callback_query: types.callback_query, state: FSMContext):
+    await process_l5_step_9(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates5.step_10), lambda c: True)
+async def main_process_l5_step_9(callback_query: types.callback_query, state: FSMContext):
+    await process_l5_step_10(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates5.step_12), lambda c: True)
+async def main_process_l5_step_11(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "1":
+       await process_l5_step_12(callback_query, state)
+    elif callback_query.data == "2":
+       await process_l5_step_12_2(callback_query, state)
+    elif callback_query.data == "3":
+       await process_l5_step_12_3(callback_query, state)
 
 ################## LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 #################
 
@@ -559,6 +595,13 @@ async def main_process_l5_step_3(poll_answer: types.PollAnswer, state: FSMContex
 #             ])
 #         )
 
+
+# await bot.send_poll(
+#         chat_id=poll_answer.user.id,
+#         question="Викторина 2: Какой фреймворк вы используете?",
+#         options=["Django", "Flask", "FastAPI", "Aiogram"],
+#         is_anonymous=False
+#     )
 
 
 ################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
