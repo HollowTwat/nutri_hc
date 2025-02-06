@@ -189,7 +189,7 @@ def parse_meal_data(response_json):
     data = json.loads(response_json)
     
     meal_id = data.get("MealId")
-    pretty = data.get("pretty")
+    pretty = data["pretty"] if "pretty" in data else None
     food_items = []
     
     for item in data.get("Meal", {}).get("food", []):
@@ -218,7 +218,6 @@ async def get_singe_meal(id, date, mealtype):
         try:
             async with session.post(url=url, data=meal_data, headers=req_headers) as response:
                 data = await response.text()
-                # data = json.loads(answer)
                 meal_id, pretty, food_items = parse_meal_data(data)
                 return meal_id, pretty, food_items
         except aiohttp.ClientError as e:
