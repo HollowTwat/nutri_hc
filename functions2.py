@@ -221,7 +221,7 @@ async def get_singe_meal(id, date, mealtype):
         try:
             async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
                 data = await response.text()
-                print(f".text= {await response.text()}, \n.json= {await response.json()}")
+                # print(f".text= {await response.text()}, \n.json= {await response.json()}")
                 meal_id, pretty, food_items = parse_meal_data(data)
                 return meal_id, pretty, food_items
         except aiohttp.ClientError as e:
