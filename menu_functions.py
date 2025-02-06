@@ -65,7 +65,7 @@ async def menu_cb_handler(callback_query, state) -> None:
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "Меню"
-    await callback_query.message.answer(step0txt, reply_markup=keyboard)
+    await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
 
 async def process_menu_course(message, state):
     buttons = [

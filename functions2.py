@@ -223,11 +223,11 @@ async def get_singe_meal(id, date, mealtype):
             async with session.post(url=url, data=meal_data, headers=req_headers) as response:
                 # data = await response.text()
                 data = await response.json()
-                print(f".text= {response.text()}, \n.json= {response.json()}")
+                print(f".text= {await response.text()}, \n.json= {await response.json()}")
                 meal_id, pretty, food_items = parse_meal_data(data)
                 return meal_id, pretty, food_items
         except aiohttp.ClientError as e:
-            print(e)
+            print(f"Поймали ошибку{e}")
 
 async def delete_meal(id, meal_id):
     url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/DeleteMeal?mealId={id}&userTgId={meal_id}"
