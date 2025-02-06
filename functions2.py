@@ -159,7 +159,7 @@ async def edit_audio_rec(message, state, text, buttons, old):
 def generate_day_buttons(data):
     buttons = []
     first = True
-    for i, day in data:
+    for i, day in enumerate(data):
         emote = "⭕️" if day["isEmpty"] else "✅"
 
         display_day = "Сегодня" if i == len(data) - 1 else day["DisplayDay"][:5]
