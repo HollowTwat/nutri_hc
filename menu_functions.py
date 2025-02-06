@@ -174,7 +174,7 @@ async def process_menu_dnevnik_edit(callback_query, state):
                     data = await response.json()
                     await state.update_data(data=data)
             except aiohttp.ClientError as e:
-                await callback_query.edit_text(f"Error fetching data: {str(e)}")
+                await callback_query.message.edit_text(f"Error fetching data: {str(e)}")
                 return
     else:
         user_data = await state.get_data()
