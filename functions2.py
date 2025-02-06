@@ -222,3 +222,13 @@ async def get_singe_meal(id, date, mealtype):
                 return meal_id, pretty, food_items
         except aiohttp.ClientError as e:
             print(e)
+
+async def delete_meal(id, meal_id):
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/DeleteMeal?mealId={id}&userTgId={meal_id}"
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url) as response:
+                data = await response.text()
+                return meal_id
+        except aiohttp.ClientError as e:
+            print(e)

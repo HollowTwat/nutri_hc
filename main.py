@@ -368,7 +368,7 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
         ]
         await callback_query.message.edit_text("У тебя нету занесенного приема пищи за эту дату, заносим?", reply_markup=InlineKeyboardMarkup(buttons))
         pass
-    meal_id, pretty, food_items = get_singe_meal(id, date, meal_type)
+    meal_id, pretty, food_items = await get_singe_meal(id, date, meal_type)
     await state.update_data(old_food=food_items)
     buttons = [
         [InlineKeyboardButton(text="Да_INDEV", callback_data="yes_change")],
