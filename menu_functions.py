@@ -171,7 +171,8 @@ async def process_menu_dnevnik_edit(callback_query, state):
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(API_URL) as response:
-                    data = await response.json()
+                    text_data = await response.text()
+                    data = json.loads(text_data)
                     await state.update_data(data=data)
             except aiohttp.ClientError as e:
                 await callback_query.message.edit_text(f"Error fetching data: {str(e)}")
