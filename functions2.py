@@ -230,6 +230,7 @@ async def get_singe_meal(id, date, mealtype):
 
 async def delete_meal(id, meal_id):
     url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/DeleteMeal?mealId={id}&userTgId={meal_id}"
+    print(url)
     async with aiohttp.ClientSession() as session:
         try:
             async with session.post(url=url) as response:
