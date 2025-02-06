@@ -35,7 +35,7 @@ async def prettify_and_count(data, detailed_format=True):
         return True, [], "Ошибка в данных"
 
     json_data = json.loads(data)
-    print(json_data)
+    # print(json_data)
 
     if detailed_format:
         if not json_data.get("food", []):

@@ -188,7 +188,7 @@ def generate_meal_buttons(data, day):
 def parse_meal_data(response_json):
     # print(response_json)
     data = json.loads(response_json)
-    print(data)
+    # print(data)
     
     meal_id = data.get("MealId")
     # pretty = data["pretty"] if "pretty" in data else None
@@ -216,7 +216,7 @@ async def get_singe_meal(id, date, mealtype):
     req_headers = {
         "Content-Type": "application/json"
     }
-    print(f"url={url}, \ndata = {meal_data}, \nheaders={meal_data}")
+    # print(f"url={url}, \ndata = {meal_data}, \nheaders={meal_data}")
     async with aiohttp.ClientSession() as session:
         try:
             async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
