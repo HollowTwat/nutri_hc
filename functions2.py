@@ -157,28 +157,30 @@ async def edit_audio_rec(message, state, text, buttons, old):
 
 
 def generate_day_buttons(data):
-    keyboard = InlineKeyboardMarkup()
+    buttons = []
     for day in data:
         emote = "⭕️" if day["isEmpty"] else "✅"
         text = f"{emote} {day['DisplayDay'][:5]} - {day['TotalKkal']} ккал"
         callback_data = f"day_{day['DisplayDay']}"
-        keyboard.add(InlineKeyboardButton(text, callback_data=callback_data))
-    keyboard.add(InlineKeyboardButton("🔼", callback_data="menu"), InlineKeyboardButton("◀️", callback_data="menu_dnevnik"))
+        buttons.append(InlineKeyboardButton(text=text, callback_data=callback_data))
+    buttons.append(InlineKeyboardButton(text="🔼", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik"))
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[buttons])
     return keyboard
 
 def generate_meal_buttons(data, day):
     meal_mapping = {0: "Завтрак", 2: "Обед", 4: "Ужин", 5: "Перекус"}
-    keyboard = InlineKeyboardMarkup()
+    buttons = []
     
     day_data = next((d for d in data if d["DisplayDay"] == day), None)
     if not day_data:
-        return keyboard
+        return None
     
     for meal in day_data["MealStatus"]:
         if meal["Type"] in meal_mapping:
             emote = "⭕️" if meal["isEmpty"] else "✅"
             text = f"{emote} {meal_mapping[meal['Type']]}"
             callback_data = f"meal_{day}_{meal['Type']}"
-            keyboard.add(InlineKeyboardButton(text, callback_data=callback_data))
-    keyboard.add(InlineKeyboardButton("🔼", callback_data="menu"), InlineKeyboardButton("◀️", callback_data="menu_dnevnik_edit_same"))
+            buttons.append(InlineKeyboardButton(text, callback_data=callback_data))
+    buttons.append(InlineKeyboardButton("🔼", callback_data="menu"), InlineKeyboardButton("◀️", callback_data="menu_dnevnik_edit_same"))
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[buttons])
     return keyboard
