@@ -158,11 +158,16 @@ async def edit_audio_rec(message, state, text, buttons, old):
 
 def generate_day_buttons(data):
     buttons = []
+    first = True
     for day in data:
         emote = "⭕️" if day["isEmpty"] else "✅"
-        text = f"{emote} {day['DisplayDay'][:5]} - {day['TotalKkal']} ккал"
+        
+        display_day = "Сегодня" if first else day['DisplayDay'][:5]
+        first = False
+
+        text = f"{emote} {display_day} - {day['TotalKkal']} ккал"
         callback_data = f"day_{day['DisplayDay']}"
-        buttons.append([InlineKeyboardButton(text=text, callback_data=callback_data)])
+        buttons.insert(0,[InlineKeyboardButton(text=text, callback_data=callback_data)])
     buttons.append([InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik")])
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
@@ -221,7 +226,6 @@ async def get_singe_meal(id, date, mealtype):
         try:
             async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
                 data = await response.text()
-                # print(f".text= {await response.text()}, \n.json= {await response.json()}")
                 meal_id, food_items = parse_meal_data(data)
                 iserror, food_pretty_items, pretty = await prettify_and_count(data, detailed_format=False)
                 return meal_id, pretty, food_items

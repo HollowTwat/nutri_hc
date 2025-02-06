@@ -386,7 +386,7 @@ async def delete_meal_selected(callback_query: types.CallbackQuery, state: FSMCo
     Iserror, response = await delete_meal(id, meal_id)
     print(f"{Iserror}, {response}")
     buttons = [
-        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik_edit_same")]
+        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik_edit")]
     ]
     if Iserror : 
         await callback_query.message.edit_text("Что-то пошло не так", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
