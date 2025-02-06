@@ -172,16 +172,16 @@ async def process_menu_dnevnik_edit(callback_query, state):
             try:
                 async with session.get(API_URL) as response:
                     text_data = await response.text()
-                    data = json.loads(text_data)
-                    await state.update_data(data=data)
+                    meal_data = json.loads(text_data)
+                    await state.update_data(meal_data=meal_data)
             except aiohttp.ClientError as e:
                 await callback_query.message.edit_text(f"Error fetching data: {str(e)}")
                 return
     else:
         user_data = await state.get_data()
-        data = user_data.get("data", [])
+        meal_data = user_data.get("meal_data", [])
 
-    await callback_query.message.edit_text("Выбирай день", reply_markup=generate_day_buttons(data))
+    await callback_query.message.edit_text("Выбирай день", reply_markup=generate_day_buttons(meal_data))
 
 async def process_menu_dnevnik_analysis(callback_query, state):
     buttons = [

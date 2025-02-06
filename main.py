@@ -349,9 +349,9 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
 async def day_selected(callback_query: types.CallbackQuery, state: FSMContext):
     day = callback_query.data.split("_")[1]
     user_data = await state.get_data()
-    data = user_data.get("data", [])
+    meal_data = user_data.get("meal_data", [])
     
-    await callback_query.message.edit_text(callback_query.from_user.id, f"Выбрана дата: {day}", reply_markup=generate_meal_buttons(data, day))
+    await callback_query.message.edit_text(callback_query.from_user.id, f"Выбрана дата: {day}", reply_markup=generate_meal_buttons(meal_data, day))
 
 
 ################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
