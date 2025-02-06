@@ -40,9 +40,13 @@ async def prettify_and_count(data, detailed_format=True):
     if detailed_format:
         if not json_data.get("food", []):
             return True, [], "Не могу найти еду"
+        food = json_data["food"]
+    elif not detailed_format:
+        food = json_data.get("Meal", {}).get("food", [])
 
     pretty_list = []
-    for item in json_data["food"]:
+    # for item in json_data["food"]:
+    for item in food:
         nutritional_value = item["nutritional_value"]
         fats = round(nutritional_value["fats"])
         carbs = round(nutritional_value["carbs"])
