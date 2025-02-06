@@ -229,8 +229,8 @@ async def get_singe_meal(id, date, mealtype):
             print(f"Поймали ошибку{e}")
 
 async def delete_meal(id, meal_id):
-    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/DeleteMeal?mealId={id}&userTgId={meal_id}"
-    print(url)
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/DeleteMeal?mealId={meal_id}&userTgId={id}"
+    # print(url)
     async with aiohttp.ClientSession() as session:
         try:
             async with session.post(url=url) as response:
