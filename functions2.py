@@ -220,7 +220,7 @@ async def get_singe_meal(id, date, mealtype):
     print(f"url={url}, \ndata = {meal_data}, \nheaders={meal_data}")
     async with aiohttp.ClientSession() as session:
         try:
-            async with session.post(url=url, data=meal_data, headers=req_headers) as response:
+            async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
                 # data = await response.text()
                 data = await response.json()
                 print(f".text= {await response.text()}, \n.json= {await response.json()}")
