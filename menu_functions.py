@@ -166,9 +166,8 @@ async def process_menu_dnevnik_input(callback_query, state):
 async def process_menu_dnevnik_edit(callback_query, state):
     if callback_query.data == "menu_dnevnik_edit":
         await state.set_state(UserState.edit)
-        id = callback_query.from_user.id
+        id = str(callback_query.from_user.id)
         API_URL = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserWeekMealsStatus?userTgId={id}"
-        print(API_URL)
         async with aiohttp.ClientSession() as session:
             async with session.get(API_URL) as response:
                 data = await response.json()
