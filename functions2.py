@@ -212,16 +212,18 @@ async def get_singe_meal(id, date, mealtype):
     meal_data = {
         "userTgId": f"{id}",
         "dayStr": f"{date}",
-        "typemeal": f"{mealtype}"
+        "typemeal": f"{mealtype}",
     }
     req_headers = {
         "Content-Type": "application/json"
     }
+    print(f"url={url}, \ndata = {meal_data}, \nheaders={meal_data}")
     async with aiohttp.ClientSession() as session:
         try:
             async with session.post(url=url, data=meal_data, headers=req_headers) as response:
                 # data = await response.text()
                 data = await response.json()
+                print(f".text= {response.text()}, \n.json= {response.json()}")
                 meal_id, pretty, food_items = parse_meal_data(data)
                 return meal_id, pretty, food_items
         except aiohttp.ClientError as e:
