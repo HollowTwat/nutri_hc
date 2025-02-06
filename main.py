@@ -365,7 +365,7 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
         buttons = [
             [InlineKeyboardButton(text="Нет, выбрать другую дату", callback_data="menu_dnevnik_edit_same")],
             [InlineKeyboardButton(text="Да, заносим (В разработке)", callback_data="menu")],
-            [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"{callback_query.data}")]
+            [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
         ]
         await callback_query.message.edit_text("У тебя нету занесенного приема пищи за эту дату, заносим?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         pass
@@ -375,7 +375,7 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
         [InlineKeyboardButton(text="Да_INDEV", callback_data="yes_change")],
         [InlineKeyboardButton(text="Удалить", callback_data=f"deletemeal_{meal_id}")],
         [InlineKeyboardButton(text="Выбрать другой день", callback_data="menu_dnevnik_edit_same")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=callback_query.data)]
+        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
     ]
     await callback_query.message.edit_text(f"{pretty} \n\nМеняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
