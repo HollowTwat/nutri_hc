@@ -24,16 +24,7 @@ import json
 
 from functions import *
 from functions2 import *
-
-class UserState(StatesGroup):
-    info_coll = State()
-    recognition = State()
-    redact = State()
-    yapp_new = State()
-    yapp = State()
-    menu = State()
-    saving_confirmation = State()
-    saving = State()
+from main import UserState
 
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 
@@ -93,7 +84,7 @@ async def process_menu_course(message, state):
 async def process_menu_dnevnik(message, state):
     buttons = [
         [InlineKeyboardButton(text="🍽 Занести в дневник", callback_data="menu_dnevnik_input")],
-        [InlineKeyboardButton(text="🔄Редактировать", callback_data="menu_dnevnik_redact")],
+        [InlineKeyboardButton(text="🔄Редактировать", callback_data="menu_dnevnik_edit")],
         [InlineKeyboardButton(text="📊 Аналитика", callback_data="menu_dnevnik_analysis")],
         [InlineKeyboardButton(text="📸 Инструкция", callback_data="menu_dnevnik_instruction")],
         [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
@@ -172,9 +163,20 @@ async def process_menu_dnevnik_input(callback_query, state):
     step0txt = "Отправь фото еды.\nТакже можешь воспользоваться 🎤 аудио или ввести текстом в формате:\n<i>Яичница из 2 яиц, чай без сахара</i>"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
-async def process_menu_dnevnik_redact(callback_query, state):
-    step0txt = "in dev"
-    await callback_query.message.edit_text(step0txt, reply_markup=None)
+async def process_menu_dnevnik_edit(callback_query, state):
+    if callback_query.data == "menu_dnevnik_edit":
+        await state.set_state(UserState.edit)
+        id = callback_query.from_user.id
+        API_URL = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserWeekMealsStatus?userTgId={id}"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(API_URL) as response:
+                data = await response.json()
+                await state.update_data(data=data)
+    else:
+        user_data = await state.get_data()
+        data = user_data.get("data", [])
+
+    await callback_query.message.edit_text("Выбирай день", reply_markup=generate_day_buttons(data))
 
 async def process_menu_dnevnik_analysis(callback_query, state):
     buttons = [
