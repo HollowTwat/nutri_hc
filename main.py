@@ -518,7 +518,7 @@ async def main_process_l5_step_1(callback_query: types.CallbackQuery, state: FSM
     elif callback_query.data == "stop":
        await process_l5_step_2_2(callback_query, state)
 
-@router.callback_query(StateFilter(LessonStates5.step_3), lambda c: True)
+@router.poll_answer(StateFilter(LessonStates5.step_3), lambda c: True)
 async def main_process_l5_step_2(poll_answer: types.PollAnswer, state: FSMContext):
     await process_l5_step_3(poll_answer, state)
 
