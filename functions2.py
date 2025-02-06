@@ -191,7 +191,7 @@ def parse_meal_data(response_json):
     print(data)
     
     meal_id = data.get("MealId")
-    pretty = data["pretty"] if "pretty" in data else None
+    # pretty = data["pretty"] if "pretty" in data else None
     food_items = []
     
     for item in data.get("Meal", {}).get("food", []):
@@ -204,7 +204,7 @@ def parse_meal_data(response_json):
             "kcal": item["nutritional_value"].get("kcal")
         })
     
-    return meal_id, pretty, food_items
+    return meal_id, food_items
 
 async def get_singe_meal(id, date, mealtype):
     url = "https://nutridb-production.up.railway.app/api/TypesCRUD/GetSingleUserMeal"
@@ -222,7 +222,8 @@ async def get_singe_meal(id, date, mealtype):
             async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
                 data = await response.text()
                 # print(f".text= {await response.text()}, \n.json= {await response.json()}")
-                meal_id, pretty, food_items = parse_meal_data(data)
+                meal_id, food_items = parse_meal_data(data)
+                pretty = await prettify_and_count(food_items, detailed_format=True)
                 return meal_id, pretty, food_items
         except aiohttp.ClientError as e:
             print(f"Поймали ошибку{e}")
