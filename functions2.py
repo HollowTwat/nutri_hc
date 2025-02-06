@@ -223,7 +223,7 @@ async def get_singe_meal(id, date, mealtype):
                 data = await response.text()
                 # print(f".text= {await response.text()}, \n.json= {await response.json()}")
                 meal_id, food_items = parse_meal_data(data)
-                pretty = await prettify_and_count(data, detailed_format=True)
+                iserror, food_pretty_items, pretty = await prettify_and_count(data, detailed_format=False)
                 return meal_id, pretty, food_items
         except aiohttp.ClientError as e:
             print(f"Поймали ошибку{e}")

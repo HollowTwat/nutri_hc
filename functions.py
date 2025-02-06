@@ -35,9 +35,11 @@ async def prettify_and_count(data, detailed_format=True):
         return True, [], "Ошибка в данных"
 
     json_data = json.loads(data)
+    print(json_data)
 
-    if not json_data.get("food", []):
-        return True, [], "Не могу найти еду"
+    if detailed_format:
+        if not json_data.get("food", []):
+            return True, [], "Не могу найти еду"
 
     pretty_list = []
     for item in json_data["food"]:
@@ -46,10 +48,10 @@ async def prettify_and_count(data, detailed_format=True):
         carbs = round(nutritional_value["carbs"])
         protein = round(nutritional_value["protein"])
         
-        if detailed_format:
-            kcal = round(nutritional_value["kcal"])
-        else:
-            kcal = round(fats * 9 + carbs * 4 + protein * 4)
+        # if detailed_format:
+        kcal = round(nutritional_value["kcal"])
+        # else:
+        #     kcal = round(fats * 9 + carbs * 4 + protein * 4)
 
         pretty_str = (
             f"{item['description']} {item['weight']} г:</b>\n"
