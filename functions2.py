@@ -14,6 +14,7 @@ import random
 from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, html, Router, BaseMiddleware, types
 from aiogram.enums import ParseMode
+from aiogram.fsm.state import State, StatesGroup
 from aiogram.client.default import DefaultBotProperties
 from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo
 BOT_TOKEN = os.getenv("BOT_TOKEN")
@@ -26,7 +27,17 @@ bot = Bot(token=TOKEN, default=DefaultBotProperties(
 
 
 from functions import *
-from main import UserState
+
+class UserState(StatesGroup):
+    info_coll = State()
+    recognition = State()
+    redact = State()
+    edit = State()
+    yapp_new = State()
+    yapp = State()
+    menu = State()
+    saving_confirmation = State()
+    saving = State()
 
 debug = 0
 
