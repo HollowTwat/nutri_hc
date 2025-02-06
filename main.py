@@ -552,8 +552,7 @@ async def main_process_l5_step_8(poll_answer: types.PollAnswer, state: FSMContex
 
 @router.callback_query(StateFilter(LessonStates5.step_10), lambda c: True)
 async def main_process_l5_step_9(callback_query: types.CallbackQuery, state: FSMContext):
-    await callback_query.answer(url="https://telegra.ph/EHmocii-i-ustanovki-kak-psihika-upravlyaet-nashim-pitaniem-08-09")
-    await process_l5_step_10(callback_query, state)
+    await main_menu_cb_handler(callback_query, state)
 
 @router.callback_query(StateFilter(LessonStates5.step_12), lambda c: True)
 async def main_process_l5_step_11(callback_query: types.CallbackQuery, state: FSMContext):
