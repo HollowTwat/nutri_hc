@@ -180,7 +180,7 @@ def generate_meal_buttons(data, day):
             emote = "⭕️" if meal["isEmpty"] else "✅"
             text = f"{emote} {meal_mapping[meal['Type']]}"
             callback_data = f"meal_{day}_{meal['Type']}"
-            buttons.append([InlineKeyboardButton(text, callback_data=callback_data)])
-    buttons.append([InlineKeyboardButton("🔼", callback_data="menu"), InlineKeyboardButton("◀️", callback_data="menu_dnevnik_edit_same")])
+            buttons.append([InlineKeyboardButton(text=text, callback_data=callback_data)])
+    buttons.append([InlineKeyboardButton(text="🔼", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik_edit_same")])
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
