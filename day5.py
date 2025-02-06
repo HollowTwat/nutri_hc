@@ -48,24 +48,10 @@ async def process_l5_step_1(callback_query, state):
 
 async def process_l5_step_2(callback_query, state):
     await state.set_state(LessonStates5.step_3)
-    
-    
-    
     await bot.send_poll(
         chat_id=callback_query.message.chat.id,
         question="Викторина 1: Какой язык программирования вы используете?",
         options=["Python", "JavaScript", "C++"],
-        is_anonymous=False
-    )
-    
-    await callback_query.answer()
-
-async def process_l5_step_3(callback_query, state):
-    await state.set_state(LessonStates5.step_4)
-    await bot.send_poll(
-        chat_id=callback_query.message.chat.id,
-        question="Викторина 2: Какой фреймворк вы используете?",
-        options=["Django", "Flask", "FastAPI", "Aiogram"],
         is_anonymous=False
     )
     await callback_query.answer()
@@ -76,3 +62,23 @@ async def process_l5_step_2_2(callback_query, state):
         "Принято! Поиграем завтра. \n\nНо для дневника питания выходных не бывает. Заполняй его после каждого приёма пищи. Так я, возможно, смогу заметить вредные пищевые привычки за тебя и помогу их исправить 🍏",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
     await callback_query.answer()
+
+async def process_l5_step_3(poll_answer, state):
+    await state.set_state(LessonStates5.step_4)
+    
+    await bot.send_poll(
+        chat_id=poll_answer.message.chat.id,
+        question="Викторина 2: Какой фреймворк вы используете?",
+        options=["Django", "Flask", "FastAPI", "Aiogram"],
+        is_anonymous=False
+    )
+
+async def process_l5_step_4(poll_answer, state):
+    await state.set_state(LessonStates5.step_4)
+    
+    await bot.send_poll(
+        chat_id=poll_answer.message.chat.id,
+        question="Викторина 2",
+        options=["Django", "Flask", "FastAPI", "Aiogram"],
+        is_anonymous=False
+    )
