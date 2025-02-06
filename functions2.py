@@ -179,8 +179,46 @@ def generate_meal_buttons(data, day):
         if meal["Type"] in meal_mapping:
             emote = "⭕️" if meal["isEmpty"] else "✅"
             text = f"{emote} {meal_mapping[meal['Type']]}"
-            callback_data = f"meal_{day}_{meal['Type']}"
+            callback_data = f"meal_{meal["isEmpty"]}_{day}_{meal['Type']}"
             buttons.append([InlineKeyboardButton(text=text, callback_data=callback_data)])
     buttons.append([InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik_edit_same")])
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
+
+def parse_meal_data(response_json):
+    data = json.loads(response_json)
+    
+    meal_id = data.get("MealId")
+    pretty = data.get("pretty")
+    food_items = []
+    
+    for item in data.get("Meal", {}).get("food", []):
+        food_items.append({
+            "description": item.get("description"),
+            "weight": item.get("weight"),
+            "fats": item["nutritional_value"].get("fats"),
+            "carbs": item["nutritional_value"].get("carbs"),
+            "protein": item["nutritional_value"].get("protein"),
+            "kcal": item["nutritional_value"].get("kcal")
+        })
+    
+    return meal_id, pretty, food_items
+
+async def get_singe_meal(id, date, mealtype):
+    url = "https://nutridb-production.up.railway.app/api/TypesCRUD/GetSingleUserMeal"
+    meal_data = {
+        "userTgId": id,
+        "dayStr": date,
+        "typemeal": mealtype
+    }
+    req_headers = {
+        "Content-Type": "application/json"
+    }
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url, data=meal_data, headers=req_headers) as response:
+                data = await response.json()
+                meal_id, pretty, food_items = parse_meal_data(data)
+                return meal_id, pretty, food_items
+        except aiohttp.ClientError as e:
+            print(e)

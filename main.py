@@ -354,6 +354,31 @@ async def day_selected(callback_query: types.CallbackQuery, state: FSMContext):
     await callback_query.message.edit_text(f"Выбрана дата: {day}", reply_markup=generate_meal_buttons(meal_data, day))
 
 
+@router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("meal_"))
+async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
+    id = str(callback_query.from_user.id)
+    isEmpty = callback_query.data.split("_")[1]
+    date = callback_query.data.split("_")[2]
+    meal_type = callback_query.data.split("_")[3]
+    if isEmpty:
+        buttons = [
+            [InlineKeyboardButton(text="Нет, выбрать другую дату", callback_data="menu_dnevnik_edit_same")],
+            [InlineKeyboardButton(text="Да, заносим (В разработке)", callback_data="menu")],
+            [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=callback_query.data)]
+        ]
+        await callback_query.message.edit_text("У тебя нету занесенного приема пищи за эту дату, заносим?", reply_markup=InlineKeyboardMarkup(buttons))
+        pass
+    meal_id, pretty, food_items = get_singe_meal(id, date, meal_type)
+    await state.update_data(old_food=food_items)
+    buttons = [
+        [InlineKeyboardButton(text="Да_INDEV", callback_data="yes_change")],
+        [InlineKeyboardButton(text="Удалить", callback_data=f"deletemeal_{meal_id}")],
+        [InlineKeyboardButton(text="Выбрать другой день", callback_data="menu_dnevnik_edit_same")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=callback_query.data)]
+    ]
+    await callback_query.message.edit_text(f"{pretty} \n\nМеняем?", reply_markup=InlineKeyboardMarkup(buttons))
+
+
 ################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
