@@ -149,7 +149,6 @@ async def process_l5_step_9(callback_query, state):
             [InlineKeyboardButton(text="Читать текст про пищевые привычки", url="https://telegra.ph/EHmocii-i-ustanovki-kak-psihika-upravlyaet-nashim-pitaniem-08-09", callback_data="next")]
         ])
     )
-    await callback_query.answer()
 
 async def process_l5_step_10(callback_query, state):
     await state.clear()

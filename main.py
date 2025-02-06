@@ -547,8 +547,8 @@ async def main_process_l5_step_7(poll_answer: types.PollAnswer, state: FSMContex
     await process_l5_step_8(poll_answer, state)
 
 @router.poll_answer(StateFilter(LessonStates5.step_9), lambda c: True)
-async def main_process_l5_step_8(callback_query: types.CallbackQuery, state: FSMContext):
-    await process_l5_step_9(callback_query, state)
+async def main_process_l5_step_8(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l5_step_9(poll_answer, state)
 
 @router.callback_query(StateFilter(LessonStates5.step_10), lambda c: True)
 async def main_process_l5_step_9(callback_query: types.CallbackQuery, state: FSMContext):
