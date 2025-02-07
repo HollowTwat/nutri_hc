@@ -514,13 +514,29 @@ async def dnevnik_functional(message: Message, state: FSMContext):
 async def state_switch(callback_query: CallbackQuery, state: FSMContext):
     edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
     if callback_query.data == "redact":
-        await state.set_state(UserState.redact)
+        await state.set_state(UserState.edit_redact)
         await callback_query.message.edit_text(edit_text, reply_markup=None)
     elif callback_query.data == "save":
         state_data = state.get_data()
         meal_id = state_data["meal_id"]
         saving_text = f"Тут будет сохранение поверх приема пищи с id {meal_id}"
         await callback_query.message.edit_text(saving_text)
+
+@router.message(StateFilter(UserState.redact))
+async def dnevnik_functional_edit(message: Message, state: FSMContext):
+    edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
+    confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
+    buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
+               [InlineKeyboardButton(text="Все хорошо", callback_data="save")]]
+    if message.photo:
+        await message.answer(edit_text)
+    elif message.voice:
+        await process_audio_rec(message, state, confirm_text, buttons)
+        await state.set_state(UserState.saving_confirmation)
+    elif message.text:
+        await process_txt_rec(message, state, confirm_text, buttons)
+        await state.set_state(UserState.saving_confirmation)
+    else: message.answer("0_o")
 
 ################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
 
