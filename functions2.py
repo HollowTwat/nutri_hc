@@ -143,6 +143,7 @@ async def edit_txt_rec(message, state, text, buttons):
     id = str(message.from_user.id)
     state_data = await state.get_data()
     old = state_data["old_food"]
+    await remove_thread(id)
     request_mssg = f"Старый прием пищи: {old}, измени его вот так: {message.text}"
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
@@ -156,6 +157,7 @@ async def edit_txt_rec(message, state, text, buttons):
 async def edit_audio_rec(message, state, text, buttons):
     id = str(message.from_user.id)
     transcription = await audio_file(message.voice.file_id)
+    await remove_thread(id)
     state_data = await state.get_data()
     old = state_data["old_food"]
     request_mssg = f"Старый прием пищи: {old}, измени его вот так: {transcription}"
