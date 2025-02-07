@@ -445,7 +445,7 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
     if isEmpty == "True":
         buttons = [
             [InlineKeyboardButton(text="Нет, выбрать другую дату", callback_data="menu_dnevnik_edit_same")],
-            [InlineKeyboardButton(text="Да, заносим (В разработке)", callback_data="menu_dnevnik_edit_add")],
+            [InlineKeyboardButton(text="Да, заносим (В разработке)", callback_data="menu_dnevnik_add_edit")],
             [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
         ]
         await callback_query.message.edit_text("У тебя нету занесенного приема пищи за эту дату, заносим?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
@@ -478,7 +478,7 @@ async def delete_meal_selected(callback_query: types.CallbackQuery, state: FSMCo
     elif response == "false": 
         await callback_query.message.edit_text("Не вышло удалить", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
-@router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("menu_dnevnik_edit_add"))
+@router.callback_query(StateFilter(UserState.edit), lambda c: c.data == "menu_dnevnik_add_edit")
 async def edit_new_await(callback_query: types.CallbackQuery, state: FSMContext):
     step0txt = "Отправь фото еды.\nТакже можешь воспользоваться 🎤 аудио или ввести текстом в формате:\n<i>Яичница из 2 яиц, чай без сахара</i>"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
@@ -492,7 +492,7 @@ async def edit_newmeal(message: Message, state: FSMContext):
 async def edit_new_await(callback_query: types.CallbackQuery, state: FSMContext):
     mssg_txt = "Говори/пиши что менять"
     await callback_query.message.edit_text(mssg_txt, reply_markup=None)
-    await state.set_state(UserState.edit_edit_rec)
+    await state.set_state(UserState.edit_rec)
 
 @router.message(StateFilter(UserState.edit_rec))
 async def dnevnik_functional(message: Message, state: FSMContext):
