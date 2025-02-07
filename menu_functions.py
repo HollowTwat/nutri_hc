@@ -24,7 +24,7 @@ import json
 
 from functions import *
 from functions2 import *
-from main import UserState
+from all_states import  UserState
 
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 

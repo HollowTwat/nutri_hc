@@ -45,14 +45,7 @@ IMG24 = "AgACAgIAAxkBAAOKZ5lqZPe6Pig-jyBsS-mnTlcKWdcAAt7lMRsKINBId15BAtofSuMBAAM
 IMG25 = "AgACAgIAAxkBAAOOZ5lqbQMNjlkvwVPBHdCjCHnNxdcAAt_lMRsKINBILN6hWWTxqjcBAAMCAAN5AAM2BA"
 IMG26 = "AgACAgIAAxkBAAOSZ5lqda_vGmPtm6iVpMD1rWuETIgAAuDlMRsKINBIbcF15g8QCjMBAAMCAAN5AAM2BA"
 
-class LessonStates(StatesGroup):
-    step_1 = State()
-    step_2 = State()
-    step_3 = State()
-    step_4 = State()
-    step_5 = State()
-    step_6 = State()
-    step_7 = State()
+from all_states import LessonStates
 
 async def process_step_1(callback_query, state):
     await state.set_state(LessonStates.step_2)

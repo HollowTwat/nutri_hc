@@ -50,16 +50,7 @@ IMG20 = "AgACAgIAAxkBAAICAAFno9tNHqBoD6gPsX19BRK-fM3uKQAC0egxG7x4GElJz7snEJs-lwE
 
 
 
-class LessonStates3(StatesGroup):
-    step_1 = State()
-    step_2 = State()
-    step_3 = State()
-    step_4 = State()
-    step_5 = State()
-    step_6 = State()
-    step_11 = State()
-    step_12 = State()
-    step_13 = State()
+from all_states import LessonStates3
 
 
 

@@ -28,27 +28,7 @@ bot = Bot(token=TOKEN, default=DefaultBotProperties(
 
 from functions import *
 
-class LayoverState(StatesGroup):
-    recognition = State()
-    redact = State()
-    saving_confirmation = State()
-    saving = State()
-
-class UserState(StatesGroup):
-    info_coll = State()
-    recognition = State()
-    redact = State()
-    edit = State()
-    edit_new = State()
-    edit_rec = State()
-    edit_redact = State()
-    edit_save_confirm = State()
-    edit_save = State()
-    yapp_new = State()
-    yapp = State()
-    menu = State()
-    saving_confirmation = State()
-    saving = State()
+from all_states import *
 
 debug = 0
 

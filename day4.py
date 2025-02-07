@@ -39,16 +39,7 @@ IMG10 = "AgACAgIAAxkBAAIC12ej8j2C38zWb727w0IvJb6iGVRlAAIL6TEbvHgYSQkJRKapjEpbAQA
 IMG11 = "AgACAgIAAxkBAAIC22ej8kN5GsmP4mueiPm438wzd-_1AAIM6TEbvHgYSQABdlyJtu-HQgEAAwIAA3kAAzYE"
 IMG12 = "AgACAgIAAxkBAAIC32ej8kc2dKkWLomvF6AnFg6m-AweAAIN6TEbvHgYSYkyavsC-YUfAQADAgADeQADNgQ"
 
-class LessonStates4(StatesGroup):
-    step_1 = State()
-    step_2 = State()
-    step_3 = State()
-    step_4 = State()
-    step_5 = State()
-    step_6 = State()
-    step_11 = State()
-    step_12 = State()
-    step_13 = State()
+from all_states import LessonStates4
 
 async def process_l4_step_1(callback_query, state):
     await state.set_state(LessonStates4.step_2)

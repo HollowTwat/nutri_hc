@@ -24,36 +24,7 @@ import json
 
 from functions import *
 from functions2 import *
-
-
-class Questionnaire(StatesGroup):
-    prefirst = State()
-    first = State()
-    mail = State()
-    name = State()
-    gender = State()
-    f_preg = State()
-    f_breastfeed = State()
-    height = State()
-    weight = State()
-    age = State()
-    water = State()
-    booze = State()
-    meals = State()
-    meals_extra = State()
-    allergies = State()
-    part3 = State()
-    jogging = State()
-    lifting = State()
-    stress = State()
-    sleep  = State()
-    goal = State()
-    w_loss = State()
-    w_loss_amount = State()
-    city = State()
-    morning_ping = State()
-    evening_ping = State()
-    community_invite = State()
+from all_states import Questionnaire
 
 IMG1 = "AgACAgIAAxkBAAIBNGeb_tu4yBOsz2-sDzPYYXUnWgzKAAIo4jEbaQvgSAw5usWAGBI6AQADAgADeQADNgQ"
 IMG2 = "AgACAgIAAxkBAAIBOGeb_uF2DBu8vwy4yAtDOuwtepHRAAIp4jEbaQvgSAcx4I3mM6pdAQADAgADeQADNgQ"

@@ -32,6 +32,7 @@ from day3 import *
 from day4 import *
 from day5 import *
 from questionnaire import *
+from all_states import *
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")                    ##ACTUALISED
 OPENAI_KEY = os.getenv("OPENAI_KEY")                  ##ACTUALISED
@@ -66,121 +67,6 @@ class StateMiddleware(BaseMiddleware):
         current_state = await state.get_state()
         data['current_state'] = current_state
         return await handler(event, data)
-
-
-class UserState(StatesGroup):
-    info_coll = State()
-    recognition = State()
-    redact = State()
-    edit = State()
-    edit_new = State()
-    edit_rec = State()
-    edit_redact = State()
-    edit_save_confirm = State()
-    edit_save = State()
-    yapp_new = State()
-    yapp = State()
-    menu = State()
-    saving_confirmation = State()
-    saving = State()
-
-class LayoverState(StatesGroup):
-    recognition = State()
-    redact = State()
-    saving_confirmation = State()
-    saving = State()
-
-class LessonStates(StatesGroup):
-    step_1 = State()
-    step_2 = State()
-    step_3 = State()
-    step_4 = State()
-    step_5 = State()
-    step_6 = State()
-    step_7 = State()
-
-class LessonStates2(StatesGroup):
-    step_1 = State()
-    step_2 = State()
-    step_3 = State()
-    step_4 = State()
-    step_5 = State()
-    step_6 = State()
-    step_7 = State()
-    step_11 = State()
-    step_12 = State()
-    step_13 = State()
-
-
-class LessonStates3(StatesGroup):
-    step_1 = State()
-    step_2 = State()
-    step_3 = State()
-    step_4 = State()
-    step_5 = State()
-    step_6 = State()
-    step_11 = State()
-    step_12 = State()
-    step_13 = State()
-
-class LessonStates4(StatesGroup):
-    step_1 = State()
-    step_2 = State()
-    step_3 = State()
-    step_4 = State()
-    step_5 = State()
-    step_6 = State()
-    step_11 = State()
-    step_12 = State()
-    step_13 = State()
-
-class LessonStates5(StatesGroup):
-    step_1 = State()
-    step_2 = State()
-    step_3 = State()
-    step_4 = State()
-    step_5 = State()
-    step_6 = State()
-    step_7 = State()
-    step_8 = State()
-    step_9 = State()
-    step_10 = State()
-    step_11 = State()
-    step_12 = State()
-    step_13 = State()
-
-class Questionnaire(StatesGroup):
-    prefirst = State()
-    first = State()
-    mail = State()
-    name = State()
-    gender = State()
-    f_preg = State()
-    f_breastfeed = State()
-    height = State()
-    weight = State()
-    age = State()
-    water = State()
-    booze = State()
-    meals = State()
-    meals_extra = State()
-    allergies = State()
-    part3 = State()
-    jogging = State()
-    lifting = State()
-    stress = State()
-    sleep  = State()
-    goal = State()
-    w_loss = State()
-    w_loss_amount = State()
-    city = State()
-    morning_ping = State()
-    evening_ping = State()
-    community_invite = State()
-
-
-class ImageUploadState(StatesGroup):
-    waiting_for_image = State()
 
 
 @router.message(CommandStart())
