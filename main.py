@@ -532,10 +532,10 @@ async def dnevnik_functional_edit(message: Message, state: FSMContext):
         await message.answer(edit_text)
     elif message.voice:
         await process_audio_rec(message, state, confirm_text, buttons)
-        await state.set_state(UserState.saving_confirmation)
+        await state.set_state(UserState.edit_save_confirm)
     elif message.text:
         await process_txt_rec(message, state, confirm_text, buttons)
-        await state.set_state(UserState.saving_confirmation)
+        await state.set_state(UserState.edit_save_confirm)
     else: message.answer("0_o")
 
 ################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
