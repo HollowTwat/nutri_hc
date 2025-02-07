@@ -522,7 +522,7 @@ async def state_switch(callback_query: CallbackQuery, state: FSMContext):
         saving_text = f"Тут будет сохранение поверх приема пищи с id {meal_id}"
         await callback_query.message.edit_text(saving_text)
 
-@router.message(StateFilter(UserState.redact))
+@router.message(StateFilter(UserState.edit_redact))
 async def dnevnik_functional_edit(message: Message, state: FSMContext):
     edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
     confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
