@@ -24,7 +24,7 @@ import json
 
 from functions import *
 from functions2 import *
-from all_states import Questionnaire
+from all_states import *
 
 IMG1 = "AgACAgIAAxkBAAIBNGeb_tu4yBOsz2-sDzPYYXUnWgzKAAIo4jEbaQvgSAw5usWAGBI6AQADAgADeQADNgQ"
 IMG2 = "AgACAgIAAxkBAAIBOGeb_uF2DBu8vwy4yAtDOuwtepHRAAIp4jEbaQvgSAcx4I3mM6pdAQADAgADeQADNgQ"

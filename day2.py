@@ -41,7 +41,7 @@ IMG10 = "AgACAgIAAxkBAAOJZ6JF25nDe-gpt_IDLtxxfaHDhggAAn3tMRundBFJ_tZtghfiAzgBAAM
 
 
 
-from all_states import LessonStates2
+from all_states import *
 
 async def process_l2_step_1(callback_query, state):
     await state.set_state(LessonStates2.step_2)

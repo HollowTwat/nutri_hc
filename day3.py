@@ -50,8 +50,7 @@ IMG20 = "AgACAgIAAxkBAAICAAFno9tNHqBoD6gPsX19BRK-fM3uKQAC0egxG7x4GElJz7snEJs-lwE
 
 
 
-from all_states import LessonStates3
-
+from all_states import *
 
 
 async def process_l3_step_1(callback_query, state):

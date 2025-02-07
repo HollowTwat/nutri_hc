@@ -25,7 +25,7 @@ import json
 from functions import *
 from functions2 import *
 
-from all_states import LessonStates5
+from all_states import *
 
 async def process_l5_step_1(callback_query, state):
     await state.set_state(LessonStates5.step_2)
