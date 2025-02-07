@@ -28,11 +28,22 @@ bot = Bot(token=TOKEN, default=DefaultBotProperties(
 
 from functions import *
 
+class LayoverState(StatesGroup):
+    recognition = State()
+    redact = State()
+    saving_confirmation = State()
+    saving = State()
+
 class UserState(StatesGroup):
     info_coll = State()
     recognition = State()
     redact = State()
     edit = State()
+    edit_new = State()
+    edit_rec = State()
+    edit_redact = State()
+    edit_save_confirm = State()
+    edit_save = State()
     yapp_new = State()
     yapp = State()
     menu = State()
@@ -93,12 +104,14 @@ async def process_img_rec(message, state, text, buttons):
         state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-        await state.set_state(UserState.saving_confirmation)
+
 
 async def process_audio_rec(message, state, text, buttons):
     id = str(message.from_user.id)
     transcription = await audio_file(message.voice.file_id)
     if await state.get_state() == UserState.recognition:
+        await remove_thread(id)
+    if await state.get_state() == LayoverState.recognition:
         await remove_thread(id)
     vision = await generate_response(transcription, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
@@ -108,11 +121,13 @@ async def process_audio_rec(message, state, text, buttons):
         state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-        await state.set_state(UserState.saving_confirmation)
+        
 
 async def process_txt_rec(message, state, text, buttons):
     id = str(message.from_user.id)
     if await state.get_state() == UserState.recognition:
+        await remove_thread(id)
+    if await state.get_state() == LayoverState.recognition:
         await remove_thread(id)
     vision = await generate_response(message.text, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
@@ -122,12 +137,12 @@ async def process_txt_rec(message, state, text, buttons):
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-        await state.set_state(UserState.saving_confirmation)
+        
 
-async def edit_txt_rec(message, state, text, buttons, old):
+async def edit_txt_rec(message, state, text, buttons):
     id = str(message.from_user.id)
-    if await state.get_state() == UserState.recognition:
-        await remove_thread(id)
+    state_data = await state.get_data()
+    old = state_data["old_food"]
     request_mssg = f"Старый прием пищи: {old}, измени его вот так: {message.text}"
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
@@ -137,13 +152,12 @@ async def edit_txt_rec(message, state, text, buttons, old):
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-        await state.set_state(UserState.saving_confirmation)
 
-async def edit_audio_rec(message, state, text, buttons, old):
+async def edit_audio_rec(message, state, text, buttons):
     id = str(message.from_user.id)
     transcription = await audio_file(message.voice.file_id)
-    if await state.get_state() == UserState.recognition:
-        await remove_thread(id)
+    state_data = await state.get_data()
+    old = state_data["old_food"]
     request_mssg = f"Старый прием пищи: {old}, измени его вот так: {transcription}"
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
@@ -153,7 +167,6 @@ async def edit_audio_rec(message, state, text, buttons, old):
         state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-        await state.set_state(UserState.saving_confirmation)
 
 
 def generate_day_buttons(data):

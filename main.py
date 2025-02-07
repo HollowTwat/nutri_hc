@@ -70,9 +70,20 @@ class UserState(StatesGroup):
     recognition = State()
     redact = State()
     edit = State()
+    edit_new = State()
+    edit_rec = State()
+    edit_redact = State()
+    edit_save_confirm = State()
+    edit_save = State()
     yapp_new = State()
     yapp = State()
     menu = State()
+    saving_confirmation = State()
+    saving = State()
+
+class LayoverState(StatesGroup):
+    recognition = State()
+    redact = State()
     saving_confirmation = State()
     saving = State()
 
@@ -201,17 +212,79 @@ async def main_process_menu_course_info(callback_query: CallbackQuery, state: FS
 
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
-async def dnevnik_layover(message, state, nextfunc):
+################## Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover ##################
+
+async def dnevnik_layover(message, state, callback_mssg):
     prev_state = await state.get_state()
-    print(f"{prev_state}")
-    step0txt = "in dev распознание еды"
-    await message.answer(step0txt, reply_markup=None)
+
+    await state.set_state(LayoverState.recognition)
+
+    await state.update_data(prev_state=prev_state)
+    await state.update_data(callback_mssg=callback_mssg)
+
+    confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
+    buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
+               [InlineKeyboardButton(text="Все хорошо", callback_data="save")]]
+    if message.photo:
+        await process_img_rec(message, state, confirm_text, buttons)
+        await state.set_state(LayoverState.saving_confirmation)
+    elif message.voice:
+        await process_audio_rec(message, state, confirm_text, buttons)
+        await state.set_state(LayoverState.saving_confirmation)
+    elif message.text:
+        await process_txt_rec(message, state, confirm_text, buttons)
+        await state.set_state(LayoverState.saving_confirmation)
+    else: message.answer("0_o")
 
 
+@router.callback_query(StateFilter(LayoverState.saving_confirmation))
+async def layover_state_switch(callback_query: CallbackQuery, state: FSMContext):
+    edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
+    if callback_query.data == "redact":
+        await state.set_state(LayoverState.redact)
+        await callback_query.message.edit_text(edit_text, reply_markup=None)
+    elif callback_query.data == "save":
+        mealtype_buttons = [
+            [InlineKeyboardButton(text="Завтрак", callback_data="0"), InlineKeyboardButton(text="Обед", callback_data="2")],
+            [InlineKeyboardButton(text="Ужин", callback_data="4"), InlineKeyboardButton(text="Перекус", callback_data="5")]
+            ]
+        mealtype_keyboard = InlineKeyboardMarkup(inline_keyboard=mealtype_buttons)
+        await state.set_state(LayoverState.saving)
+        await callback_query.message.edit_text("Какой это прием пищи?", reply_markup=mealtype_keyboard)
+
+
+@router.message(StateFilter(LayoverState.redact))
+async def layover_functional_redact(message: Message, state: FSMContext):
+    edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
+    confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
+    buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
+               [InlineKeyboardButton(text="Все хорошо", callback_data="save")]]
+    if message.photo:
+        await message.answer(edit_text)
+    elif message.voice:
+        await process_audio_rec(message, state, confirm_text, buttons)
+        await state.set_state(LayoverState.saving_confirmation)
+    elif message.text:
+        await process_txt_rec(message, state, confirm_text, buttons)
+        await state.set_state(LayoverState.saving_confirmation)
+    else: message.answer("0_o")
+
+@router.callback_query(StateFilter(LayoverState.saving))
+async def layover_saving(callback_query: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    callback_mssg = data["callback_mssg"]
+    prev_state = data["prev_state"]
+    str_food = str(data["latest_food"])
+    id = str(callback_query.from_user.id)
+    meal_type = callback_query.data
+    state_data = state.get_data()
+    buttons = [[InlineKeyboardButton(text="Ок", callback_data=callback_mssg)],]
+    await callback_query.message.edit_text(f"Тут будет сохранение приема пищи {callback_query.data} с инфой: \n {str_food}", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.set_state(prev_state)
-    await nextfunc(message, state)
+    
+    
 
-
+################## Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover ##################
 
 ################## DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU ##################
 
@@ -305,10 +378,13 @@ async def dnevnik_functional(message: Message, state: FSMContext):
                [InlineKeyboardButton(text="Все хорошо", callback_data="save")]]
     if message.photo:
         await process_img_rec(message, state, confirm_text, buttons)
+        await state.set_state(UserState.saving_confirmation)
     elif message.voice:
         await process_audio_rec(message, state, confirm_text, buttons)
+        await state.set_state(UserState.saving_confirmation)
     elif message.text:
         await process_txt_rec(message, state, confirm_text, buttons)
+        await state.set_state(UserState.saving_confirmation)
     else: message.answer("0_o")
 
 @router.message(StateFilter(UserState.redact))
@@ -321,8 +397,10 @@ async def dnevnik_functional_edit(message: Message, state: FSMContext):
         await message.answer(edit_text)
     elif message.voice:
         await process_audio_rec(message, state, confirm_text, buttons)
+        await state.set_state(UserState.saving_confirmation)
     elif message.text:
         await process_txt_rec(message, state, confirm_text, buttons)
+        await state.set_state(UserState.saving_confirmation)
     else: message.answer("0_o")
 
 @router.callback_query(StateFilter(UserState.saving_confirmation))
@@ -346,6 +424,8 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
     str_food = str(data["latest_food"])
     await callback_query.message.edit_text(f"Тут будет сохранение приема пищи {callback_query.data} с инфой: \n {str_food}")
 
+
+######################################################### EDIT EDIT EDIT ##############################################
 @router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("day_"))
 async def day_selected(callback_query: types.CallbackQuery, state: FSMContext):
     day = callback_query.data.split("_")[1]
@@ -361,24 +441,26 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
     isEmpty = callback_query.data.split("_")[1]
     date = callback_query.data.split("_")[2]
     meal_type = callback_query.data.split("_")[3]
+    await state.update_data(date=date, meal_type=meal_type)
     if isEmpty == "True":
         buttons = [
             [InlineKeyboardButton(text="Нет, выбрать другую дату", callback_data="menu_dnevnik_edit_same")],
-            [InlineKeyboardButton(text="Да, заносим (В разработке)", callback_data="menu")],
+            [InlineKeyboardButton(text="Да, заносим (В разработке)", callback_data="menu_dnevnik_edit_add")],
             [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
         ]
         await callback_query.message.edit_text("У тебя нету занесенного приема пищи за эту дату, заносим?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         pass
     meal_id, pretty, food_items = await get_singe_meal(id, date, meal_type)
     await state.update_data(old_food=food_items)
+    await state.update_data(meal_id=meal_id)
     buttons = [
-        [InlineKeyboardButton(text="Да_INDEV", callback_data="yes_change")],
+        [InlineKeyboardButton(text="Да_INDEV", callback_data=f"yesChange_{meal_id}")],
         [InlineKeyboardButton(text="Удалить", callback_data=f"deletemeal_{meal_id}")],
         [InlineKeyboardButton(text="Выбрать другой день", callback_data="menu_dnevnik_edit_same")],
         [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
     ]
-    await callback_query.message.edit_text(f"{pretty} \n\nМеняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-
+    await callback_query.message.edit_text(f"{pretty}", reply_markup=None)
+    await callback_query.message.answer("Меняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 @router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("deletemeal_"))
 async def delete_meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
     id = str(callback_query.from_user.id)
@@ -396,7 +478,50 @@ async def delete_meal_selected(callback_query: types.CallbackQuery, state: FSMCo
     elif response == "false": 
         await callback_query.message.edit_text("Не вышло удалить", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
-    
+@router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("menu_dnevnik_edit_add"))
+async def edit_new_await(callback_query: types.CallbackQuery, state: FSMContext):
+    step0txt = "Отправь фото еды.\nТакже можешь воспользоваться 🎤 аудио или ввести текстом в формате:\n<i>Яичница из 2 яиц, чай без сахара</i>"
+    await callback_query.message.edit_text(step0txt, reply_markup=None)
+    await state.set_state(UserState.edit_new)
+
+@router.message(StateFilter(UserState.edit_new))
+async def edit_newmeal(message: Message, state: FSMContext):
+    await dnevnik_layover(message,state,"saving_edit")
+
+@router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("yesChange"))
+async def edit_new_await(callback_query: types.CallbackQuery, state: FSMContext):
+    mssg_txt = "Говори/пиши что менять"
+    await callback_query.message.edit_text(mssg_txt, reply_markup=None)
+    await state.set_state(UserState.edit_edit_rec)
+
+@router.message(StateFilter(UserState.edit_rec))
+async def dnevnik_functional(message: Message, state: FSMContext):
+    edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
+    confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
+    buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
+               [InlineKeyboardButton(text="Все хорошо", callback_data="save")]]
+    if message.photo:
+        await message.answer(edit_text)
+    elif message.voice:
+        await edit_audio_rec(message, state, confirm_text, buttons)
+        await state.set_state(UserState.edit_save_confirm)
+    elif message.text:
+        await edit_txt_rec(message, state, confirm_text, buttons)
+        await state.set_state(UserState.edit_save_confirm)
+    else: message.answer("0_o")
+
+@router.callback_query(StateFilter(UserState.edit_save_confirm))
+async def state_switch(callback_query: CallbackQuery, state: FSMContext):
+    edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
+    if callback_query.data == "redact":
+        await state.set_state(UserState.redact)
+        await callback_query.message.edit_text(edit_text, reply_markup=None)
+    elif callback_query.data == "save":
+        state_data = state.get_data()
+        meal_id = state_data["meal_id"]
+        saving_text = f"Тут будет сохранение поверх приема пищи с id {meal_id}"
+        await callback_query.message.edit_text(saving_text)
+
 ################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
