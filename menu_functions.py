@@ -24,6 +24,7 @@ import json
 
 from functions import *
 from functions2 import *
+from main import UserState
 
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 
@@ -64,7 +65,7 @@ async def menu_cb_handler(callback_query, state) -> None:
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "Меню"
-    await callback_query.message.answer(step0txt, reply_markup=keyboard)
+    await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
 
 async def process_menu_course(message, state):
     buttons = [
@@ -83,7 +84,7 @@ async def process_menu_course(message, state):
 async def process_menu_dnevnik(message, state):
     buttons = [
         [InlineKeyboardButton(text="🍽 Занести в дневник", callback_data="menu_dnevnik_input")],
-        [InlineKeyboardButton(text="🔄Редактировать", callback_data="menu_dnevnik_redact")],
+        [InlineKeyboardButton(text="🔄Редактировать", callback_data="menu_dnevnik_edit")],
         [InlineKeyboardButton(text="📊 Аналитика", callback_data="menu_dnevnik_analysis")],
         [InlineKeyboardButton(text="📸 Инструкция", callback_data="menu_dnevnik_instruction")],
         [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
@@ -130,8 +131,15 @@ async def process_menu_settings(message, state):
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
 async def process_menu_course_lesson(callback_query, state):
-    step0txt = "in dev_lessons_n_shit"
-    await callback_query.message.edit_text(step0txt, reply_markup=None)
+    step0txt = "Выбирай урок"
+    buttons = [
+        [InlineKeyboardButton(text='Урок1', callback_data='d1')],
+        [InlineKeyboardButton(text='Урок2', callback_data='d2'), InlineKeyboardButton(text='Урок2_2', callback_data='d2_2')],
+        [InlineKeyboardButton(text='Урок2', callback_data='d3'), InlineKeyboardButton(text='Урок3_2', callback_data='d3_2')],
+        [InlineKeyboardButton(text='Урок2', callback_data='d4'), InlineKeyboardButton(text='Урок4_2', callback_data='d4_2')],
+        [InlineKeyboardButton(text='Урок2', callback_data='d5'), InlineKeyboardButton(text='Урок5_2', callback_data='d5_2')]
+    ]
+    await callback_query.message.edit_text(step0txt, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def process_menu_course_info(callback_query, state):
     buttons = [
@@ -152,12 +160,28 @@ async def process_menu_course_info(callback_query, state):
 ################## DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU ##################
 
 async def process_menu_dnevnik_input(callback_query, state):
-    step0txt = "in dev распознание еды"
+    step0txt = "Отправь фото еды.\nТакже можешь воспользоваться 🎤 аудио или ввести текстом в формате:\n<i>Яичница из 2 яиц, чай без сахара</i>"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
-async def process_menu_dnevnik_redact(callback_query, state):
-    step0txt = "in dev"
-    await callback_query.message.edit_text(step0txt, reply_markup=None)
+async def process_menu_dnevnik_edit(callback_query, state):
+    if callback_query.data == "menu_dnevnik_edit":
+        await state.set_state(UserState.edit)
+        id = str(callback_query.from_user.id)
+        API_URL = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserWeekMealsStatus?userTgId={id}"
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(API_URL) as response:
+                    text_data = await response.text()
+                    meal_data = json.loads(text_data)
+                    await state.update_data(meal_data=meal_data)
+            except aiohttp.ClientError as e:
+                await callback_query.message.edit_text(f"Error fetching data: {str(e)}")
+                return
+    else:
+        user_data = await state.get_data()
+        meal_data = user_data.get("meal_data", [])
+
+    await callback_query.message.edit_text("Выбирай день", reply_markup=generate_day_buttons(meal_data))
 
 async def process_menu_dnevnik_analysis(callback_query, state):
     buttons = [
@@ -187,15 +211,13 @@ async def process_menu_dnevnik_instruction(callback_query, state):
 ################## YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU ##################
 
 async def process_menu_nutri_yapp(callback_query, state):
-    # buttons = [
-    #     [InlineKeyboardButton(text="Изменить имя", callback_data="menu_nutri_yapp_")],
-    #     [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_nutri_yapp_")],
-    #     [InlineKeyboardButton(text="Заполнить анкету заново", callback_data="menu_nutri_yapp_")],
-    #     [InlineKeyboardButton(text="Настроить уведомления", callback_data="menu_nutri_yapp_")],
-    #     ]
-    # keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    step0txt = "in dev"
+    await state.set_state(UserState.yapp_new)
+    step0txt = "Задай мне любой вопрос в части питания. Текстом или 🎤 аудио\nНапример: <i>Какие перекусы ты мне рекомендуешь исходя из моей цели?</i>"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
+
+
+
+
 
 async def process_menu_nutri_reciepie(callback_query, state):
     # buttons = [
