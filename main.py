@@ -517,7 +517,7 @@ async def state_switch(callback_query: CallbackQuery, state: FSMContext):
         await state.set_state(UserState.edit_redact)
         await callback_query.message.edit_text(edit_text, reply_markup=None)
     elif callback_query.data == "save":
-        state_data = state.get_data()
+        state_data = await state.get_data()
         meal_id = state_data["meal_id"]
         saving_text = f"Тут будет сохранение поверх приема пищи с id {meal_id}"
         await callback_query.message.edit_text(saving_text)
