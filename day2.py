@@ -91,9 +91,9 @@ async def process_l2_step_2_2(callback_query, state):
     
 
 
-async def xyz(message,state):
+async def xyz(callback_query,state):
     await state.set_state(LessonStates2.step_4)
-    await message.answer(
+    await callback_query.message.answer(
         "Записала! А теперь прислушайся к себе и отметь, на сколько баллов ты чувствуешь насыщение.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="4–5: по-прежнему есть лёгкий голод", callback_data="next"), 
@@ -102,7 +102,6 @@ async def xyz(message,state):
              InlineKeyboardButton(text="10: съел (а) так много, что мне плохо", callback_data="stop")]
         ])
     )
-    await message.answer()
 
 async def process_l2_step_4_1(callback_query, state):
     await state.set_state(LessonStates2.step_5)
