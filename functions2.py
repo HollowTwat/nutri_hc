@@ -47,10 +47,13 @@ async def audio_file(file_id: str) -> str:
 async def get_user_info(id):
     url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserExtraInfo?userTgId={id}"
     async with aiohttp.ClientSession() as session:
+            default_headers = {
+                "Content-Type": "application/json"
+            }
             try:
-                async with session.post(url) as response:
+                async with session.post(url=url, headers=default_headers) as response:
                     text_data = await response.text()
-                    print(text_data)
+                    print(f"НИКИТИН ОТВЕТ {text_data}")
                     user_data = json.loads(text_data)
                     return False, user_data
             except aiohttp.ClientError as e:
