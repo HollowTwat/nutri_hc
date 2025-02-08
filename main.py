@@ -386,18 +386,19 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
             [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
         ]
         await callback_query.message.edit_text("У тебя нету занесенного приема пищи за эту дату, заносим?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-        pass
-    meal_id, pretty, food_items = await get_singe_meal(id, date, meal_type)
-    await state.update_data(old_food=food_items)
-    await state.update_data(meal_id=meal_id)
-    buttons = [
-        [InlineKeyboardButton(text="Да", callback_data=f"yesChange_{meal_id}")],
-        [InlineKeyboardButton(text="Удалить", callback_data=f"deletemeal_{meal_id}")],
-        [InlineKeyboardButton(text="Выбрать другой день", callback_data="menu_dnevnik_edit_same")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
-    ]
-    await callback_query.message.edit_text(f"{pretty}", reply_markup=None)
-    await callback_query.message.answer("Меняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        return
+    else:
+        meal_id, pretty, food_items = await get_singe_meal(id, date, meal_type)
+        await state.update_data(old_food=food_items)
+        await state.update_data(meal_id=meal_id)
+        buttons = [
+            [InlineKeyboardButton(text="Да", callback_data=f"yesChange_{meal_id}")],
+            [InlineKeyboardButton(text="Удалить", callback_data=f"deletemeal_{meal_id}")],
+            [InlineKeyboardButton(text="Выбрать другой день", callback_data="menu_dnevnik_edit_same")],
+            [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
+        ]
+        await callback_query.message.edit_text(f"{pretty}", reply_markup=None)
+        await callback_query.message.answer("Меняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 @router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("deletemeal_"))
 async def delete_meal_selected(callback_query: types.CallbackQuery, state: FSMContext):

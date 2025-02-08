@@ -228,6 +228,7 @@ async def saving_edit(callback_query, state):
             },
             "eatedAt": f"{date}"
     }
+    print(f"url={url}, data={json.dumps(meal_data)}, headers={req_headers}")
     async with aiohttp.ClientSession() as session:
         try:
             async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
