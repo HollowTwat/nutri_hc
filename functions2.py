@@ -219,7 +219,7 @@ async def saving_edit(callback_query, state):
         "Content-Type": "application/json"
     }
     meal_data ={
-            "userTgId": id,
+            "userTgId": callback_query.from_user.id,
             "meal": {
                 "description": "string",
                 "totalWeight": 0,
