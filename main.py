@@ -358,8 +358,13 @@ async def state_switch(callback_query: CallbackQuery, state: FSMContext):
 @router.callback_query(StateFilter(UserState.saving))
 async def saving(callback_query: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    str_food = str(data["latest_food"])
-    await callback_query.message.edit_text(f"Тут будет сохранение приема пищи {callback_query.data} с инфой: \n {str_food}")
+    food = data["latest_food"]
+    Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
+    if Iserror:
+        await callback_query.message.edit_text("Ошибка при сохранении {answer}")
+    else:
+        if data != 0:
+            await callback_query.message.edit_text(f"Сохранение успешно")
 
 
 ######################################################### EDIT EDIT EDIT ##############################################

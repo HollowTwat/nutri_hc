@@ -205,6 +205,29 @@ def parse_meal_data(response_json):
     
     return meal_id, food_items
 
+async def save_meal(id, food, type):
+    url = "https://nutridb-production.up.railway.app/api/TypesCRUD/CreateMeal"
+    req_headers = {
+        "Content-Type": "application/json"
+    }
+    meal_data ={
+            "userTgId": id,
+            "meal": {
+                "description": "string",
+                "totalWeight": 0,
+                "food": food,
+                "type": type
+            },
+    }
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
+                data = await response.text()
+                return False, data
+        except aiohttp.ClientError as e:
+            return True, e
+
+
 async def saving_edit(callback_query, state):
     state_data = await state.get_data()
     food = state_data["latest_food"]
@@ -213,7 +236,6 @@ async def saving_edit(callback_query, state):
     state_data_2 = await state.get_data()
     date = state_data_2["date"]
     meal_type = state_data_2["meal_type"]
-    id = str(callback_query.from_user.id)
     url = "https://nutridb-production.up.railway.app/api/TypesCRUD/CreateMeal"
     req_headers = {
         "Content-Type": "application/json"
@@ -228,7 +250,7 @@ async def saving_edit(callback_query, state):
             },
             "eatedAt": f"{date}"
     }
-    print(f"url={url}, data={json.dumps(meal_data)}, headers={req_headers}")
+    # print(f"url={url}, data={json.dumps(meal_data)}, headers={req_headers}")
     async with aiohttp.ClientSession() as session:
         try:
             async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
