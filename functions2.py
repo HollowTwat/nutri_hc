@@ -50,6 +50,7 @@ async def get_user_info(id):
             try:
                 async with session.post(url) as response:
                     text_data = await response.text()
+                    print(text_data)
                     user_data = json.loads(text_data)
                     return False, user_data
             except aiohttp.ClientError as e:
