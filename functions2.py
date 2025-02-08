@@ -232,6 +232,7 @@ async def saving_edit(callback_query, state):
         try:
             async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
                 data = await response.text()
+                print(data)
                 if data != "0":
                     await callback_query.message.answer("Сохранено успешно")
         except aiohttp.ClientError as e:
