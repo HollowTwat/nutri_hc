@@ -48,7 +48,7 @@ async def get_user_info(id):
     url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserExtraInfo?userTgId={id}"
     async with aiohttp.ClientSession() as session:
             try:
-                async with session.get(url) as response:
+                async with session.post(url) as response:
                     text_data = await response.text()
                     user_data = json.loads(text_data)
                     return False, user_data
