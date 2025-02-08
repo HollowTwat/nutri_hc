@@ -24,6 +24,8 @@ import json
 
 from functions import *
 from functions2 import *
+from all_states import *
+
 
 IMG1 = "AgACAgIAAxkBAAID22emtcBQwY0wC_Uj9oJ7Y_sT32sVAAIP7zEbjtU5STaq5zrIV-5lAQADAgADeQADNgQ"
 IMG2 = "AgACAgIAAxkBAAID32emtcWX4-7gl4hKd0r2k4NK43XjAAIQ7zEbjtU5SRnpDJpPn-ZLAQADAgADeQADNgQ"
