@@ -170,11 +170,16 @@ async def dnevnik_layover(message, state, callback_mssg):
 
 @router.callback_query(StateFilter(LayoverState.saving_confirmation))
 async def layover_state_switch(callback_query: CallbackQuery, state: FSMContext):
+    state_data = await state.get_data()
+    old_cb = state_data["callback_mssg"]
     edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
     if callback_query.data == "redact":
         await state.set_state(LayoverState.redact)
         await callback_query.message.edit_text(edit_text, reply_markup=None)
     elif callback_query.data == "save":
+        if old_cb == "saving_edit":
+            await saving_edit(callback_query, state)
+            pass
         mealtype_buttons = [
             [InlineKeyboardButton(text="Завтрак", callback_data="0"), InlineKeyboardButton(text="Обед", callback_data="2")],
             [InlineKeyboardButton(text="Ужин", callback_data="4"), InlineKeyboardButton(text="Перекус", callback_data="5")]
@@ -392,6 +397,7 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
     ]
     await callback_query.message.edit_text(f"{pretty}", reply_markup=None)
     await callback_query.message.answer("Меняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
 @router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("deletemeal_"))
 async def delete_meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
     id = str(callback_query.from_user.id)

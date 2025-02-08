@@ -205,6 +205,38 @@ def parse_meal_data(response_json):
     
     return meal_id, food_items
 
+async def saving_edit(callback_query, state):
+    state_data = await state.get_data()
+    food_str = str(state_data["latest_food"])
+    prev_state = state_data["prev_state"]
+    await state.set_state(prev_state)
+    state_data_2 = await state.get_data()
+    date = state_data_2["date"]
+    meal_type = state_data_2["meal_type"]
+    id = str(callback_query.from_user.id)
+    url = "https://nutridb-production.up.railway.app/api/TypesCRUD/CreateMeal"
+    req_headers = {
+        "Content-Type": "application/json"
+    }
+    meal_data ={
+            "userTgId": id,
+            "meal": {
+                "description": "string",
+                "totalWeight": 0,
+                "food": food_str,
+                "type": meal_type
+            },
+            "eatedAt": f"{date}"
+    }
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
+                data = await response.text()
+                if data != "0":
+                    await callback_query.message.answer("Сохранено успешно")
+        except aiohttp.ClientError as e:
+            print(f"Поймали ошибку{e}")
+
 async def get_singe_meal(id, date, mealtype):
     url = "https://nutridb-production.up.railway.app/api/TypesCRUD/GetSingleUserMeal"
     meal_data = {
