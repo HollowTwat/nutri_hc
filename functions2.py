@@ -109,7 +109,7 @@ async def process_img_rec(message, state, text, buttons):
     if Iserror:
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
-        state.update_data(latest_food = food)
+        await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
@@ -126,7 +126,7 @@ async def process_audio_rec(message, state, text, buttons):
     if Iserror:
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
-        state.update_data(latest_food = food)
+        await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         
@@ -174,7 +174,7 @@ async def edit_audio_rec(message, state, text, buttons):
     if Iserror:
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
-        state.update_data(latest_food = food)
+        await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
