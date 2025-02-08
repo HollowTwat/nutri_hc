@@ -383,10 +383,11 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     question = create_day_rate_question(user_data, food)
     print(question)
     gpt_resp = await no_thread_ass(question, RATE_DAY_ASS_ID)
+    cleaned_resp = await remove_reference(gpt_resp)
     buttons = [
         [InlineKeyboardButton(text="⏏️", callback_data="menu")]
     ]
-    await callback_query.message.edit_text(gpt_resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await callback_query.message.edit_text(cleaned_resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.clear()
 
 
