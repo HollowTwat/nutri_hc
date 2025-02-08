@@ -31,6 +31,7 @@ from day2 import *
 from day3 import *
 from day4 import *
 from day5 import *
+from day6 import *
 from questionnaire import *
 from all_states import *
 
@@ -554,7 +555,7 @@ async def lessons_manage_command(message: types.Message, state: FSMContext):
     await message.answer("pick a lesson", reply_markup=keyboard)
 
 
-@router.callback_query(lambda c: c.data in ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2",])
+@router.callback_query(lambda c: c.data in ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2","d6","d6_2"])
 async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "d1":
         await state.set_state(LessonStates.step_1)
@@ -582,6 +583,12 @@ async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContex
     elif callback_query.data == "d5_2":
         await state.set_state(LessonStates5.step_11)
         await process_l5_step_11(callback_query, state)
+    elif callback_query.data == "d6":
+        await state.set_state(LessonStates6.step_1)
+        await process_l6_step_1(callback_query, state)
+    elif callback_query.data == "d6_2":
+        await state.set_state(LessonStates6.step_11)
+        await process_l6_step_11(callback_query, state)
     
 ##################### GETTING INTO THE LESSONS
 
@@ -769,6 +776,26 @@ async def main_process_l5_step_11(callback_query: types.CallbackQuery, state: FS
        await process_l5_step_12_3(callback_query, state)
 
 ################## LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 LESSON_5 #################
+
+################## LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6#################
+
+@router.callback_query(StateFilter(LessonStates6.step_2), lambda c: True)
+async def main_process_l6_step_1(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "next":
+       await process_l6_step_2(callback_query, state)
+    elif callback_query.data == "stop":
+       await process_l6_step_2_2(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates6.step_3), lambda c: True)
+async def main_process_l6_step_2(callback_query: types.CallbackQuery, state: FSMContext):
+    await main_menu_cb_handler(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates6.step_11), lambda c: True)
+async def main_process_l6_step_11(callback_query: types.CallbackQuery, state: FSMContext):
+    await main_menu_cb_handler(callback_query, state)
+
+
+################## LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6 LESSON_6#################
 
 
 ################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
