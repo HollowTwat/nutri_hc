@@ -100,7 +100,9 @@ async def process_l7_step_7(poll_answer, state):
         chat_id=poll_answer.user.id,
         text="Ну а теперь подведём первые итоги. \nНиже рассказываю: \n\n🍏про твой прогресс за неделю, \n🍏как стоит скорректировать питание на следующей неделе, чтобы достичь твоих целей."
         )
-    await bot.send_photo(photo=IMG1)
+    await bot.send_photo(chat_id=poll_answer.user.id,
+                         photo=IMG1
+        )
     await bot.send_message(
         chat_id=poll_answer.user.id,
         text="Тут будет оценка недели"
