@@ -369,10 +369,12 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
     else:
         if data != 0:
             await callback_query.message.edit_text(f"Сохранение успешно", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            await state.clear()
 
-@router.callback_query(StateFilter(UserState.saving), lambda c: c.data == 'meal_rate')
+@router.callback_query(lambda c: c.data == 'meal_rate')
 async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
-    state_data = state.get_data()
+    await state.set_state(UserState.rating_meal)
+    state_data = await state.get_data()
     food = state_data["latest_food"]
     Iserror, user_data = await get_user_info(callback_query.from_user.id)
     if Iserror:

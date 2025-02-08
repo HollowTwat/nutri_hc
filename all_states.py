@@ -15,6 +15,7 @@ class UserState(StatesGroup):
     menu = State()
     saving_confirmation = State()
     saving = State()
+    rating_meal = State()
 
 class LayoverState(StatesGroup):
     recognition = State()
