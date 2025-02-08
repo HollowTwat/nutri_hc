@@ -336,7 +336,7 @@ async def process_menu_settings_profile(callback_query, state):
     if is_set:
         step0txt = await parse_state_for_settings(state)
     if not is_set:
-        step0txt = await new_request_for_settings(callback_query.from_user.id)
+        step0txt = await new_request_for_settings(callback_query.from_user.id, state)
 
     print(step0txt)
 
