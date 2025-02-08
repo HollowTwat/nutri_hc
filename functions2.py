@@ -207,7 +207,7 @@ def parse_meal_data(response_json):
 
 async def saving_edit(callback_query, state):
     state_data = await state.get_data()
-    food_str = str(state_data["latest_food"])
+    food = state_data["latest_food"]
     prev_state = state_data["prev_state"]
     await state.set_state(prev_state)
     state_data_2 = await state.get_data()
@@ -223,7 +223,7 @@ async def saving_edit(callback_query, state):
             "meal": {
                 "description": "string",
                 "totalWeight": 0,
-                "food": food_str,
+                "food": food,
                 "type": meal_type
             },
             "eatedAt": f"{date}"
