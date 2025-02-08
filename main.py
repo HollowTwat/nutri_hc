@@ -462,9 +462,16 @@ async def state_switch(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.message.edit_text(edit_text, reply_markup=None)
     elif callback_query.data == "save":
         state_data = await state.get_data()
+        food = state_data["latest_food"]
         meal_id = state_data["meal_id"]
-        saving_text = f"Тут будет сохранение поверх приема пищи с id {meal_id}"
-        await callback_query.message.edit_text(saving_text)
+        meal_type = state_data["meal_type"]
+        Iserror, answer = await edit_existing_meal(callback_query.from_user.id, food, meal_type, meal_id)
+        if Iserror:
+            await callback_query.message.edit_text("Ошибка при сохранении", reply_markup=None)
+        else:
+            if answer != 0:
+                saving_text = f"Изменение сохранено"
+                await callback_query.message.edit_text(saving_text)
 
 @router.message(StateFilter(UserState.edit_redact))
 async def dnevnik_functional_edit(message: Message, state: FSMContext):
