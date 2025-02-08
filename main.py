@@ -180,13 +180,14 @@ async def layover_state_switch(callback_query: CallbackQuery, state: FSMContext)
         if old_cb == "saving_edit":
             await saving_edit(callback_query, state)
             pass
-        mealtype_buttons = [
-            [InlineKeyboardButton(text="Завтрак", callback_data="0"), InlineKeyboardButton(text="Обед", callback_data="2")],
-            [InlineKeyboardButton(text="Ужин", callback_data="4"), InlineKeyboardButton(text="Перекус", callback_data="5")]
-            ]
-        mealtype_keyboard = InlineKeyboardMarkup(inline_keyboard=mealtype_buttons)
-        await state.set_state(LayoverState.saving)
-        await callback_query.message.edit_text("Какой это прием пищи?", reply_markup=mealtype_keyboard)
+        else:
+            mealtype_buttons = [
+                [InlineKeyboardButton(text="Завтрак", callback_data="0"), InlineKeyboardButton(text="Обед", callback_data="2")],
+                [InlineKeyboardButton(text="Ужин", callback_data="4"), InlineKeyboardButton(text="Перекус", callback_data="5")]
+                ]
+            mealtype_keyboard = InlineKeyboardMarkup(inline_keyboard=mealtype_buttons)
+            await state.set_state(LayoverState.saving)
+            await callback_query.message.edit_text("Какой это прием пищи?", reply_markup=mealtype_keyboard)
 
 
 @router.message(StateFilter(LayoverState.redact))
