@@ -376,6 +376,7 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
     food = state_data["latest_food"]
     Iserror, user_data = await get_user_info(callback_query.from_user.id)
+    await callback_query.message.edit_text(f"{user_data}")
     if Iserror:
         await callback_query.message.edit_text("Ошибка при получении инфы пользователя из дб")
         return

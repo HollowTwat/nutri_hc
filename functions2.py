@@ -52,15 +52,15 @@ async def get_user_info(id):
             }
             try:
                 async with session.post(url=url, headers=default_headers) as response:
-                    text_data = await response.text()
-                    print(f"НИКИТИН ОТВЕТ {text_data}")
-                    user_data = json.loads(text_data)
+                    user_data = await response.text()
+                    print(f"НИКИТИН ОТВЕТ {user_data}")
+                    # user_data = json.loads(text_data)
                     return False, user_data
             except aiohttp.ClientError as e:
                 return True, ""
             
 def create_day_rate_question(user_info, food):
-    data = json.loads(user_info)
+    data = user_info
     parsed_info = {
         "user_info": {
             "age": data.get("user_info_age"),
