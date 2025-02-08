@@ -60,7 +60,7 @@ async def get_user_info(id):
                 return True, ""
             
 def create_day_rate_question(user_info, food):
-    data = user_info
+    data = json.loads(user_info)
     parsed_info = {
         "user_info": {
             "age": data.get("user_info_age"),
