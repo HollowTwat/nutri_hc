@@ -357,8 +357,8 @@ async def state_switch(callback_query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(StateFilter(UserState.saving))
 async def saving(callback_query: CallbackQuery, state: FSMContext):
-    data = await state.get_data()
-    food = data["latest_food"]
+    state_data = await state.get_data()
+    food = state_data["latest_food"]
     Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
     buttons = [
         [InlineKeyboardButton(text="Получить оценку", callback_data="meal_rate")],
@@ -367,13 +367,12 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
     if Iserror:
         await callback_query.message.edit_text("Ошибка при сохранении {answer}")
     else:
-        if data != 0:
+        if answer != 0:
             await callback_query.message.edit_text(f"Сохранение успешно", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-            await state.clear()
+            await state.set_state(UserState.rating_meal)
 
 @router.callback_query(lambda c: c.data == 'meal_rate')
 async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
-    await state.set_state(UserState.rating_meal)
     state_data = await state.get_data()
     food = state_data["latest_food"]
     Iserror, user_data = await get_user_info(callback_query.from_user.id)
