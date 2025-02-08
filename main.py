@@ -42,7 +42,7 @@ VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
 CITY_ASSISTANT_ID = os.getenv('CITY_ASSISTANT_ID')
 ASSISTANT2_ID = os.getenv('ASSISTANT2_ID')
 YAPP_SESH_ASSISTANT_ID = os.getenv('YAPP_SESH_ASSISTANT_ID')    ##ACTUALISED 
-RATE_DAY_ASS_ID = os.getenv('RATE_DAY_ASS_ID')
+RATE_DAY_ASS_ID = os.getenv('RATE_DAY_ASS_ID')                  ##ACTUALISED 
 RATE_MID_ASS_ID = os.getenv('RATE_MID_ASS_ID')
 RATE_SMOL_ASS_ID = os.getenv('RATE_SMOL_ASS_ID')
 RATE_WEEK_ASS_ID = os.getenv('RATE_WEEK_ASS_ID')
@@ -360,11 +360,32 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     food = data["latest_food"]
     Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
+    buttons = [
+        [InlineKeyboardButton(text="Получить оценку", callback_data="meal_rate")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu")]
+    ]
     if Iserror:
         await callback_query.message.edit_text("Ошибка при сохранении {answer}")
     else:
         if data != 0:
-            await callback_query.message.edit_text(f"Сохранение успешно")
+            await callback_query.message.edit_text(f"Сохранение успешно", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+@router.callback_query(StateFilter(UserState.saving), lambda c: c.data == 'meal_rate')
+async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
+    state_data = state.get_data()
+    food = state_data["latest_food"]
+    Iserror, user_data = await get_user_info(callback_query.from_user.id)
+    if Iserror:
+        await callback_query.message.edit_text("Ошибка при получении инфы пользователя из дб")
+        return
+    question = create_day_rate_question(user_data, food)
+    print(question)
+    gpt_resp = await no_thread_ass(question, RATE_DAY_ASS_ID)
+    buttons = [
+        [InlineKeyboardButton(text="⏏️", callback_data="menu")]
+    ]
+    await callback_query.message.edit_text(gpt_resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.clear()
 
 
 ######################################################### EDIT EDIT EDIT ##############################################

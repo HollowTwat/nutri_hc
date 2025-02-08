@@ -44,6 +44,34 @@ async def audio_file(file_id: str) -> str:
     transcription = await transcribe_audio_from_url(file_url)
     return transcription
 
+async def get_user_info(id):
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserExtraInfo?userTgId={id}"
+    async with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(url) as response:
+                    text_data = await response.text()
+                    user_data = json.loads(text_data)
+                    return False, user_data
+            except aiohttp.ClientError as e:
+                return True, ""
+            
+def create_day_rate_question(user_info, food):
+    data = json.loads(user_info)
+    parsed_info = {
+        "user_info": {
+            "age": data.get("user_info_age"),
+            "gender": data.get("user_info_gender"),
+            "bmi": data.get("user_info_bmi"),
+            "bmr": data.get("bmr"),
+            "allergies": data.get("user_info_meals_ban")
+        },
+        "food": food,
+        "meal_type": data.get("meal_type"),
+        "goal": data.get("user_info_goal"),
+        "target_calories": data.get("target_calories")
+    }
+    return str(parsed_info)
+
 async def yapp(id, question, new_thread):
     print('day1_yapp triggered')
     
