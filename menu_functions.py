@@ -246,43 +246,56 @@ async def check_user_variable(state: FSMContext, var_name: str):
     return False
 
 async def parse_state_for_settings(state):
-    state_data = state.get_data()
-    user_info_gender = state_data["user_info_gender"]
-    user_info_age = state_data["user_info_age"]
-    user_info_weight = state_data["user_info_weight"]
-    user_info_height = state_data["user_info_height"]
-    user_info_goal = state_data["user_info_goal"]
-    user_info_weight_change = state_data["user_info_weight_change"]
-    target_calories = state_data["target_calories"]
-    user_info_gym_hrs = state_data["user_info_gym_hrs"]
-    user_info_excersise_hrs = state_data["user_info_excersise_hrs"]
-    name = state_data["user_info_name"]
-    goal_mapping = {
-        '+': "Набрать",
-        '-': "Похудеть",
-        '=': "Сохранить",
-    }
-    goal_str = goal_mapping.get(user_info_goal)
-    gender_mapping = {
-        'male': "Мужской",
-        'female': "Женский"
-    }
-    gender_str = gender_mapping.get(user_info_gender)
-    if user_info_goal == "=":
-        goal_weight = user_info_weight
-    elif user_info_goal == "+":
-        goal_weight = int(user_info_weight) + int(user_info_weight_change)
-    elif user_info_goal == "-":
-        goal_weight = int(user_info_weight) - int(user_info_weight_change)
-
-    response_str = f"<b>{name}, вот твои данные и цель, к которой ты идёшь:</b>   \n\nПол: {gender_str} \nВозраст: {user_info_age} лет \nВес: {user_info_weight} кг \nРост: {user_info_height} см     \n\nЦель: {goal_str} \nЦелевой вес: {goal_weight} кг   \n\nТекущая норма калорий: {target_calories} ккал \nТекущая норма БЖУ: x г белков, x г жиров, x г углеводов \nУровень еженедельной активности: {user_info_gym_hrs}+{user_info_excersise_hrs} часов"
+    user_info = state.get_data()
+    gender_mapping = {"male": "Мужской", "female": "Женский"}
+    gender_str = gender_mapping.get(user_info.get("gender"), "Неизвестно")
+    
+    response_str = f"<b>{user_info.get('name')}, вот твои данные и цель, к которой ты идёшь:</b>   \n\n"
+    response_str += f"Пол: {gender_str} \nВозраст: {user_info['age']} лет \nВес: {user_info['weight']} кг \nРост: {user_info['height']} см     \n\n"
+    response_str += f"Цель: {user_info['goal']} \nЦелевой вес: {user_info['goal_weight']} кг   \n\n"
+    response_str += f"Текущая норма калорий: {user_info['target_calories']} ккал \nУровень еженедельной активности: {user_info['gym_hours']}+{user_info['exercise_hours']} часов"
+    
     return response_str
+
+async def new_request_for_settings(id, state):
+    iserror, input_data = await get_user_info(id)
+    data = json.loads(input_data)
+    
+    goal_mapping = {"+": "Набрать", "-": "Похудеть", "=": "Сохранить"}
+    gender_mapping = {"male": "Мужской", "female": "Женский"}
+    
+    goal_str = goal_mapping.get(data.get("user_info_goal"), "Неизвестно")
+    gender_str = gender_mapping.get(data.get("user_info_gender"), "Неизвестно")
+    
+    user_info = {
+        "name": data.get("user_info_name"),
+        "age": data.get("user_info_age"),
+        "gender": data.get("user_info_gender"),
+        "bmi": data.get("user_info_bmi"),
+        "bmr": data.get("bmr"),
+        "allergies": data.get("user_info_meals_ban"),
+        "weight": data.get("user_info_weight"),
+        "height": data.get("user_info_height"),
+        "goal": goal_str,
+        "goal_weight": int(data.get("user_info_weight", 0)) + int(data.get("user_info_weight_change", 0)) if data.get("user_info_goal") == "+" else int(data.get("user_info_weight", 0)) - int(data.get("user_info_weight_change", 0)) if data.get("user_info_goal") == "-" else data.get("user_info_weight"),
+        "target_calories": data.get("target_calories"),
+        "gym_hours": data.get("user_info_gym_hrs"),
+        "exercise_hours": data.get("user_info_excersise_hrs")
+    }
+    
+    await state.update_data(**user_info)
+    
+    response_str = f"<b>{data.get('user_info_name')}, вот твои данные и цель, к которой ты идёшь:</b>   \n\n"
+    response_str += f"Пол: {gender_str} \nВозраст: {user_info['age']} лет \nВес: {user_info['weight']} кг \nРост: {user_info['height']} см     \n\n"
+    response_str += f"Цель: {user_info['goal']} \nЦелевой вес: {user_info['goal_weight']} кг   \n\n"
+    response_str += f"Текущая норма калорий: {user_info['target_calories']} ккал \nУровень еженедельной активности: {user_info['gym_hours']}+{user_info['exercise_hours']} часов"
+
 
 async def request_for_settings(id):
     iserror, data = await get_user_info(id)
     # print(data)
     state_data = json.loads(data)
-    print(state_data)
+    # print(state_data)
 
     user_info_gender = state_data["user_info_gender"]
     user_info_age = state_data["user_info_age"]
@@ -323,7 +336,7 @@ async def process_menu_settings_profile(callback_query, state):
     if is_set:
         step0txt = await parse_state_for_settings(state)
     if not is_set:
-        step0txt = await request_for_settings(callback_query.from_user.id)
+        step0txt = await new_request_for_settings(callback_query.from_user.id)
 
     print(step0txt)
 
