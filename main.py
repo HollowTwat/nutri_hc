@@ -549,7 +549,8 @@ async def lessons_manage_command(message: types.Message, state: FSMContext):
         [InlineKeyboardButton(text='Урок2', callback_data='d2'), InlineKeyboardButton(text='Урок2_2', callback_data='d2_2')],
         [InlineKeyboardButton(text='Урок3', callback_data='d3'),InlineKeyboardButton(text='Урок3_2', callback_data='d3_2')],
         [InlineKeyboardButton(text='Урок4', callback_data='d4'),InlineKeyboardButton(text='Урок4_2', callback_data='d4_2')],
-        [InlineKeyboardButton(text='Урок5', callback_data='d5'),InlineKeyboardButton(text='Урок5_2', callback_data='d5_2')]
+        [InlineKeyboardButton(text='Урок5', callback_data='d5'),InlineKeyboardButton(text='Урок5_2', callback_data='d5_2')],
+        [InlineKeyboardButton(text='Урок6', callback_data='d6'),InlineKeyboardButton(text='Урок6_2', callback_data='d6_2')]
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer("pick a lesson", reply_markup=keyboard)
