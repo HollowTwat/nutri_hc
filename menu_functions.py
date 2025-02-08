@@ -279,9 +279,9 @@ async def parse_state_for_settings(state):
     return response_str
 
 async def request_for_settings(id):
-    data = await get_user_info(id)
-    print(data)
-    state_data = json.loads(data)
+    state_data = await get_user_info(id)
+    # print(data)
+    # state_data = json.loads(data)
     print(state_data)
 
     user_info_gender = state_data["user_info_gender"]
