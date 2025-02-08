@@ -246,7 +246,7 @@ async def check_user_variable(state: FSMContext, var_name: str):
     return False
 
 async def parse_state_for_settings(state):
-    user_info = state.get_data()
+    user_info = await state.get_data()
     gender_mapping = {"male": "Мужской", "female": "Женский"}
     gender_str = gender_mapping.get(user_info.get("gender"), "Неизвестно")
     
