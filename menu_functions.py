@@ -236,8 +236,101 @@ async def process_menu_nutri_etiketka(callback_query, state):
 ################## YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU ##################
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
+async def check_user_variable(state: FSMContext, var_name: str):
+    """Check if a specific variable is set in the state."""
+    user_data = await state.get_data()
+    
+    # Check if variable exists and is not empty
+    if var_name in user_data and user_data[var_name]:
+        return True
+    return False
+
+async def parse_state_for_settings(state):
+    state_data = state.get_data()
+    user_info_gender = state_data["user_info_gender"]
+    user_info_age = state_data["user_info_age"]
+    user_info_weight = state_data["user_info_weight"]
+    user_info_height = state_data["user_info_height"]
+    user_info_goal = state_data["user_info_goal"]
+    user_info_weight_change = state_data["user_info_weight_change"]
+    target_calories = state_data["target_calories"]
+    user_info_gym_hrs = state_data["user_info_gym_hrs"]
+    user_info_excersise_hrs = state_data["user_info_excersise_hrs"]
+    name = state_data["user_info_name"]
+    goal_mapping = {
+        '+': "Набрать",
+        '-': "Похудеть",
+        '=': "Сохранить",
+    }
+    goal_str = goal_mapping.get(user_info_goal)
+    gender_mapping = {
+        'male': "Мужской",
+        'female': "Женский"
+    }
+    gender_str = gender_mapping.get(user_info_gender)
+    if user_info_goal == "=":
+        goal_weight = user_info_weight
+    elif user_info_goal == "+":
+        goal_weight = int(user_info_weight) + int(user_info_weight_change)
+    elif user_info_goal == "-":
+        goal_weight = int(user_info_weight) - int(user_info_weight_change)
+
+    response_str = f"<b>{name}, вот твои данные и цель, к которой ты идёшь:</b>   \n\nПол: {gender_str} \nВозраст: {user_info_age} лет \nВес: {user_info_weight} кг \nРост: {user_info_height} см     \n\nЦель: {goal_str} \nЦелевой вес: {goal_weight} кг   \n\nТекущая норма калорий: {target_calories} ккал \nТекущая норма БЖУ: x г белков, x г жиров, x г углеводов \nУровень еженедельной активности: {user_info_gym_hrs}+{user_info_excersise_hrs} часов"
+    return response_str
+
+async def request_for_settings(id):
+    data = await get_user_info(id)
+    print(data)
+    state_data = json.loads(data)
+    print(state_data)
+
+    user_info_gender = state_data["user_info_gender"]
+    user_info_age = state_data["user_info_age"]
+    user_info_weight = state_data["user_info_weight"]
+    user_info_height = state_data["user_info_height"]
+    user_info_goal = state_data["user_info_goal"]
+    user_info_weight_change = state_data["user_info_weight_change"]
+    target_calories = state_data["target_calories"]
+    user_info_gym_hrs = state_data["user_info_gym_hrs"]
+    user_info_excersise_hrs = state_data["user_info_excersise_hrs"]
+    name = state_data["user_info_name"]
+    goal_mapping = {
+        '+': "Набрать",
+        '-': "Похудеть",
+        '=': "Сохранить",
+    }
+    goal_str = goal_mapping.get(user_info_goal)
+    gender_mapping = {
+        'male': "Мужской",
+        'female': "Женский"
+    }
+    gender_str = gender_mapping.get(user_info_gender)
+    if user_info_goal == "=":
+        goal_weight = user_info_weight
+    elif user_info_goal == "+":
+        goal_weight = int(user_info_weight) + int(user_info_weight_change)
+    elif user_info_goal == "-":
+        goal_weight = int(user_info_weight) - int(user_info_weight_change)
+
+    response_str = f"<b>{name}, вот твои данные и цель, к которой ты идёшь:</b>   \n\nПол: {gender_str} \nВозраст: {user_info_age} лет \nВес: {user_info_weight} кг \nРост: {user_info_height} см     \n\nЦель: {goal_str} \nЦелевой вес: {goal_weight} кг   \n\nТекущая норма калорий: {target_calories} ккал \nТекущая норма БЖУ: x г белков, x г жиров, x г углеводов \nУровень еженедельной активности: {user_info_gym_hrs}+{user_info_excersise_hrs} часов"
+    return response_str
+
+
 
 async def process_menu_settings_profile(callback_query, state):
+    await state.set_state(UserState.user_settings)
+    is_set = await check_user_variable(state, "name")
+    if is_set:
+        step0txt = await parse_state_for_settings(state)
+    if not is_set:
+        step0txt = await request_for_settings(callback_query.from_user.id)
+
+    print(step0txt)
+
+
+
+    # step0txt = "<b>Имя, вот твои данные и цель, к которой ты идёшь:</b>   \n\nПол: Не указан \nВозраст: 0 лет \nВес: 0 кг \nРост: 0 см     \n\nЦель: (похудеть и тд) \nЦелевой вес: 0 кг   \n\nТекущая норма калорий: 0 ккал \nТекущая норма БЖУ: x г белков, x г жиров, x г углеводов \nУровень еженедельной активности: 0 часов"
+    
     buttons = [
         [InlineKeyboardButton(text="Изменить имя", callback_data="menu_settings_profile_name")],
         [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_settings_profile_kkal")],
@@ -247,7 +340,6 @@ async def process_menu_settings_profile(callback_query, state):
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    step0txt = "<b>Имя, вот твои данные и цель, к которой ты идёшь:</b>   \n\nПол: Не указан \nВозраст: 0 лет \nВес: 0 кг \nРост: 0 см     \n\nЦель: (похудеть и тд) \nЦелевой вес: 0 кг   \n\nТекущая норма калорий: 0 ккал \nТекущая норма БЖУ: x г белков, x г жиров, x г углеводов \nУровень еженедельной активности: 0 часов"
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
 
 async def process_menu_settings_help(callback_query, state):

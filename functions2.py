@@ -32,7 +32,6 @@ from all_states import *
 
 debug = 0
 
-
 async def get_url(file_id: str) -> str:
     file = await bot.get_file(file_id)
     file_path = file.file_path
