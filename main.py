@@ -560,7 +560,7 @@ async def main_change_kkal(message: types.Message, state:FSMContext):
 async def main_process_menu_settings_notif(callback_query: CallbackQuery, state: FSMContext):
     await ping_change_start(callback_query, state)
 
-@router.callback_query(lambda c: c.data == 'user_change_notif_time')
+@router.callback_query(lambda c: c.data == 'user_notif_toggle')
 async def main_process_menu_settings_notif_toggle(callback_query: CallbackQuery, state: FSMContext):
     await process_menu_settings_notif_toggle(callback_query, state)
                 

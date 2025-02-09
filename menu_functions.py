@@ -363,7 +363,7 @@ async def change_user_notifs(callback_query, state):
         [InlineKeyboardButton(text="Отключить все уведомления", callback_data="user_notif_toggle")],
         [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]
     ]
-    await callback_query.message.edit_text("indev", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await callback_query.message.edit_text("Меню уведомлений", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.set_state(UserState.menu)
 
 async def process_menu_settings_notif_toggle(callback_query, state):
@@ -403,10 +403,11 @@ async def change_evening_ping(message, state):
         }
     }
     text = "Я обновила твои данные ✅"  
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
     iserror, answer = await add_or_update_usr_info(json.dumps(data))
     if not iserror:
         await message.answer(text)
-        await state.set_state(UserState.menu)
+        await state.set_state(UserState.menu, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def process_change_kkal(message, state):
     await state.update_data(target_calories=message.text)
