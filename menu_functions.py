@@ -291,45 +291,6 @@ async def new_request_for_settings(id, state):
     response_str += f"Текущая норма калорий: {user_info['target_calories']} ккал \nУровень еженедельной активности: {user_info['gym_hours']}+{user_info['exercise_hours']} часов"
     return response_str
 
-async def request_for_settings(id):
-    iserror, data = await get_user_info(id)
-    # print(data)
-    state_data = json.loads(data)
-    # print(state_data)
-
-    user_info_gender = state_data["user_info_gender"]
-    user_info_age = state_data["user_info_age"]
-    user_info_weight = state_data["user_info_weight"]
-    user_info_height = state_data["user_info_height"]
-    user_info_goal = state_data["user_info_goal"]
-    user_info_weight_change = state_data["user_info_weight_change"]
-    target_calories = state_data["target_calories"]
-    user_info_gym_hrs = state_data["user_info_gym_hrs"]
-    user_info_excersise_hrs = state_data["user_info_excersise_hrs"]
-    name = state_data["user_info_name"]
-    goal_mapping = {
-        '+': "Набрать",
-        '-': "Похудеть",
-        '=': "Сохранить",
-    }
-    goal_str = goal_mapping.get(user_info_goal)
-    gender_mapping = {
-        'male': "Мужской",
-        'female': "Женский"
-    }
-    gender_str = gender_mapping.get(user_info_gender)
-    if user_info_goal == "=":
-        goal_weight = user_info_weight
-    elif user_info_goal == "+":
-        goal_weight = int(user_info_weight) + int(user_info_weight_change)
-    elif user_info_goal == "-":
-        goal_weight = int(user_info_weight) - int(user_info_weight_change)
-
-    response_str = f"<b>{name}, вот твои данные и цель, к которой ты идёшь:</b>   \n\nПол: {gender_str} \nВозраст: {user_info_age} лет \nВес: {user_info_weight} кг \nРост: {user_info_height} см     \n\nЦель: {goal_str} \nЦелевой вес: {goal_weight} кг   \n\nТекущая норма калорий: {target_calories} ккал \nТекущая норма БЖУ: x г белков, x г жиров, x г углеводов \nУровень еженедельной активности: {user_info_gym_hrs}+{user_info_excersise_hrs} часов"
-    return response_str
-
-
-
 async def process_menu_settings_profile(callback_query, state):
     await state.set_state(UserState.user_settings)
     is_set = await check_user_variable(state, "goal_weight")
