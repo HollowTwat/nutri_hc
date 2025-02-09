@@ -373,8 +373,15 @@ async def process_menu_settings_notif_toggle(callback_query, state):
     ]
     text_mapping = {"True": "Уведомления включены", "False": "Уведомления отключены", "user_notif_toggle": "Выбирай что хочешь сделать с уведомлениями"}
     text = text_mapping.get(callback_query.data)
-    await callback_query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-    await state.set_state(UserState.notif_toggle)
+
+    if callback_query.data in ["True", "False"]:
+        Iserror, respo = await change_ping_activation_status(callback_query.from_user.id, callback_query.data)
+        if not Iserror: await callback_query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await state.set_state(UserState.notif_toggle)
+        return
+    else:
+        await callback_query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await state.set_state(UserState.notif_toggle)
 
 async def ping_change_start(callback_query, state):
     buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
