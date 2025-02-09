@@ -299,12 +299,6 @@ async def process_menu_settings_profile(callback_query, state):
     if not is_set:
         step0txt = await new_request_for_settings(callback_query.from_user.id, state)
 
-    print(step0txt)
-
-
-
-    # step0txt = "<b>Имя, вот твои данные и цель, к которой ты идёшь:</b>   \n\nПол: Не указан \nВозраст: 0 лет \nВес: 0 кг \nРост: 0 см     \n\nЦель: (похудеть и тд) \nЦелевой вес: 0 кг   \n\nТекущая норма калорий: 0 ккал \nТекущая норма БЖУ: x г белков, x г жиров, x г углеводов \nУровень еженедельной активности: 0 часов"
-    
     buttons = [
         [InlineKeyboardButton(text="Изменить имя", callback_data="menu_settings_profile_name")],
         [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_settings_profile_kkal")],
