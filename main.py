@@ -531,7 +531,7 @@ async def main_process_menu_settings_sub(callback_query: CallbackQuery, state: F
 
 @router.callback_query(StateFilter(UserState.change_user_info), lambda c: True)
 async def main_change_user_info(callback_query: CallbackQuery, state: FSMContext):
-    state_data = state.get_data()
+    state_data = await state.get_data()
     name = state_data["name"]
     if callback_query.data == "menu_settings_profile_name":
         await change_user_name(callback_query, state, name)
