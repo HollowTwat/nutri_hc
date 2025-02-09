@@ -216,9 +216,58 @@ async def process_menu_nutri_yapp(callback_query, state):
     step0txt = "Задай мне любой вопрос в части питания. Текстом или 🎤 аудио\nНапример: <i>Какие перекусы ты мне рекомендуешь исходя из моей цели?</i>"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
+async def change_user_name(callback_query, state, name):
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    await callback_query.message.edit_text(f"Твоё имя у меня сейчас {name}, пиши то, на которое поменять", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.set_state(UserState.name_change)
+    return
 
+async def change_user_kkal(callback_query, state, kkal):
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    await callback_query.message.edit_text(f"Текущая норма калорий: {kkal} ккал\nВведи новое число ккал", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.set_state(UserState.kkal_change)
+    return
 
+async def restart_anket(callback_query, state):
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    await callback_query.message.edit_text(f"indev", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    return
 
+async def change_user_notifs(callback_query, state):
+    buttons = [
+        [InlineKeyboardButton(text="Изменить время", callback_data="user_change_notif_time")],
+        [InlineKeyboardButton(text="Отключить все уведомления", callback_data="user_notif_toggle")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]
+    ]
+    await callback_query.message.edit_text("indev", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.set_state(UserState.menu)
+    return
+
+async def process_change_kkal(message, state):
+    await state.update_data(target_calories=message.text)
+    data = {
+        "userTgId": f"{message.from_user.id}",
+        "info": {
+            "target_calories" : f"{message.text}"
+        }
+    }
+    iserror, answer = await add_or_update_usr_info(json.dumps(data))
+    if not iserror:
+        buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+        await message.answer("Я обновила твои данные ✅", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+async def process_change_name(message, state):
+    await state.update_data(name=message.text)
+    data = {
+        "userTgId": f"{message.from_user.id}",
+        "info": {
+            "user_info_name" : f"{message.text}"
+        }
+    }
+    iserror, answer = await add_or_update_usr_info(json.dumps(data))
+    if not iserror:
+        buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+        await message.answer("Я обновила твои данные ✅", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def process_menu_nutri_reciepie(callback_query, state):
     # buttons = [
@@ -323,6 +372,7 @@ async def process_menu_settings_profile(callback_query, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+    await state.set_state(UserState.change_user_info)
 
 async def process_menu_settings_help(callback_query, state):
     buttons = [

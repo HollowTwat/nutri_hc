@@ -58,6 +58,24 @@ async def get_user_info(id):
             except aiohttp.ClientError as e:
                 return True, ""
             
+async def add_or_update_usr_info(data):
+    url = "https://nutridb-production.up.railway.app/api/TypesCRUD/AddOrUpdateUserExtraInfo"
+    default_headers = {
+        "Content-Type": "application/json"
+    }
+    async with aiohttp.ClientSession() as session:
+        default_headers = {
+            "Content-Type": "application/json"
+        }
+        try:
+            async with session.post(url=url, data=data, headers=default_headers) as response:
+                user_data = await response.text()
+                # print(f"НИКИТИН ОТВЕТ {user_data}")
+                # user_data = json.loads(text_data)
+                return False, user_data
+        except aiohttp.ClientError as e:
+            return True, ""
+
 def create_day_rate_question(user_info, food):
     data = json.loads(user_info)
     parsed_info = {

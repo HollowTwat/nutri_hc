@@ -17,6 +17,9 @@ class UserState(StatesGroup):
     saving = State()
     rating_meal = State()
     user_settings = State()
+    change_user_info = State()
+    name_change = State()
+    kkal_change = State()
 
 class LayoverState(StatesGroup):
     recognition = State()

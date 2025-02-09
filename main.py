@@ -529,6 +529,34 @@ async def main_process_menu_settings_help(callback_query: CallbackQuery, state: 
 async def main_process_menu_settings_sub(callback_query: CallbackQuery, state: FSMContext):
     await process_menu_settings_sub(callback_query, state)
 
+@router.callback_query(StateFilter(UserState.change_user_info), lambda c: True)
+async def main_change_user_info(callback_query: CallbackQuery, state: FSMContext):
+    state_data = state.get_data()
+    name = state_data["name"]
+    if callback_query.data == "menu_settings_profile_name":
+        await change_user_name(callback_query, state, name)
+    elif callback_query.data == "menu_settings_profile_kkal":
+        await change_user_kkal(callback_query, state)
+    elif callback_query.data == "menu_settings_profile_re-anket":
+        await restart_anket(callback_query, state)
+    elif callback_query.data == "menu_settings_profile_notif":
+        await change_user_notifs(callback_query, state)
+
+@router.message(StateFilter(UserState.name_change))
+async def main_change_name(message: types.Message, state:FSMContext):
+    await process_change_name(message, state)
+    await state.set_state(UserState.menu)
+
+@router.message(StateFilter(UserState.kkal_change))
+async def main_change_kkal(message: types.Message, state:FSMContext):
+    pattern = r'^-?\d+$'
+    if re.match(pattern, message.text):
+        await process_change_kkal(message, state)
+    else:
+        await message.answer("Напиши число")
+                
+
+
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
 
 @router.callback_query(lambda c: c.data == 'lesson_0_done')
