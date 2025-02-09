@@ -555,7 +555,30 @@ async def main_change_kkal(message: types.Message, state:FSMContext):
         await process_change_kkal(message, state)
     else:
         await message.answer("Напиши число")
+
+@router.callback_query(lambda c: c.data == 'user_change_notif_time')
+async def main_process_menu_settings_notif(callback_query: CallbackQuery, state: FSMContext):
+    await ping_change_start(callback_query, state)
+
+@router.callback_query(lambda c: c.data == 'user_change_notif_time')
+async def main_process_menu_settings_notif_toggle(callback_query: CallbackQuery, state: FSMContext):
+    await process_menu_settings_notif_toggle(callback_query, state)
                 
+@router.message(StateFilter(UserState.morning_ping_change))
+async def main_change_morning_ping(message: types.Message, state:FSMContext):
+    pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
+    if re.match(pattern, message.text):
+        await change_morning_ping(message, state)
+    else:
+        await message.answer("Укажи время в формате ЧЧ:ММ Например 10:00")
+
+@router.message(StateFilter(UserState.evening_ping_change))
+async def main_change_evening_ping(message: types.Message, state:FSMContext):
+    pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
+    if re.match(pattern, message.text):
+        await change_evening_ping(message, state)
+    else:
+        await message.answer("Укажи время в формате ЧЧ:ММ Например, 20:00")
 
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################

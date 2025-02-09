@@ -20,6 +20,8 @@ class UserState(StatesGroup):
     change_user_info = State()
     name_change = State()
     kkal_change = State()
+    morning_ping_change = State()
+    evening_ping_change = State()
 
 class LayoverState(StatesGroup):
     recognition = State()

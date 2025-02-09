@@ -43,6 +43,16 @@ async def audio_file(file_id: str) -> str:
     transcription = await transcribe_audio_from_url(file_url)
     return transcription
 
+async def change_ping_activation_status(id, status):
+    url=f"https://nutridb-production.up.railway.app/api/TypesCRUD/SetNotifyStatus?UserTgId={id}&status={status}"
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url) as response:
+                data = await response.text()
+                return False, data
+        except aiohttp.ClientError as e:
+            return True, e
+
 async def get_user_info(id):
     url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserExtraInfo?userTgId={id}"
     async with aiohttp.ClientSession() as session:
