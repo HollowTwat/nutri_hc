@@ -1,4 +1,5 @@
 import asyncio
+from decimal import Decimal
 import aiogram
 import random
 import os
@@ -266,6 +267,19 @@ async def new_request_for_settings(id, state):
     
     goal_str = goal_mapping.get(data.get("user_info_goal"), "Неизвестно")
     gender_str = gender_mapping.get(data.get("user_info_gender"), "Неизвестно")
+
+    try:
+        weight_change = Decimal(data.get("user_info_weight_change", 0))
+        current_weight = Decimal(data.get("user_info_weight", 0))
+    except (ValueError, TypeError):
+        weight_change = Decimal(0)
+        current_weight = Decimal(0)
+    
+    goal_weight = (
+        current_weight + weight_change if data.get("user_info_goal") == "+"
+        else current_weight - weight_change if data.get("user_info_goal") == "-"
+        else current_weight
+    )
     
     user_info = {
         "name": data.get("user_info_name"),
@@ -274,10 +288,10 @@ async def new_request_for_settings(id, state):
         "bmi": data.get("user_info_bmi"),
         "bmr": data.get("bmr"),
         "allergies": data.get("user_info_meals_ban"),
-        "weight": data.get("user_info_weight"),
+        "weight": str(current_weight),
         "height": data.get("user_info_height"),
         "goal": goal_str,
-        "goal_weight": int(data.get("user_info_weight", 0)) + int(data.get("user_info_weight_change", 0)) if data.get("user_info_goal") == "+" else int(data.get("user_info_weight", 0)) - int(data.get("user_info_weight_change", 0)) if data.get("user_info_goal") == "-" else data.get("user_info_weight"),
+        "goal_weight": str(goal_weight),
         "target_calories": data.get("target_calories"),
         "gym_hours": data.get("user_info_gym_hrs"),
         "exercise_hours": data.get("user_info_excersise_hrs")
