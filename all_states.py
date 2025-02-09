@@ -22,6 +22,7 @@ class UserState(StatesGroup):
     kkal_change = State()
     morning_ping_change = State()
     evening_ping_change = State()
+    notif_toggle = State()
 
 class LayoverState(StatesGroup):
     recognition = State()

@@ -561,7 +561,9 @@ async def main_process_menu_settings_notif(callback_query: CallbackQuery, state:
     await ping_change_start(callback_query, state)
 
 @router.callback_query(lambda c: c.data == 'user_notif_toggle')
+@router.callback_query(StateFilter(UserState.notif_toggle))
 async def main_process_menu_settings_notif_toggle(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.notif_toggle)
     await process_menu_settings_notif_toggle(callback_query, state)
                 
 @router.message(StateFilter(UserState.morning_ping_change))
