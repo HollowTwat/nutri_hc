@@ -533,10 +533,11 @@ async def main_process_menu_settings_sub(callback_query: CallbackQuery, state: F
 async def main_change_user_info(callback_query: CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
     name = state_data["name"]
+    kkal = state_data["target_calories"]
     if callback_query.data == "menu_settings_profile_name":
         await change_user_name(callback_query, state, name)
     elif callback_query.data == "menu_settings_profile_kkal":
-        await change_user_kkal(callback_query, state)
+        await change_user_kkal(callback_query, state, kkal)
     elif callback_query.data == "menu_settings_profile_re-anket":
         await restart_anket(callback_query, state)
     elif callback_query.data == "menu_settings_profile_notif":
