@@ -332,7 +332,7 @@ async def request_for_settings(id):
 
 async def process_menu_settings_profile(callback_query, state):
     await state.set_state(UserState.user_settings)
-    is_set = await check_user_variable(state, "name")
+    is_set = await check_user_variable(state, "goal_weight")
     if is_set:
         step0txt = await parse_state_for_settings(state)
     if not is_set:
