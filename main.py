@@ -33,6 +33,7 @@ from day4 import *
 from day5 import *
 from day6 import *
 from day7 import *
+from day8 import *
 from questionnaire import *
 from all_states import *
 
@@ -552,13 +553,14 @@ async def lessons_manage_command(message: types.Message, state: FSMContext):
         [InlineKeyboardButton(text='Урок4', callback_data='d4'),InlineKeyboardButton(text='Урок4_2', callback_data='d4_2')],
         [InlineKeyboardButton(text='Урок5', callback_data='d5'),InlineKeyboardButton(text='Урок5_2', callback_data='d5_2')],
         [InlineKeyboardButton(text='Урок6', callback_data='d6'),InlineKeyboardButton(text='Урок6_2', callback_data='d6_2')],
-        [InlineKeyboardButton(text='Урок7', callback_data='d7')]
+        [InlineKeyboardButton(text='Урок7', callback_data='d7')],
+        [InlineKeyboardButton(text='Урок8', callback_data='d8'),InlineKeyboardButton(text='Урок8_2', callback_data='d8_2')]
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer("pick a lesson", reply_markup=keyboard)
 
 
-@router.callback_query(lambda c: c.data in ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2","d6","d6_2","d7"])
+@router.callback_query(lambda c: c.data in ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2","d6","d6_2","d7","d8","d8_2"])
 async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "d1":
         await state.set_state(LessonStates.step_1)
@@ -595,6 +597,12 @@ async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContex
     elif callback_query.data == "d7":
         await state.set_state(LessonStates7.step_1)
         await process_l7_step_1(callback_query, state)
+    elif callback_query.data == "d8":
+        await state.set_state(LessonStates6.step_1)
+        await process_l8_step_1(callback_query, state)
+    elif callback_query.data == "d8_2":
+        await state.set_state(LessonStates6.step_11)
+        await process_l8_step_11(callback_query, state)
     
     
 ##################### GETTING INTO THE LESSONS
@@ -832,8 +840,56 @@ async def main_process_l7_step_6(poll_answer: types.PollAnswer, state: FSMContex
 
 
 
+
 ################## LESSON_7 LESSON_7 LESSON_7 LESSON_7 LESSON_7 LESSON_7 LESSON_7 LESSON_7 LESSON_7 LESSON_7 LESSON_7 LESSON_7#################
 
+################## LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8#################
+
+@router.callback_query(StateFilter(LessonStates8.step_2), lambda c: True)
+async def main_process_l8_step_1(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "next":
+       await process_l8_step_2(callback_query, state)
+    elif callback_query.data == "stop":
+       await process_l8_step_2_2(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates8.step_3), lambda c: True)
+async def main_process_l8_step_2(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_l8_step_3(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates8.step_4), lambda c: True)
+async def main_process_l8_step_3(callback_query: types.CallbackQuery, state: FSMContext):
+    await main_menu_cb_handler(callback_query, state)
+
+
+@router.callback_query(StateFilter(LessonStates8.step_12), lambda c: True)
+async def main_process_l8_step_11(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_l8_step_12(callback_query, state)
+    
+@router.poll_answer(StateFilter(LessonStates8.step_13), lambda c: True)
+async def main_process_l8_step_12(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l8_step_13(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates8.step_14), lambda c: True)
+async def main_process_l8_step_13(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l8_step_14(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates8.step_15), lambda c: True)
+async def main_process_l8_step_14(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l8_step_15(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates8.step_16), lambda c: True)
+async def main_process_l8_step_15(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l8_step_16(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates8.step_17), lambda c: True)
+async def main_process_l8_step_16(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l8_step_17(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates8.step_18), lambda c: True)
+async def main_process_l8_step_17(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l8_step_18(poll_answer, state)
+
+################## LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8 LESSON_8#################
 
 ################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
 
