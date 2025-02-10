@@ -53,43 +53,37 @@ async def get_average_from_meals(input):
     meals = json.loads(input)
     return meals
 
-async def request_longrate_question(id, type):
-    url = ""
+async def request_longrate_question(id, period):
+    url = "https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserMealsKK"
     default_headers = {
         "Content-Type": "application/json"
     }
-    data = {"id": id, "type": type}
+    data = {"id": id, "period": period}
     async with aiohttp.ClientSession() as session:
         default_headers = {
             "Content-Type": "application/json"
         }
         try:
-            async with session.post(url=url, data=data, headers=default_headers) as response:
+            async with session.post(url=url, data=json.loads(data), headers=default_headers) as response:
                 user_data = await response.text()
-                # print(f"НИКИТИН ОТВЕТ {user_data}")
+                print(f"НИКИТИН ОТВЕТ {user_data}")
                 # user_data = json.loads(text_data)
                 return False, user_data
         except aiohttp.ClientError as e:
             return True, ""
     return
 
-async def week_rate(id):
-    iserror, question = await request_longrate_question(id, "week")
+async def long_rate(id, period):
+    iserror, longrate_data = await request_longrate_question(id, period)
+    assistant_mapping = {1: RATE_TWONE_ASS_ID, 2: RATE_WEEK_ASS_ID}
+    assistant = assistant_mapping.get(period)
     if not iserror:
-        gpt_resp1 = await no_thread_ass(question, RATE_WEEK_ASS_ID)
+        gpt_resp1 = await no_thread_ass(longrate_data, assistant)
         gpt_resp = await remove_reference(gpt_resp1)
         return False, gpt_resp
     else:
         return True, ""
 
-async def rate_21(id,question):
-    iserror, question = await request_longrate_question(id, "21")
-    if not iserror:
-        gpt_resp1 = await no_thread_ass(question, RATE_TWONE_ASS_ID)
-        gpt_resp = await remove_reference(gpt_resp1)
-        return False, gpt_resp
-    else:
-        return True, ""
 
 async def change_ping_activation_status(id, status):
     url=f"https://nutridb-production.up.railway.app/api/TypesCRUD/SetNotifyStatus?UserTgId={id}&status={status}"
