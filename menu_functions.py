@@ -194,7 +194,7 @@ async def process_menu_dnevnik_analysis(callback_query, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     total_kkal = await get_total_kkal(callback_query.from_user.id, "0")
-    generated_text = generate_kkal_text(total_kkal)
+    generated_text = generate_kkal_text(str(total_kkal))
     # step0txt = "<b>Ваша статистика на сегодня</b> 🍽\n\nДневная цель: X ккал., X г. белки, X г. жиры, X г. углеводы 💪.   \n\nСегодня вы съели: \nX ккал 🔥.   \n\nБелки: X г. \nЖиры: X г. \nУглеводы:X г.   \n\nТы можешь съесть еще 582 ккал."
     await callback_query.message.edit_text(generated_text, reply_markup=keyboard)
 
