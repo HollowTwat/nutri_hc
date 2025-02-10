@@ -131,6 +131,7 @@ def generate_kkal_text(data1):
     remaining_kkal = round(goal_kkal - total_kkal, 1)
     
     summary = (
+        f"<b>Ваша статистика на сегодня 🍽️</b>\n\n"
         f"Дневная цель : {goal_kkal} ккал., {goal_prot} г. белки, {goal_fats} г. жиры, {goal_carbs} г. углеводы 💪.\n"
         f"Сегодня вы съели {total_kkal} ккал.🔥\n\n"
         f"Белки: {total_prot} г. 💪\n"
