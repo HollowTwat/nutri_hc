@@ -67,8 +67,8 @@ async def process_l14_step_4(poll_answer, state):
     await state.set_state(LessonStates14.step_5)
     await bot.send_poll(
         chat_id=poll_answer.user.id,
-        question="Вопрос 4 \nООпределить, какой тип голода испытываешь: физиологический, вкусовой или эмоциональный",
-        options=["Сделано!", "Нет"],
+        question="Лечь до 23.00",
+        options=["Спалось отлично!", "У меня не было ни единого шанса лечь так рано…"],
         is_anonymous=False
     )
 
@@ -76,8 +76,8 @@ async def process_l14_step_5(poll_answer, state):
     await state.set_state(LessonStates14.step_6)
     await bot.send_poll(
         chat_id=poll_answer.user.id,
-        question="Лечь до 23.00",
-        options=["Спалось отлично!", "У меня не было ни единого шанса лечь так рано…"],
+        question="Поесть не позже чем за 2 часа до сна",
+        options=["Получилось!", "Увы, холодильник был сильнее меня"],
         is_anonymous=False
     )
 
@@ -85,21 +85,12 @@ async def process_l14_step_6(poll_answer, state):
     await state.set_state(LessonStates14.step_7)
     await bot.send_poll(
         chat_id=poll_answer.user.id,
-        question="Поесть не позже чем за 2 часа до сна",
-        options=["Получилось!", "Увы, холодильник был сильнее меня"],
-        is_anonymous=False
-    )
-
-async def process_l14_step_7(poll_answer, state):
-    await state.set_state(LessonStates14.step_8)
-    await bot.send_poll(
-        chat_id=poll_answer.user.id,
         question="Заняться спортом",
         options=["Было!", "Пока не нашлось времени"],
         is_anonymous=False
     )
 
-async def process_l14_step_8(poll_answer, state):
+async def process_l14_step_7(poll_answer, state):
     await state.clear()
     await bot.send_message(
         chat_id = poll_answer.user.id,

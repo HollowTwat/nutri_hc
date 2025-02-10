@@ -1069,10 +1069,6 @@ async def main_process_l14_step_5(poll_answer: types.PollAnswer, state: FSMConte
 async def main_process_l14_step_6(poll_answer: types.PollAnswer, state: FSMContext):
     await process_l14_step_7(poll_answer, state)
 
-@router.poll_answer(StateFilter(LessonStates14.step_8), lambda c: True)
-async def main_process_l14_step_7(poll_answer: types.PollAnswer, state: FSMContext):
-    await process_l14_step_8(poll_answer, state)
-
 ################## LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14#################
 
 ################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
