@@ -78,7 +78,7 @@ async def long_rate(id, period):
     assistant_mapping = {"2": RATE_TWONE_ASS_ID, "1": RATE_WEEK_ASS_ID}
     assistant = assistant_mapping.get(period)
     if not iserror:
-        gpt_resp1 = await no_thread_ass(longrate_data, assistant)
+        gpt_resp1 = await no_thread_ass(str(longrate_data), assistant)
         gpt_resp = await remove_reference(gpt_resp1)
         return False, gpt_resp
     else:
