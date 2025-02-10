@@ -117,7 +117,8 @@ async def get_total_kkal(id, period):
         except aiohttp.ClientError as e:
             return True, ""
         
-async def generate_kkal_text(data):
+def generate_kkal_text(data1):
+    data = json.loads(data1)
     goal_kkal = data["GoalKkal"]
     total_kkal = data["TotalKkal"]
     total_prot = data["TotalProt"]
