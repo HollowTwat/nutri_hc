@@ -59,6 +59,7 @@ async def request_longrate_question(id, period):
         "Content-Type": "application/json"
     }
     data = {"id": id, "period": period}
+    print(f"url: {url} data: {json.dumps(data)}")
     async with aiohttp.ClientSession() as session:
         default_headers = {
             "Content-Type": "application/json"
