@@ -392,7 +392,7 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_analysis_rate-week')
 async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
-    iserror, resp = await long_rate(callback_query.from_user.id, 1)
+    iserror, resp = await long_rate(callback_query.from_user.id, "1")
     buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu")]]
     await callback_query.message.edit_text(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
