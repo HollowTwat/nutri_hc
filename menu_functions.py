@@ -193,17 +193,13 @@ async def process_menu_dnevnik_analysis(callback_query, state):
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    step0txt = "<b>Ваша статистика на сегодня</b> 🍽\n\nДневная цель: X ккал., X г. белки, X г. жиры, X г. углеводы 💪.   \n\nСегодня вы съели: \nX ккал 🔥.   \n\nБелки: X г. \nЖиры: X г. \nУглеводы:X г.   \n\nТы можешь съесть еще 582 ккал."
-    await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+    total_kkal = await get_total_kkal(callback_query.from_user.id, "0")
+    generated_text = await generate_kkal_text(total_kkal)
+    # step0txt = "<b>Ваша статистика на сегодня</b> 🍽\n\nДневная цель: X ккал., X г. белки, X г. жиры, X г. углеводы 💪.   \n\nСегодня вы съели: \nX ккал 🔥.   \n\nБелки: X г. \nЖиры: X г. \nУглеводы:X г.   \n\nТы можешь съесть еще 582 ккал."
+    await callback_query.message.edit_text(generated_text, reply_markup=keyboard)
 
 async def process_menu_dnevnik_instruction(callback_query, state):
-    # buttons = [
-    #     [InlineKeyboardButton(text="Изменить имя", callback_data="menu_dnevnik_instruction_")],
-    #     [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_dnevnik_instruction_")],
-    #     [InlineKeyboardButton(text="Заполнить анкету заново", callback_data="menu_dnevnik_instruction_")],
-    #     [InlineKeyboardButton(text="Настроить уведомления", callback_data="menu_dnevnik_instruction_")],
-    #     ]
-    # keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+
     step0txt = "in dev"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
@@ -217,12 +213,7 @@ async def process_menu_nutri_yapp(callback_query, state):
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
 async def process_menu_nutri_reciepie(callback_query, state):
-    # buttons = [
-    #     [InlineKeyboardButton(text="Изменить имя", callback_data="menu_nutri_reciepie_")],
-    #     [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_nutri_reciepie_")],
-    #     [InlineKeyboardButton(text="Настроить уведомления", callback_data="menu_nutri_reciepie_")],
-    #     ]
-    # keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+
     step0txt = "in dev"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 

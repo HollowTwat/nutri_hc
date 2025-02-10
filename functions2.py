@@ -43,6 +43,43 @@ async def audio_file(file_id: str) -> str:
     transcription = await transcribe_audio_from_url(file_url)
     return transcription
 
+async def get_user_meals(id, type):
+    meals = ""
+    return False, meals
+
+async def get_average_from_meals(input):
+    meals = json.loads(input)
+    return meals
+
+async def generate_longrate_question(id, type):
+    iserror, meals = await get_user_meals(id, type)
+    iserror2, user_info = await get_user_info(id)
+    average = await get_average_from_meals(meals)
+    question = {
+        "user_info" : user_info,
+        "meals": meals,
+        "average_kkal" : average
+    }
+    return
+
+async def week_rate(id,question):
+    iserror, question = await generate_longrate_question(id, "week", question)
+    if not iserror:
+        gpt_resp1 = await no_thread_ass(question, "week")
+        gpt_resp = await remove_reference(gpt_resp1)
+        return False, gpt_resp
+    else:
+        return True, ""
+
+async def rate_21(id,question):
+    iserror, question = await generate_longrate_question(id, "21", question)
+    if not iserror:
+        gpt_resp1 = await no_thread_ass(question, "week")
+        gpt_resp = await remove_reference(gpt_resp1)
+        return False, gpt_resp
+    else:
+        return True, ""
+
 async def change_ping_activation_status(id, status):
     url=f"https://nutridb-production.up.railway.app/api/TypesCRUD/SetNotifyStatus?UserTgId={id}&status={status}"
     async with aiohttp.ClientSession() as session:
@@ -67,6 +104,41 @@ async def get_user_info(id):
                     return False, user_data
             except aiohttp.ClientError as e:
                 return True, ""
+            
+async def get_total_kkal(id, period):
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserMealsTotal?userTgId={id}&period={period}"
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(url=url) as response:
+                user_data = await response.text()
+                # print(f"НИКИТИН ОТВЕТ {user_data}")
+                # user_data = json.loads(text_data)
+                return False, user_data
+        except aiohttp.ClientError as e:
+            return True, ""
+        
+async def generate_kkal_text(data):
+    goal_kkal = data["GoalKkal"]
+    total_kkal = data["TotalKkal"]
+    total_prot = data["TotalProt"]
+    total_fats = data["TotalFats"]
+    total_carbs = data["TotalCarbs"]
+
+    goal_prot = round((0.225 * goal_kkal) / 4, 1)
+    goal_fats = round((0.275 * goal_kkal) / 9, 1)
+    goal_carbs = round((0.55 * goal_kkal) / 4, 1)
+    remaining_kkal = round(goal_kkal - total_kkal, 1)
+    
+    summary = (
+        f"Дневная цель : {goal_kkal} ккал., {goal_prot} г. белки, {goal_fats} г. жиры, {goal_carbs} г. углеводы 💪.\n"
+        f"Сегодня вы съели {total_kkal} ккал.🔥\n\n"
+        f"Белки: {total_prot} г. 💪\n"
+        f"Жиры: {total_fats} г. 🧈\n"
+        f"Углеводы: {total_carbs} г. 🍞\n\n"
+        f"Вы можете еще съесть {remaining_kkal} ккал."
+    )
+    
+    return summary
             
 async def add_or_update_usr_info(data):
     url = "https://nutridb-production.up.railway.app/api/TypesCRUD/AddOrUpdateUserExtraInfo"
