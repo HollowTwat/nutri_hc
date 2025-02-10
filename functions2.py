@@ -64,7 +64,7 @@ async def request_longrate_question(id, period):
             "Content-Type": "application/json"
         }
         try:
-            async with session.post(url=url, data=json.loads(data), headers=default_headers) as response:
+            async with session.post(url=url, data=json.dumps(data), headers=default_headers) as response:
                 user_data = await response.text()
                 print(f"НИКИТИН ОТВЕТ {user_data}")
                 # user_data = json.loads(text_data)
