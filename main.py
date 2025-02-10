@@ -38,6 +38,8 @@ from day9 import *
 from day10 import *
 from day11 import *
 from day12 import *
+from day13 import *
+from day14 import *
 from questionnaire import *
 from all_states import *
 
@@ -562,13 +564,15 @@ async def lessons_manage_command(message: types.Message, state: FSMContext):
         [InlineKeyboardButton(text='Урок9', callback_data='d9'),InlineKeyboardButton(text='Урок9_2', callback_data='d9_2')],
         [InlineKeyboardButton(text='Урок10', callback_data='d10'),InlineKeyboardButton(text='Урок10_2', callback_data='d10_2')],
         [InlineKeyboardButton(text='Урок11', callback_data='d11'),InlineKeyboardButton(text='Урок11_2', callback_data='d11_2')],
-        [InlineKeyboardButton(text='Урок12', callback_data='d12'),InlineKeyboardButton(text='Урок12_2', callback_data='d12_2')]
+        [InlineKeyboardButton(text='Урок12', callback_data='d12'),InlineKeyboardButton(text='Урок12_2', callback_data='d12_2')],
+        [InlineKeyboardButton(text='Урок13', callback_data='d13'),InlineKeyboardButton(text='Урок13_2', callback_data='d13_2')],
+        [InlineKeyboardButton(text='Урок14', callback_data='d14')]
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer("pick a lesson", reply_markup=keyboard)
 
 
-@router.callback_query(lambda c: c.data in ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2","d6","d6_2","d7","d8","d8_2","d9","d9_2","d10","d10_2","d11","d11_2","d12","d12_2"])
+@router.callback_query(lambda c: c.data in ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2","d6","d6_2","d7","d8","d8_2","d9","d9_2","d10","d10_2","d11","d11_2","d12","d12_2","d13","d13_2","d14"])
 async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "d1":
         await state.set_state(LessonStates.step_1)
@@ -635,6 +639,16 @@ async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContex
     elif callback_query.data == "d12_2":
         await state.set_state(LessonStates12.step_11)
         await process_l12_step_11(callback_query, state)
+    elif callback_query.data == "d13":
+        await state.set_state(LessonStates13.step_1)
+        await process_l12_step_1(callback_query, state)
+    elif callback_query.data == "d13_2":
+        await state.set_state(LessonStates13.step_11)
+        await process_l12_step_11(callback_query, state)
+    elif callback_query.data == "d14":
+        await state.set_state(LessonStates14.step_1)
+        await process_l12_step_1(callback_query, state)
+    
     
     
     
@@ -1006,6 +1020,60 @@ async def main_process_l12_step_2(callback_query: types.CallbackQuery, state: FS
     await main_menu_cb_handler(callback_query, state)
 
 ################## LESSON_12 LESSON_12 LESSON_12 LESSON_12 LESSON_12 LESSON_12 LESSON_12 LESSON_12 LESSON_12 LESSON_12 LESSON_12#################
+
+################## LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13#################
+
+@router.callback_query(StateFilter(LessonStates13.step_2), lambda c: True)
+async def main_process_l13_step_1(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "next":
+       await process_l13_step_2(callback_query, state)
+    elif callback_query.data == "stop":
+       await process_l13_step_2_2(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates13.step_3), lambda c: True)
+async def main_process_l13_step_2(callback_query: types.CallbackQuery, state: FSMContext):
+    await main_menu_cb_handler(callback_query, state)
+
+@router.callback_query(StateFilter(LessonStates13.step_11), lambda c: True)
+async def main_process_l13_step_11(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "next":
+       await process_l13_step_12(callback_query, state)
+    elif callback_query.data == "stop":
+       await process_l13_step_12_2(callback_query, state)
+
+################## LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13 LESSON_13#################
+
+################## LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14#################
+
+@router.poll_answer(StateFilter(LessonStates14.step_2), lambda c: True)
+async def main_process_l14_step_1(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l14_step_2(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates14.step_3), lambda c: True)
+async def main_process_l14_step_2(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l14_step_3(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates14.step_4), lambda c: True)
+async def main_process_l14_step_3(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l14_step_4(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates14.step_5), lambda c: True)
+async def main_process_l14_step_4(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l14_step_5(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates14.step_6), lambda c: True)
+async def main_process_l14_step_5(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l14_step_6(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates14.step_7), lambda c: True)
+async def main_process_l14_step_6(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l14_step_7(poll_answer, state)
+
+@router.poll_answer(StateFilter(LessonStates14.step_8), lambda c: True)
+async def main_process_l14_step_7(poll_answer: types.PollAnswer, state: FSMContext):
+    await process_l14_step_8(poll_answer, state)
+
+################## LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14 LESSON_14#################
 
 ################## HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP HELP################
 
