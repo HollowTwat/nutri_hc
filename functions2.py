@@ -76,7 +76,7 @@ async def request_longrate_question(id, period):
 
 async def long_rate(id, period):
     iserror, longrate_data = await request_longrate_question(id, period)
-    assistant_mapping = {"2": RATE_TWONE_ASS_ID, "1": RATE_WEEK_ASS_ID}
+    assistant_mapping = {"4": RATE_TWONE_ASS_ID, "3": RATE_WEEK_ASS_ID}
     assistant = assistant_mapping.get(period)
     if not iserror:
         gpt_resp1 = await no_thread_ass(str(longrate_data), assistant)
