@@ -111,14 +111,13 @@ async def get_total_kkal(id, period):
         try:
             async with session.get(url=url) as response:
                 user_data = await response.text()
-                # print(f"НИКИТИН ОТВЕТ {user_data}")
+                print(f"НИКИТИН ОТВЕТ {user_data}")
                 # user_data = json.loads(text_data)
                 return False, user_data
         except aiohttp.ClientError as e:
             return True, ""
         
-def generate_kkal_text(data1):
-    data = json.loads(data1)
+def generate_kkal_text(data):
     goal_kkal = data["GoalKkal"]
     total_kkal = data["TotalKkal"]
     total_prot = data["TotalProt"]
