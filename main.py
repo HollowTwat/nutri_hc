@@ -641,13 +641,13 @@ async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContex
         await process_l12_step_11(callback_query, state)
     elif callback_query.data == "d13":
         await state.set_state(LessonStates13.step_1)
-        await process_l12_step_1(callback_query, state)
+        await process_l13_step_1(callback_query, state)
     elif callback_query.data == "d13_2":
         await state.set_state(LessonStates13.step_11)
-        await process_l12_step_11(callback_query, state)
+        await process_l13_step_11(callback_query, state)
     elif callback_query.data == "d14":
         await state.set_state(LessonStates14.step_1)
-        await process_l12_step_1(callback_query, state)
+        await process_l14_step_1(callback_query, state)
     
     
     
