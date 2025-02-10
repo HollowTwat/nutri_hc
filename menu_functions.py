@@ -184,6 +184,7 @@ async def process_menu_dnevnik_edit(callback_query, state):
 
     await callback_query.message.edit_text("Выбирай день", reply_markup=generate_day_buttons(meal_data))
 
+
 async def process_menu_dnevnik_analysis(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="Показать график за неделю", callback_data="menu_dnevnik_analysis_graph")],

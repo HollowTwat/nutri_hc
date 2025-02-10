@@ -19,6 +19,8 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 VISION_ASS_ID_2 = os.getenv("VISION_ASS_ID_2")
+RATE_WEEK_ASS_ID = os.getenv('RATE_WEEK_ASS_ID')
+RATE_TWONE_ASS_ID = os.getenv('RATE_TWONE_ASS_ID')
 
 
 TOKEN = BOT_TOKEN
@@ -51,30 +53,39 @@ async def get_average_from_meals(input):
     meals = json.loads(input)
     return meals
 
-async def generate_longrate_question(id, type):
-    iserror, meals = await get_user_meals(id, type)
-    iserror2, user_info = await get_user_info(id)
-    average = await get_average_from_meals(meals)
-    question = {
-        "user_info" : user_info,
-        "meals": meals,
-        "average_kkal" : average
+async def request_longrate_question(id, type):
+    url = ""
+    default_headers = {
+        "Content-Type": "application/json"
     }
+    data = {"id": id, "type": type}
+    async with aiohttp.ClientSession() as session:
+        default_headers = {
+            "Content-Type": "application/json"
+        }
+        try:
+            async with session.post(url=url, data=data, headers=default_headers) as response:
+                user_data = await response.text()
+                # print(f"НИКИТИН ОТВЕТ {user_data}")
+                # user_data = json.loads(text_data)
+                return False, user_data
+        except aiohttp.ClientError as e:
+            return True, ""
     return
 
-async def week_rate(id,question):
-    iserror, question = await generate_longrate_question(id, "week", question)
+async def week_rate(id):
+    iserror, question = await request_longrate_question(id, "week")
     if not iserror:
-        gpt_resp1 = await no_thread_ass(question, "week")
+        gpt_resp1 = await no_thread_ass(question, RATE_WEEK_ASS_ID)
         gpt_resp = await remove_reference(gpt_resp1)
         return False, gpt_resp
     else:
         return True, ""
 
 async def rate_21(id,question):
-    iserror, question = await generate_longrate_question(id, "21", question)
+    iserror, question = await request_longrate_question(id, "21")
     if not iserror:
-        gpt_resp1 = await no_thread_ass(question, "week")
+        gpt_resp1 = await no_thread_ass(question, RATE_TWONE_ASS_ID)
         gpt_resp = await remove_reference(gpt_resp1)
         return False, gpt_resp
     else:
