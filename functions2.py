@@ -67,8 +67,6 @@ async def request_longrate_question(id, period):
         try:
             async with session.post(url=url, data=json.dumps(data), headers=default_headers) as response:
                 user_data = await response.text()
-                print(f"НИКИТИН ОТВЕТ {user_data}")
-                # user_data = json.loads(text_data)
                 return False, user_data
         except aiohttp.ClientError as e:
             return True, ""
@@ -76,7 +74,7 @@ async def request_longrate_question(id, period):
 
 async def long_rate(id, period):
     iserror, longrate_data = await request_longrate_question(id, period)
-    assistant_mapping = {"4": RATE_TWONE_ASS_ID, "3": RATE_WEEK_ASS_ID}
+    assistant_mapping = {"3": RATE_WEEK_ASS_ID, "4": RATE_TWONE_ASS_ID}
     assistant = assistant_mapping.get(period)
     if not iserror:
         gpt_resp1 = await no_thread_ass(str(longrate_data), assistant)
