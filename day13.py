@@ -68,7 +68,7 @@ async def process_l13_step_2(callback_query, state):
     ]
     await callback_query.message.answer_media_group(media=media_files)
     await callback_query.message.answer(text2,reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Сделать зарядку", url = "https://www.youtube.com/watch?v=M-8FvC3GD8c&ab_channel=YogaWithAdriene"),InlineKeyboardButton(text="Дневник питания", callback_data="dnevnik")],
+            [InlineKeyboardButton(text="Сделать зарядку", url = "https://www.youtube.com/watch?v=M-8FvC3GD8c&ab_channel=YogaWithAdriene")],[InlineKeyboardButton(text="Дневник питания", callback_data="dnevnik")],
         ])
     )
     await callback_query.answer()
@@ -86,7 +86,7 @@ async def process_l13_step_11(callback_query, state):
     await callback_query.message.answer(
         "Прислушайся к ощущениям! \n\nКак чувствует себя твоё тело в конце дня? Может быть, зажаты плечи или болит поясница? Может быть, чувствуется усталость? Или, наоборот, всё классно? \n\nКакие бы ощущения ни были внутри, вечерняя разминка поможет почувствовать себя лучше и более качественно спать. Сделаем её вместе?",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Спорт сегодня уже был!", callback_data="next"), InlineKeyboardButton(text="Сделать разминку", url = "https://www.youtube.com/watch?v=v7SN-d4qXx0&ab_channel=YogaWithAdriene", callback_data="stop")]
+            [InlineKeyboardButton(text="Спорт сегодня уже был!", callback_data="next")], [InlineKeyboardButton(text="Сделать разминку", url = "https://www.youtube.com/watch?v=v7SN-d4qXx0&ab_channel=YogaWithAdriene")]
         ])
         )
     await callback_query.answer()

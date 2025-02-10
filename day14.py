@@ -105,13 +105,16 @@ async def process_l14_step_8(poll_answer, state):
         chat_id = poll_answer.user.id,
         text = "Если получилось сделать не все задания — самое время их выполнить. Если получилось сделать — самое время повторить потому что вся фишка заданий этой недели — в регулярности. \n\nЭто же день мечты: выспаться, позаниматься спортом, поделать психологические практики и съесть сладкое! \n\nА пока ты планируешь день, я расскажу о твоём прогрессе за неделю."
         )
+    
+    await bot.send_photo(chat_id = poll_answer.user.id,
+                         photo=IMG1
+        )
+    
     await bot.send_message(
         chat_id=poll_answer.user.id,
         text = "Тут будет оценка недели"
         )
-    await bot.send_photo(chat_id = poll_answer.user.id,
-                         photo=IMG1
-        )
+    
     await bot.send_message(
         chat_id = poll_answer.user.id,
         text = "Вот и подвели итоги! Хорошего выходного, и не забывай заполнять дневник питания."
