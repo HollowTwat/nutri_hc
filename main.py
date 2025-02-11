@@ -58,7 +58,7 @@ VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
 CITY_ASSISTANT_ID = os.getenv('CITY_ASSISTANT_ID')
 ASSISTANT2_ID = os.getenv('ASSISTANT2_ID')
 YAPP_SESH_ASSISTANT_ID = os.getenv('YAPP_SESH_ASSISTANT_ID')    ##ACTUALISED 
-RATE_DAY_ASS_ID = os.getenv('RATE_DAY_ASS_ID')
+RATE_DAY_ASS_ID = os.getenv('RATE_DAY_ASS_ID')                  ##ACTUALISED 
 RATE_MID_ASS_ID = os.getenv('RATE_MID_ASS_ID')
 RATE_SMOL_ASS_ID = os.getenv('RATE_SMOL_ASS_ID')
 RATE_WEEK_ASS_ID = os.getenv('RATE_WEEK_ASS_ID')
@@ -186,18 +186,24 @@ async def dnevnik_layover(message, state, callback_mssg):
 
 @router.callback_query(StateFilter(LayoverState.saving_confirmation))
 async def layover_state_switch(callback_query: CallbackQuery, state: FSMContext):
+    state_data = await state.get_data()
+    old_cb = state_data["callback_mssg"]
     edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
     if callback_query.data == "redact":
         await state.set_state(LayoverState.redact)
         await callback_query.message.edit_text(edit_text, reply_markup=None)
     elif callback_query.data == "save":
-        mealtype_buttons = [
-            [InlineKeyboardButton(text="Завтрак", callback_data="0"), InlineKeyboardButton(text="Обед", callback_data="2")],
-            [InlineKeyboardButton(text="Ужин", callback_data="4"), InlineKeyboardButton(text="Перекус", callback_data="5")]
-            ]
-        mealtype_keyboard = InlineKeyboardMarkup(inline_keyboard=mealtype_buttons)
-        await state.set_state(LayoverState.saving)
-        await callback_query.message.edit_text("Какой это прием пищи?", reply_markup=mealtype_keyboard)
+        if old_cb == "saving_edit":
+            await saving_edit(callback_query, state)
+            pass
+        else:
+            mealtype_buttons = [
+                [InlineKeyboardButton(text="Завтрак", callback_data="0"), InlineKeyboardButton(text="Обед", callback_data="2")],
+                [InlineKeyboardButton(text="Ужин", callback_data="4"), InlineKeyboardButton(text="Перекус", callback_data="5")]
+                ]
+            mealtype_keyboard = InlineKeyboardMarkup(inline_keyboard=mealtype_buttons)
+            await state.set_state(LayoverState.saving)
+            await callback_query.message.edit_text("Какой это прием пищи?", reply_markup=mealtype_keyboard)
 
 
 @router.message(StateFilter(LayoverState.redact))
@@ -367,10 +373,44 @@ async def state_switch(callback_query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(StateFilter(UserState.saving))
 async def saving(callback_query: CallbackQuery, state: FSMContext):
-    data = await state.get_data()
-    str_food = str(data["latest_food"])
-    await callback_query.message.edit_text(f"Тут будет сохранение приема пищи {callback_query.data} с инфой: \n {str_food}")
+    state_data = await state.get_data()
+    food = state_data["latest_food"]
+    Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
+    buttons = [
+        [InlineKeyboardButton(text="Получить оценку", callback_data="meal_rate")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu")]
+    ]
+    if Iserror:
+        await callback_query.message.edit_text("Ошибка при сохранении {answer}")
+    else:
+        if answer != 0:
+            await callback_query.message.edit_text(f"Сохранение успешно", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            await state.set_state(UserState.rating_meal)
 
+@router.callback_query(lambda c: c.data == 'meal_rate')
+async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
+    state_data = await state.get_data()
+    food = state_data["latest_food"]
+    Iserror, user_data = await get_user_info(callback_query.from_user.id)
+    await callback_query.message.edit_text(f"{user_data}")
+    if Iserror:
+        await callback_query.message.edit_text("Ошибка при получении инфы пользователя из дб")
+        return
+    question = create_day_rate_question(user_data, food)
+    print(question)
+    gpt_resp = await no_thread_ass(question, RATE_DAY_ASS_ID)
+    cleaned_resp = await remove_reference(gpt_resp)
+    buttons = [
+        [InlineKeyboardButton(text="⏏️", callback_data="menu")]
+    ]
+    await callback_query.message.edit_text(cleaned_resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.clear()
+
+@router.callback_query(lambda c: c.data == 'menu_dnevnik_analysis_rate-week')
+async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
+    iserror, resp = await long_rate(callback_query.from_user.id, "3")
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu")]]
+    await callback_query.message.edit_text(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 ######################################################### EDIT EDIT EDIT ##############################################
 @router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("day_"))
@@ -396,18 +436,20 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
             [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
         ]
         await callback_query.message.edit_text("У тебя нету занесенного приема пищи за эту дату, заносим?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-        pass
-    meal_id, pretty, food_items = await get_singe_meal(id, date, meal_type)
-    await state.update_data(old_food=food_items)
-    await state.update_data(meal_id=meal_id)
-    buttons = [
-        [InlineKeyboardButton(text="Да", callback_data=f"yesChange_{meal_id}")],
-        [InlineKeyboardButton(text="Удалить", callback_data=f"deletemeal_{meal_id}")],
-        [InlineKeyboardButton(text="Выбрать другой день", callback_data="menu_dnevnik_edit_same")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
-    ]
-    await callback_query.message.edit_text(f"{pretty}", reply_markup=None)
-    await callback_query.message.answer("Меняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        return
+    else:
+        meal_id, pretty, food_items = await get_singe_meal(id, date, meal_type)
+        await state.update_data(old_food=food_items)
+        await state.update_data(meal_id=meal_id)
+        buttons = [
+            [InlineKeyboardButton(text="Да", callback_data=f"yesChange_{meal_id}")],
+            [InlineKeyboardButton(text="Удалить", callback_data=f"deletemeal_{meal_id}")],
+            [InlineKeyboardButton(text="Выбрать другой день", callback_data="menu_dnevnik_edit_same")],
+            [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
+        ]
+        await callback_query.message.edit_text(f"{pretty}", reply_markup=None)
+        await callback_query.message.answer("Меняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
 @router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("deletemeal_"))
 async def delete_meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
     id = str(callback_query.from_user.id)
@@ -465,9 +507,16 @@ async def state_switch(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.message.edit_text(edit_text, reply_markup=None)
     elif callback_query.data == "save":
         state_data = await state.get_data()
+        food = state_data["latest_food"]
         meal_id = state_data["meal_id"]
-        saving_text = f"Тут будет сохранение поверх приема пищи с id {meal_id}"
-        await callback_query.message.edit_text(saving_text)
+        meal_type = state_data["meal_type"]
+        Iserror, answer = await edit_existing_meal(callback_query.from_user.id, food, meal_type, meal_id)
+        if Iserror:
+            await callback_query.message.edit_text("Ошибка при сохранении", reply_markup=None)
+        else:
+            if answer != 0:
+                saving_text = f"Изменение сохранено"
+                await callback_query.message.edit_text(saving_text)
 
 @router.message(StateFilter(UserState.edit_redact))
 async def dnevnik_functional_edit(message: Message, state: FSMContext):
@@ -500,6 +549,60 @@ async def main_process_menu_settings_help(callback_query: CallbackQuery, state: 
 @router.callback_query(lambda c: c.data == 'menu_settings_sub')
 async def main_process_menu_settings_sub(callback_query: CallbackQuery, state: FSMContext):
     await process_menu_settings_sub(callback_query, state)
+
+@router.callback_query(StateFilter(UserState.change_user_info), lambda c: True)
+async def main_change_user_info(callback_query: CallbackQuery, state: FSMContext):
+    state_data = await state.get_data()
+    name = state_data["name"]
+    kkal = state_data["target_calories"]
+    if callback_query.data == "menu_settings_profile_name":
+        await change_user_name(callback_query, state, name)
+    elif callback_query.data == "menu_settings_profile_kkal":
+        await change_user_kkal(callback_query, state, kkal)
+    elif callback_query.data == "menu_settings_profile_re-anket":
+        await restart_anket(callback_query, state)
+    elif callback_query.data == "menu_settings_profile_notif":
+        await change_user_notifs(callback_query, state)
+
+@router.message(StateFilter(UserState.name_change))
+async def main_change_name(message: types.Message, state:FSMContext):
+    await process_change_name(message, state)
+    await state.set_state(UserState.menu)
+
+@router.message(StateFilter(UserState.kkal_change))
+async def main_change_kkal(message: types.Message, state:FSMContext):
+    pattern = r'^-?\d+$'
+    if re.match(pattern, message.text):
+        await process_change_kkal(message, state)
+    else:
+        await message.answer("Напиши число")
+
+@router.callback_query(lambda c: c.data == 'user_change_notif_time')
+async def main_process_menu_settings_notif(callback_query: CallbackQuery, state: FSMContext):
+    await ping_change_start(callback_query, state)
+
+@router.callback_query(lambda c: c.data == 'user_notif_toggle')
+@router.callback_query(StateFilter(UserState.notif_toggle))
+async def main_process_menu_settings_notif_toggle(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.notif_toggle)
+    await process_menu_settings_notif_toggle(callback_query, state)
+                
+@router.message(StateFilter(UserState.morning_ping_change))
+async def main_change_morning_ping(message: types.Message, state:FSMContext):
+    pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
+    if re.match(pattern, message.text):
+        await change_morning_ping(message, state)
+    else:
+        await message.answer("Укажи время в формате ЧЧ:ММ Например 10:00")
+
+@router.message(StateFilter(UserState.evening_ping_change))
+async def main_change_evening_ping(message: types.Message, state:FSMContext):
+    pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
+    if re.match(pattern, message.text):
+        await change_evening_ping(message, state)
+    else:
+        await message.answer("Укажи время в формате ЧЧ:ММ Например, 20:00")
+
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
 

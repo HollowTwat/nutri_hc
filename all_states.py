@@ -15,6 +15,14 @@ class UserState(StatesGroup):
     menu = State()
     saving_confirmation = State()
     saving = State()
+    rating_meal = State()
+    user_settings = State()
+    change_user_info = State()
+    name_change = State()
+    kkal_change = State()
+    morning_ping_change = State()
+    evening_ping_change = State()
+    notif_toggle = State()
 
 class LayoverState(StatesGroup):
     recognition = State()

@@ -1,4 +1,5 @@
 import asyncio
+from decimal import Decimal
 import aiogram
 import random
 import os
@@ -183,6 +184,7 @@ async def process_menu_dnevnik_edit(callback_query, state):
 
     await callback_query.message.edit_text("Выбирай день", reply_markup=generate_day_buttons(meal_data))
 
+
 async def process_menu_dnevnik_analysis(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="Показать график за неделю", callback_data="menu_dnevnik_analysis_graph")],
@@ -192,17 +194,13 @@ async def process_menu_dnevnik_analysis(callback_query, state):
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    step0txt = "<b>Ваша статистика на сегодня</b> 🍽\n\nДневная цель: X ккал., X г. белки, X г. жиры, X г. углеводы 💪.   \n\nСегодня вы съели: \nX ккал 🔥.   \n\nБелки: X г. \nЖиры: X г. \nУглеводы:X г.   \n\nТы можешь съесть еще 582 ккал."
-    await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+    iserror, total_kkal = await get_total_kkal(callback_query.from_user.id, "0")
+    generated_text = generate_kkal_text(total_kkal)
+    # step0txt = "<b>Ваша статистика на сегодня</b> 🍽\n\nДневная цель: X ккал., X г. белки, X г. жиры, X г. углеводы 💪.   \n\nСегодня вы съели: \nX ккал 🔥.   \n\nБелки: X г. \nЖиры: X г. \nУглеводы:X г.   \n\nТы можешь съесть еще 582 ккал."
+    await callback_query.message.edit_text(generated_text, reply_markup=keyboard)
 
 async def process_menu_dnevnik_instruction(callback_query, state):
-    # buttons = [
-    #     [InlineKeyboardButton(text="Изменить имя", callback_data="menu_dnevnik_instruction_")],
-    #     [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_dnevnik_instruction_")],
-    #     [InlineKeyboardButton(text="Заполнить анкету заново", callback_data="menu_dnevnik_instruction_")],
-    #     [InlineKeyboardButton(text="Настроить уведомления", callback_data="menu_dnevnik_instruction_")],
-    #     ]
-    # keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+
     step0txt = "in dev"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
@@ -215,17 +213,8 @@ async def process_menu_nutri_yapp(callback_query, state):
     step0txt = "Задай мне любой вопрос в части питания. Текстом или 🎤 аудио\nНапример: <i>Какие перекусы ты мне рекомендуешь исходя из моей цели?</i>"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
-
-
-
-
 async def process_menu_nutri_reciepie(callback_query, state):
-    # buttons = [
-    #     [InlineKeyboardButton(text="Изменить имя", callback_data="menu_nutri_reciepie_")],
-    #     [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_nutri_reciepie_")],
-    #     [InlineKeyboardButton(text="Настроить уведомления", callback_data="menu_nutri_reciepie_")],
-    #     ]
-    # keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+
     step0txt = "in dev"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
@@ -236,8 +225,82 @@ async def process_menu_nutri_etiketka(callback_query, state):
 ################## YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU ##################
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
+async def check_user_variable(state: FSMContext, var_name: str):
+    """Check if a specific variable is set in the state."""
+    user_data = await state.get_data()
+    
+    # Check if variable exists and is not empty
+    if var_name in user_data and user_data[var_name]:
+        return True
+    return False
+
+async def parse_state_for_settings(state):
+    user_info = await state.get_data()
+    gender_mapping = {"male": "Мужской", "female": "Женский"}
+    gender_str = gender_mapping.get(user_info.get("gender"), "Неизвестно")
+    
+    response_str = f"<b>{user_info.get('name')}, вот твои данные и цель, к которой ты идёшь:</b>   \n\n"
+    response_str += f"Пол: {gender_str} \nВозраст: {user_info['age']} лет \nВес: {user_info['weight']} кг \nРост: {user_info['height']} см     \n\n"
+    response_str += f"Цель: {user_info['goal']} \nЦелевой вес: {user_info['goal_weight']} кг   \n\n"
+    response_str += f"Текущая норма калорий: {user_info['target_calories']} ккал \nУровень еженедельной активности: {user_info['gym_hours']}+{user_info['exercise_hours']} часов"
+    
+    return response_str
+
+async def new_request_for_settings(id, state):
+    iserror, input_data = await get_user_info(id)
+    data = json.loads(input_data)
+    
+    goal_mapping = {"+": "Набрать", "-": "Похудеть", "=": "Сохранить"}
+    gender_mapping = {"male": "Мужской", "female": "Женский"}
+    
+    goal_str = goal_mapping.get(data.get("user_info_goal"), "Неизвестно")
+    gender_str = gender_mapping.get(data.get("user_info_gender"), "Неизвестно")
+
+    try:
+        weight_change = Decimal(data.get("user_info_weight_change", 0))
+        current_weight = Decimal(data.get("user_info_weight", 0))
+    except (ValueError, TypeError):
+        weight_change = Decimal(0)
+        current_weight = Decimal(0)
+    
+    goal_weight = (
+        current_weight + weight_change if data.get("user_info_goal") == "+"
+        else current_weight - weight_change if data.get("user_info_goal") == "-"
+        else current_weight
+    )
+    
+    user_info = {
+        "name": data.get("user_info_name"),
+        "age": data.get("user_info_age"),
+        "gender": data.get("user_info_gender"),
+        "bmi": data.get("user_info_bmi"),
+        "bmr": data.get("bmr"),
+        "allergies": data.get("user_info_meals_ban"),
+        "weight": str(current_weight),
+        "height": data.get("user_info_height"),
+        "goal": goal_str,
+        "goal_weight": str(goal_weight),
+        "target_calories": data.get("target_calories"),
+        "gym_hours": data.get("user_info_gym_hrs"),
+        "exercise_hours": data.get("user_info_excersise_hrs")
+    }
+    
+    await state.update_data(**user_info)
+    
+    response_str = f"<b>{data.get('user_info_name')}, вот твои данные и цель, к которой ты идёшь:</b>   \n\n"
+    response_str += f"Пол: {gender_str} \nВозраст: {user_info['age']} лет \nВес: {user_info['weight']} кг \nРост: {user_info['height']} см     \n\n"
+    response_str += f"Цель: {user_info['goal']} \nЦелевой вес: {user_info['goal_weight']} кг   \n\n"
+    response_str += f"Текущая норма калорий: {user_info['target_calories']} ккал \nУровень еженедельной активности: {user_info['gym_hours']}+{user_info['exercise_hours']} часов"
+    return response_str
 
 async def process_menu_settings_profile(callback_query, state):
+    await state.set_state(UserState.user_settings)
+    is_set = await check_user_variable(state, "goal_weight")
+    if is_set:
+        step0txt = await parse_state_for_settings(state)
+    if not is_set:
+        step0txt = await new_request_for_settings(callback_query.from_user.id, state)
+
     buttons = [
         [InlineKeyboardButton(text="Изменить имя", callback_data="menu_settings_profile_name")],
         [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_settings_profile_kkal")],
@@ -247,8 +310,8 @@ async def process_menu_settings_profile(callback_query, state):
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    step0txt = "<b>Имя, вот твои данные и цель, к которой ты идёшь:</b>   \n\nПол: Не указан \nВозраст: 0 лет \nВес: 0 кг \nРост: 0 см     \n\nЦель: (похудеть и тд) \nЦелевой вес: 0 кг   \n\nТекущая норма калорий: 0 ккал \nТекущая норма БЖУ: x г белков, x г жиров, x г углеводов \nУровень еженедельной активности: 0 часов"
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+    await state.set_state(UserState.change_user_info)
 
 async def process_menu_settings_help(callback_query, state):
     buttons = [
@@ -271,5 +334,104 @@ async def process_menu_settings_sub(callback_query, state):
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "Твой текущий тариф:   \n\n☑️ Подписка на сервис Нутри на X мес \n☑️Действует до:  X \n☑️ Дата автоматического продления: X"
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+
+async def change_user_name(callback_query, state, name):
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    await callback_query.message.edit_text(f"Твоё имя у меня сейчас {name}, пиши то, на которое поменять", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.set_state(UserState.name_change)
+
+async def change_user_kkal(callback_query, state, kkal):
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    await callback_query.message.edit_text(f"Текущая норма калорий: {kkal} ккал\nВведи новое число ккал", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.set_state(UserState.kkal_change)
+
+async def restart_anket(callback_query, state):
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    await callback_query.message.edit_text(f"indev", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+async def change_user_notifs(callback_query, state):
+    buttons = [
+        [InlineKeyboardButton(text="Изменить время", callback_data="user_change_notif_time")],
+        [InlineKeyboardButton(text="Отключить все уведомления", callback_data="user_notif_toggle")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]
+    ]
+    await callback_query.message.edit_text("Меню уведомлений", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.set_state(UserState.menu)
+
+async def process_menu_settings_notif_toggle(callback_query, state):
+    buttons = [
+        [InlineKeyboardButton(text="Вкл", callback_data="True"), InlineKeyboardButton(text="Выкл", callback_data="False")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]
+    ]
+    text_mapping = {"True": "Уведомления включены", "False": "Уведомления отключены", "user_notif_toggle": "Выбирай что хочешь сделать с уведомлениями"}
+    text = text_mapping.get(callback_query.data)
+
+    if callback_query.data in ["True", "False"]:
+        Iserror, respo = await change_ping_activation_status(callback_query.from_user.id, callback_query.data)
+        if not Iserror: await callback_query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await state.set_state(UserState.notif_toggle)
+        return
+    else:
+        await callback_query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await state.set_state(UserState.notif_toggle)
+
+async def ping_change_start(callback_query, state):
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    text = "В какое время тебе удобно получать от меня утренний план на день?\n\nИдеально, если это будет перед едой: так ты сможешь делать все мои задания вовремя.\n\nУкажи время в формате ЧЧ:ММ Например 10:00"
+    await callback_query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.set_state(UserState.morning_ping_change)
+
+async def change_morning_ping(message, state):
+    data = {
+        "userTgId": f"{message.from_user.id}",
+        "info": {
+            "user_info_morning_ping" : f"{message.text}"
+        }
+    }
+    text = "Договорились! А во сколько присылать вечерние итоги?\n\nУкажи время в формате ЧЧ:ММ Например, 20:00"  
+    iserror, answer = await add_or_update_usr_info(json.dumps(data))
+    if not iserror:
+        await message.answer(text)
+        await state.set_state(UserState.evening_ping_change)
+
+async def change_evening_ping(message, state):
+    data = {
+        "userTgId": f"{message.from_user.id}",
+        "info": {
+            "user_info_evening_ping" : f"{message.text}"
+        }
+    }
+    text = "Я обновила твои данные ✅"  
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    iserror, answer = await add_or_update_usr_info(json.dumps(data))
+    if not iserror:
+        await message.answer(text)
+        await state.set_state(UserState.menu, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+async def process_change_kkal(message, state):
+    await state.update_data(target_calories=message.text)
+    data = {
+        "userTgId": f"{message.from_user.id}",
+        "info": {
+            "target_calories" : f"{message.text}"
+        }
+    }
+    iserror, answer = await add_or_update_usr_info(json.dumps(data))
+    if not iserror:
+        buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+        await message.answer("Я обновила твои данные ✅", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+async def process_change_name(message, state):
+    await state.update_data(name=message.text)
+    data = {
+        "userTgId": f"{message.from_user.id}",
+        "info": {
+            "user_info_name" : f"{message.text}"
+        }
+    }
+    iserror, answer = await add_or_update_usr_info(json.dumps(data))
+    if not iserror:
+        buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+        await message.answer("Я обновила твои данные ✅", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
