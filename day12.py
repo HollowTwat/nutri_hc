@@ -51,7 +51,7 @@ async def process_l12_step_2(callback_query, state):
     await state.set_state(LessonStates12.step_3)
     link = "https://nafi.ru/analytics/rossiyskaya-ekonomika-teryaet-3-5-trln-rubley-v-god-iz-za-nevysypayushchikhsya-sotrudnikov/"
     link2 = "https://telegra.ph/Pochemu-bez-zdorovogo-sna-ne-poluchitsya-pohudet-istochniki-informacii-07-16"
-    text = f"<b>Урок 5 \nПочему без здорового сна похудеть не получится</b> \n\nНемного грустной статистики:  48% россиян <a href=\'{link}\'>страдают от недосыпа</a>. Недостаток сна влияет плохо на питание, а неправильное питание,  в свою очередь, тоже влияет на качество сна. \n\nПолучается замкнутый круг. Но вместе мы сможем из него вырваться! Как? Читай в сегодняшнем уроке! \n\nИсточники — <a href=\'{link2}\'>по ссылке.</a>"
+    text = f"<b>Урок 5 \nПочему без здорового сна похудеть не получится</b> \n\nНемного грустной статистики:  48% россиян <a href=\'{link}\'>страдают от недосыпа</a>. Недостаток сна влияет плохо на питание, а неправильное питание,  в свою очередь, тоже влияет на качество сна. \n\nПолучается замкнутый круг. Но вместе мы сможем из него вырваться! Как? Читай в сегодняшнем уроке! \n\nИсточники — <a href=\'{link2}\'>по ссылке</a>."
     
     media_files = [
         InputMediaPhoto(media=IMG1, caption=text),
