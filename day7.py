@@ -103,7 +103,10 @@ async def process_l7_step_7(poll_answer, state):
     await bot.send_photo(chat_id=poll_answer.user.id,
                          photo=IMG1
         )
-    await bot.send_message(
-        chat_id=poll_answer.user.id,
-        text="Тут будет оценка недели"
-        )
+    
+    iserror, week_resp = await long_rate(poll_answer.user.id, "3")
+    if not iserror:
+        await bot.send_message(chat_id=poll_answer.user.id,text = week_resp)
+    else: 
+        await bot.send_message(chat_id=poll_answer.user.id,text = "офибка")
+
