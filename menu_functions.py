@@ -88,7 +88,7 @@ async def menu_no_edit(callback_query, state) -> None:
 async def process_menu_course(callback_query, state):
     iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
     current_lesson = int(last_lesson)+1
-    await state.update_state(current_lesson=current_lesson)
+    await state.update_data(current_lesson=current_lesson)
     buttons = [
         [InlineKeyboardButton(text=f"📖Начать Урок {current_lesson}", callback_data=f"menu_course_lesson_{current_lesson}")],
         [InlineKeyboardButton(text="✏️ Программа курса", callback_data="menu_course_info")],
