@@ -190,12 +190,26 @@ async def process_menu_course_info(callback_query, state):
     await callback_query.message.answer(step1txt)
     await callback_query.message.answer(step2txt, reply_markup=keyboard)
 
+async def ensure_lessons_dict(state, user_id):
+    state_data = await state.get_data()
+
+    if "lessons_dict" not in state_data:
+        iserror, lessons_dict = await get_user_lessons(user_id)
+        
+        if iserror or lessons_dict is None:
+            print("Error fetching lessons.")
+            return None
+        print("Fetched lessons_dict:", lessons_dict)
+
+        await state.update_data(lessons_dict=lessons_dict)
+    else:
+        lessons_dict = state_data["lessons_dict"]
+
+    return lessons_dict
+
 async def process_menu_cource_info_lessons(callback_query, state):
     week = int(callback_query.data.split("_")[5])
-    iserror, lessons_dict = await get_user_lessons(callback_query.from_user.id)
-    print(lessons_dict)
-    await state.update_data(lessons_dict=lessons_dict)
-    emote_mapping = {True: "✅", False: "⭕️"}
+    lessons_dict = await ensure_lessons_dict(state, callback_query.from_user.id)
     buttons = make_lesson_week_buttons(lessons_dict, week)
     await callback_query.message.edit_text("Неделя 1", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
