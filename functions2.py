@@ -85,16 +85,14 @@ def make_lesson_week_buttons(dict, week):
     l5_emote = emote_mapping.get(dict[f"lesson{5*week}_done"])
     l6_emote = emote_mapping.get(dict[f"lesson{6*week}_done"])
     l7_emote = emote_mapping.get(dict[f"lesson{7*week}_done"])
-    next_week_mapping = {1: "menu_course_info_lessons_week_2", 2: "menu_course_info_lessons_week_2"}
-    prev_week_mapping = {2: "menu_course_info_lessons_week_1", 3: "menu_course_info_lessons_week_3"}
     buttons = [
-        [InlineKeyboardButton(text=f"{l1_emote}Урок 1", callback_data=f"d{1*week}")],
-        [InlineKeyboardButton(text=f"{l2_emote}Урок 2", callback_data=f"d{2*week}")],
-        [InlineKeyboardButton(text=f"{l3_emote}Урок 3", callback_data=f"d{3*week}")],
-        [InlineKeyboardButton(text=f"{l4_emote}Урок 4", callback_data=f"d{4*week}")],
-        [InlineKeyboardButton(text=f"{l5_emote}Урок 5", callback_data=f"d{5*week}")],
-        [InlineKeyboardButton(text=f"{l6_emote}Урок 6", callback_data=f"d{6*week}")],
-        [InlineKeyboardButton(text=f"{l7_emote}Урок 7", callback_data=f"d{7*week}")],
+        [InlineKeyboardButton(text=f"{l1_emote}Урок {1*week}", callback_data=f"d{1*week}")],
+        [InlineKeyboardButton(text=f"{l2_emote}Урок {2*week}", callback_data=f"d{2*week}")],
+        [InlineKeyboardButton(text=f"{l3_emote}Урок {3*week}", callback_data=f"d{3*week}")],
+        [InlineKeyboardButton(text=f"{l4_emote}Урок {4*week}", callback_data=f"d{4*week}")],
+        [InlineKeyboardButton(text=f"{l5_emote}Урок {5*week}", callback_data=f"d{5*week}")],
+        [InlineKeyboardButton(text=f"{l6_emote}Урок {6*week}", callback_data=f"d{6*week}")],
+        [InlineKeyboardButton(text=f"{l7_emote}Урок {7*week}", callback_data=f"d{7*week}")],
     ]
 
     navigation_buttons = []
