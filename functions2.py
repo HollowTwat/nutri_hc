@@ -81,7 +81,7 @@ async def get_user_lessons(id):
         url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserLessons?UserTgId={id}"
         try:
             async with session.get(url=url) as response:
-                lesson_data = await response.text()
+                lesson_data = await response.json()
                 lessons_dict = {f"lesson{i+1}_done": status for i, status in enumerate(lesson_data)}
                 return False, lessons_dict
         except aiohttp.ClientError as e:
