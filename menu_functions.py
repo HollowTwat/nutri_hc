@@ -90,7 +90,7 @@ async def process_menu_course(callback_query, state):
     current_lesson = int(last_lesson)+1
     await state.update_data(current_lesson=current_lesson)
     buttons = [
-        [InlineKeyboardButton(text=f"📖Начать Урок {current_lesson}", callback_data=f"menu_course_lesson_{current_lesson}")],
+        [InlineKeyboardButton(text=f"📖Начать Урок {current_lesson}", callback_data=f"d{current_lesson}")],
         [InlineKeyboardButton(text="✏️ Программа курса", callback_data="menu_course_info")],
         [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
@@ -193,7 +193,17 @@ async def process_menu_course_info(callback_query, state):
 async def process_menu_cource_info_lessons(callback_query, state):
     iserror, lessons_dict = await get_user_lessons(callback_query.from_user.id)
     await state.update_data(lessons_dict=lessons_dict)
-
+    emote_mapping = {True: "✅", False: "⭕️"}
+    buttons = [
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson1_done"], callback_query="d1"))],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson2_done"], callback_query="d2"))],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson3_done"], callback_query="d3"))],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson4_done"], callback_query="d4"))],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson5_done"], callback_query="d5"))],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson6_done"], callback_query="d6"))],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson7_done"], callback_query="d7"))],
+    ]
+    await callback_query.message.edit_text("Неделя 1", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
 ################## DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU ##################
