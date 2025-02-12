@@ -76,14 +76,12 @@ async def request_longrate_question(id, period):
     return
 
 async def long_rate(id, period):
-    sticker_message = await send_sticker(chat_id=id, sticker_id=STICKER_ID)
     iserror, longrate_data = await request_longrate_question(id, period)
     assistant_mapping = {"3": RATE_WEEK_ASS_ID, "4": RATE_TWONE_ASS_ID}
     assistant = assistant_mapping.get(period)
     if not iserror:
         gpt_resp1 = await no_thread_ass(str(longrate_data), assistant)
         gpt_resp = await remove_reference(gpt_resp1)
-        await delete_message(chat_id=id, message_id=sticker_message.id)
         return False, gpt_resp
     else:
         return True, ""
