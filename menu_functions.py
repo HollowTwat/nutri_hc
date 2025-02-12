@@ -194,7 +194,7 @@ async def process_menu_cource_info_lessons(callback_query, state):
     iserror, lessons_dict = await get_user_lessons(callback_query.from_user.id)
     print(lessons_dict)
     await state.update_data(lessons_dict=lessons_dict)
-    emote_mapping = {"true": "✅", "false": "⭕️"}
+    emote_mapping = {True: "✅", False: "⭕️"}
     buttons = [
         [InlineKeyboardButton(text=f"{emote_mapping.get(lessons_dict["lesson1_done"])}", callback_query="d1")],
         [InlineKeyboardButton(text=f"{emote_mapping.get(lessons_dict["lesson2_done"])}", callback_query="d2")],
