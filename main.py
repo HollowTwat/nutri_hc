@@ -420,6 +420,14 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu")]]
     await callback_query.message.edit_text(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
+@router.callback_query(lambda c: c.data == 'menu_dnevnik_analysis_rate-day')
+async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
+    sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
+    iserror, resp = await long_rate(callback_query.from_user.id, "0")
+    await sticker_mssg.delete()
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu")]]
+    await callback_query.message.edit_text(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
 ######################################################### EDIT EDIT EDIT ##############################################
 @router.callback_query(StateFilter(UserState.edit), lambda c: c.data.startswith("day_"))
 async def day_selected(callback_query: types.CallbackQuery, state: FSMContext):

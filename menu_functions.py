@@ -214,7 +214,7 @@ async def process_menu_dnevnik_analysis(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="Показать график за неделю", callback_data="menu_dnevnik_analysis_graph")],
         [InlineKeyboardButton(text="Получить анализ пищи за неделю", callback_data="menu_dnevnik_analysis_rate-week")],
-        [InlineKeyboardButton(text="Получить аналитику за 5 дней", callback_data="menu_dnevnik_analysis_5day")],
+        [InlineKeyboardButton(text="Получить аналитику за сегодня", callback_data="menu_dnevnik_analysis_rate-day")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik"), 
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
