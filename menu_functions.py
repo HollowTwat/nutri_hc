@@ -27,6 +27,11 @@ from functions import *
 from functions2 import *
 from all_states import *
 
+COU_LESS_IMG_1 = "AgACAgIAAxkBAAIFq2esppgH39WhLjmdYQGn7CnH2VbyAAIe7jEbb-RpSZ-LMYskHd_tAQADAgADeQADNgQ"
+COU_LESS_IMG_2 = "AgACAgIAAxkBAAIFr2espqUpBX8QZwXBahHhcR3-YadwAAIg7jEbb-RpSfx5HS7svr5LAQADAgADeQADNgQ"
+COU_LESS_IMG_3 = "AgACAgIAAxkBAAIFs2esprGR_uTd7csprwsrrmbt7TzLAAKB7jEbLgppSZacNITqSzTvAQADAgADeQADNgQ"
+COU_LESS_IMG_4 = "AgACAgIAAxkBAAIFt2esprvvZMQtjmxdFXf-bqDwZ91vAAIj7jEbb-RpSQKI2EU19u5_AQADAgADeQADNgQ"
+
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 
 async def menu_handler(message, state) -> None:
@@ -67,6 +72,18 @@ async def menu_cb_handler(callback_query, state) -> None:
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "Меню"
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+
+async def menu_no_edit(callback_query, state) -> None:
+    await state.update_data(full_sequence=False)
+    buttons = [
+        [InlineKeyboardButton(text="📚 Курс:", callback_data="menu_course")],
+        [InlineKeyboardButton(text="🍽 Дневник питания:", callback_data="menu_dnevnik")],
+        [InlineKeyboardButton(text="💬  Нутри:", callback_data="menu_nutri")],
+        [InlineKeyboardButton(text="⚙️Дополнительное:", callback_data="menu_settings")],
+        ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    step0txt = "Меню"
+    await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
 async def process_menu_course(message, state):
     buttons = [
@@ -148,11 +165,18 @@ async def process_menu_course_info(callback_query, state):
         [InlineKeyboardButton(text="◀️", callback_data="menu_course"), 
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
+    media_files = [
+        InputMediaPhoto(media=COU_LESS_IMG_1, caption=step0txt),
+        InputMediaPhoto(media=COU_LESS_IMG_2),
+        InputMediaPhoto(media=COU_LESS_IMG_3),
+        InputMediaPhoto(media=COU_LESS_IMG_4)
+    ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "💚 На первой неделе ты заметишь пищевые привычки, которые тебе мешают. \n💜 На второй получишь базу для формирования новых привычек. \n❤️ На третьей закрепишь новые привычки и начнёшь применять их в реальной жизни."
     step1txt = "Сейчас ты на X уроке этапа X 🧡"
     step2txt = "X уроков из 21 дня пройдено 💪  Осталось X уроков"
-    await callback_query.message.edit_text(step0txt, reply_markup=None)
+    # await callback_query.message.edit_text(step0txt, reply_markup=None)
+    await callback_query.message.edit_media(media_files)
     await callback_query.message.answer(step1txt)
     await callback_query.message.answer(step2txt, reply_markup=keyboard)
 

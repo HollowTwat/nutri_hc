@@ -37,6 +37,8 @@ from all_states import *
 BOT_TOKEN = os.getenv("BOT_TOKEN")                    ##ACTUALISED
 OPENAI_KEY = os.getenv("OPENAI_KEY")                  ##ACTUALISED
 
+STICKER_ID = os.getenv("STICKER_ID")
+
 #ASSISTANTS FFS HOW MANY CAN THERE BE MAAAAAN
 VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
 CITY_ASSISTANT_ID = os.getenv('CITY_ASSISTANT_ID')
@@ -97,6 +99,10 @@ async def main_menu_cb_handler(callback_query: CallbackQuery, state: FSMContext)
 @router.callback_query(lambda c: c.data == 'menu_back')
 async def main_menu_back_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     await menu_back_handler(callback_query, state)
+
+@router.callback_query(lambda c: c.data == 'menu_no_edit')
+async def main_menu_no_edit(callback_query: CallbackQuery, state: FSMContext) -> None:
+    await menu_no_edit(callback_query, state)
 
 @router.callback_query(lambda c: c.data == 'menu_course')
 async def main_process_menu_course(callback_query: CallbackQuery, state: FSMContext):
@@ -1125,7 +1131,8 @@ async def main_process_w_loss_amount(message: Message, state: FSMContext):
 
 @router.message(StateFilter(Questionnaire.city))
 async def main_process_city(message: Message, state: FSMContext):
-    await process_city(message, state)
+    timeslide, city = await process_city(message, state)
+    state.update_data(timeslide=timeslide, city=city)
     await state.set_state(Questionnaire.morning_ping)
 
 @router.message(StateFilter(Questionnaire.morning_ping))
@@ -1141,6 +1148,7 @@ async def main_process_morning_ping(message: Message, state: FSMContext):
 async def main_process_evening_ping(message: Message, state: FSMContext):
     pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
     if re.match(pattern, message.text):
+        await state.update_data(evening_ping=message.text)
         await process_evening_ping(message, state)
         await state.set_state(Questionnaire.community_invite)
     else:
@@ -1150,6 +1158,37 @@ async def main_process_evening_ping(message: Message, state: FSMContext):
 async def main_process_community_invite(callback_query: types.CallbackQuery, state: FSMContext):
     await process_community_invite(callback_query.message, state)
     await state.clear()
+    state_data = await state.get_data()
+    data = {
+        "userTgId": callback_query.from_user.id,
+        "info": {
+        "user_info_name": data.get("name"),
+        "user_info_timeslide" : data.get("timeslide"),
+        "user_info_morning_ping": data.get("morning_ping"),
+        "user_info_evening_ping": data.get("evening_ping"),
+        "user_info_city": data.get("city"),
+        "user_info_bmi":  "#{user_info_bmi}",
+        "target_calories": "#{target_calories}",
+        "bmr":  "#{bmr}",
+        "tdee":  "#{tdee}",
+        "user_info_weight_change":  "#{user_info_weight_change}",
+        "user_info_goal": data.get("goal"),
+        "user_info_sleep": "#{user_info_sleep}",
+        "user_info_stress": "#{user_info_stress}",
+        "user_info_gym_hrs": "#{user_info_gym_hrs}",
+        "user_info_excersise_hrs": "#{user_info_excersise_hrs}",
+        "user_info_meals_ban": data.get("allergies"),
+        "user_info_meals_extra": "#{user_info_meals_extra}",
+        "user_info_meal_amount": "#{user_info_meal_amount}",
+        "user_info_booze": data.get("booze"),
+        "user_info_water": data.get("water"),
+        "user_info_age": data.get("age"),
+        "user_info_weight": data.get("weight"),
+        "user_info_height": data.get("height"),
+        "user_info_breastfeeding": data.get("breastfeeding"),
+        "user_info_pregnancy": data.get("pregnancy"),
+        "user_info_gender": data.get("gender")}
+}
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
