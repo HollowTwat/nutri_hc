@@ -87,7 +87,11 @@ async def menu_no_edit(callback_query, state) -> None:
 
 async def process_menu_course(message, state, id):
     iserror, last_lesson = await get_last_user_lesson(id)
-    current_lesson = int(last_lesson)+1
+    if last_lesson == 21:
+        current_lesson = 21
+    else:
+        current_lesson = int(last_lesson)+1
+
     await state.update_data(current_lesson=current_lesson)
     buttons = [
         [InlineKeyboardButton(text=f"📖Начать Урок {current_lesson}", callback_data=f"d{current_lesson}")],
