@@ -195,14 +195,22 @@ async def process_menu_cource_info_lessons(callback_query, state):
     print(lessons_dict)
     await state.update_data(lessons_dict=lessons_dict)
     emote_mapping = {True: "✅", False: "⭕️"}
+    l1_emote = emote_mapping.get(lessons_dict["lesson1_done"])
+    l2_emote = emote_mapping.get(lessons_dict["lesson2_done"])
+    l3_emote = emote_mapping.get(lessons_dict["lesson3_done"])
+    l4_emote = emote_mapping.get(lessons_dict["lesson4_done"])
+    l5_emote = emote_mapping.get(lessons_dict["lesson5_done"])
+    l6_emote = emote_mapping.get(lessons_dict["lesson6_done"])
+    l7_emote = emote_mapping.get(lessons_dict["lesson7_done"])
+    print(l1_emote,l2_emote,l3_emote,l4_emote)
     buttons = [
-        [InlineKeyboardButton(text=f"{emote_mapping.get(lessons_dict["lesson1_done"])}", callback_query="d1")],
-        [InlineKeyboardButton(text=f"{emote_mapping.get(lessons_dict["lesson2_done"])}", callback_query="d2")],
-        [InlineKeyboardButton(text=f"{emote_mapping.get(lessons_dict["lesson3_done"])}", callback_query="d3")],
-        [InlineKeyboardButton(text=f"{emote_mapping.get(lessons_dict["lesson4_done"])}", callback_query="d4")],
-        [InlineKeyboardButton(text=f"{emote_mapping.get(lessons_dict["lesson5_done"])}", callback_query="d5")],
-        [InlineKeyboardButton(text=f"{emote_mapping.get(lessons_dict["lesson6_done"])}", callback_query="d6")],
-        [InlineKeyboardButton(text=f"{emote_mapping.get(lessons_dict["lesson7_done"])}", callback_query="d7")],
+        [InlineKeyboardButton(text=f"{l1_emote}Урок 1", callback_query="d1")],
+        [InlineKeyboardButton(text=f"{l2_emote}Урок 2", callback_query="d2")],
+        [InlineKeyboardButton(text=f"{l3_emote}Урок 3", callback_query="d3")],
+        [InlineKeyboardButton(text=f"{l4_emote}Урок 4", callback_query="d4")],
+        [InlineKeyboardButton(text=f"{l5_emote}Урок 5", callback_query="d5")],
+        [InlineKeyboardButton(text=f"{l6_emote}Урок 6", callback_query="d6")],
+        [InlineKeyboardButton(text=f"{l7_emote}Урок 7", callback_query="d7")],
     ]
     await callback_query.message.edit_text("Неделя 1", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
