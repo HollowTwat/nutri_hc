@@ -176,7 +176,8 @@ async def process_menu_course_info(callback_query, state):
     step1txt = "Сейчас ты на X уроке этапа X 🧡"
     step2txt = "X уроков из 21 дня пройдено 💪  Осталось X уроков"
     # await callback_query.message.edit_text(step0txt, reply_markup=None)
-    await callback_query.message.edit_media(media_files)
+    await callback_query.message.delete()
+    await callback_query.message.answer_media_group(media=media_files)
     await callback_query.message.answer(step1txt)
     await callback_query.message.answer(step2txt, reply_markup=keyboard)
 
