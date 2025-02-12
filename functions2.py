@@ -78,21 +78,22 @@ async def request_longrate_question(id, period):
 
 def make_lesson_week_buttons(dict, week):
     emote_mapping = {True: "✅", False: "⭕️"}
-    l1_emote = emote_mapping.get(dict[f"lesson{1*week}_done"])
-    l2_emote = emote_mapping.get(dict[f"lesson{2*week}_done"])
-    l3_emote = emote_mapping.get(dict[f"lesson{3*week}_done"])
-    l4_emote = emote_mapping.get(dict[f"lesson{4*week}_done"])
-    l5_emote = emote_mapping.get(dict[f"lesson{5*week}_done"])
-    l6_emote = emote_mapping.get(dict[f"lesson{6*week}_done"])
-    l7_emote = emote_mapping.get(dict[f"lesson{7*week}_done"])
+    weekdays = weekdays
+    l1_emote = emote_mapping.get(dict[f"lesson{1+weekdays}_done"])
+    l2_emote = emote_mapping.get(dict[f"lesson{2+weekdays}_done"])
+    l3_emote = emote_mapping.get(dict[f"lesson{3+weekdays}_done"])
+    l4_emote = emote_mapping.get(dict[f"lesson{4+weekdays}_done"])
+    l5_emote = emote_mapping.get(dict[f"lesson{5+weekdays}_done"])
+    l6_emote = emote_mapping.get(dict[f"lesson{6+weekdays}_done"])
+    l7_emote = emote_mapping.get(dict[f"lesson{7+weekdays}_done"])
     buttons = [
-        [InlineKeyboardButton(text=f"{l1_emote}Урок {1*week}", callback_data=f"d{1*week}")],
-        [InlineKeyboardButton(text=f"{l2_emote}Урок {2*week}", callback_data=f"d{2*week}")],
-        [InlineKeyboardButton(text=f"{l3_emote}Урок {3*week}", callback_data=f"d{3*week}")],
-        [InlineKeyboardButton(text=f"{l4_emote}Урок {4*week}", callback_data=f"d{4*week}")],
-        [InlineKeyboardButton(text=f"{l5_emote}Урок {5*week}", callback_data=f"d{5*week}")],
-        [InlineKeyboardButton(text=f"{l6_emote}Урок {6*week}", callback_data=f"d{6*week}")],
-        [InlineKeyboardButton(text=f"{l7_emote}Урок {7*week}", callback_data=f"d{7*week}")],
+        [InlineKeyboardButton(text=f"{l1_emote}Урок {1+weekdays}", callback_data=f"d{1+weekdays}")],
+        [InlineKeyboardButton(text=f"{l2_emote}Урок {2+weekdays}", callback_data=f"d{2+weekdays}")],
+        [InlineKeyboardButton(text=f"{l3_emote}Урок {3+weekdays}", callback_data=f"d{3+weekdays}")],
+        [InlineKeyboardButton(text=f"{l4_emote}Урок {4+weekdays}", callback_data=f"d{4+weekdays}")],
+        [InlineKeyboardButton(text=f"{l5_emote}Урок {5+weekdays}", callback_data=f"d{5+weekdays}")],
+        [InlineKeyboardButton(text=f"{l6_emote}Урок {6+weekdays}", callback_data=f"d{6+weekdays}")],
+        [InlineKeyboardButton(text=f"{l7_emote}Урок {7+weekdays}", callback_data=f"d{7+weekdays}")],
     ]
 
     navigation_buttons = []
