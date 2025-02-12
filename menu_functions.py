@@ -180,7 +180,7 @@ async def process_menu_course_info(callback_query, state):
         InputMediaPhoto(media=COU_LESS_IMG_4)
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    lesson_week = int(current_lesson/7)
+    lesson_week = int(current_lesson/7)+1
     step = current_lesson-lesson_week*7
     step1txt = f"Сейчас ты на {step} уроке этапа {lesson_week} 🧡"
     step2txt = f"{current_lesson-1} уроков из 21 дня пройдено 💪  Осталось {22-current_lesson} уроков"
@@ -193,7 +193,7 @@ async def process_menu_course_info(callback_query, state):
 async def process_menu_cource_info_lessons(callback_query, state):
     iserror, lessons_dict = await get_user_lessons(callback_query.from_user.id)
     await state.update_data(lessons_dict=lessons_dict)
-    emote_mapping = {True: "✅", False: "⭕️"}
+    emote_mapping = {"true": "✅", "false": "⭕️"}
     buttons = [
         [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson1_done"], callback_query="d1"))],
         [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson2_done"], callback_query="d2"))],
