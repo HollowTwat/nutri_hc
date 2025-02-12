@@ -180,9 +180,9 @@ async def process_menu_course_info(callback_query, state):
         InputMediaPhoto(media=COU_LESS_IMG_4)
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    lesson_week = int(current_lesson/7)+1
+    lesson_week = int(current_lesson/7)
     step = current_lesson-lesson_week*7
-    step1txt = f"Сейчас ты на {step} уроке этапа {lesson_week} 🧡"
+    step1txt = f"Сейчас ты на {step} уроке этапа {lesson_week+1} 🧡"
     step2txt = f"{current_lesson-1} уроков из 21 дня пройдено 💪  Осталось {22-current_lesson} уроков"
 
     await callback_query.message.delete()
@@ -192,16 +192,17 @@ async def process_menu_course_info(callback_query, state):
 
 async def process_menu_cource_info_lessons(callback_query, state):
     iserror, lessons_dict = await get_user_lessons(callback_query.from_user.id)
+    print(lessons_dict)
     await state.update_data(lessons_dict=lessons_dict)
     emote_mapping = {"true": "✅", "false": "⭕️"}
     buttons = [
-        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson1_done"], callback_query="d1"))],
-        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson2_done"], callback_query="d2"))],
-        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson3_done"], callback_query="d3"))],
-        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson4_done"], callback_query="d4"))],
-        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson5_done"], callback_query="d5"))],
-        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson6_done"], callback_query="d6"))],
-        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson7_done"], callback_query="d7"))],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson1_done"]), callback_query="d1")],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson2_done"]), callback_query="d2")],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson3_done"]), callback_query="d3")],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson4_done"]), callback_query="d4")],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson5_done"]), callback_query="d5")],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson6_done"]), callback_query="d6")],
+        [InlineKeyboardButton(text=emote_mapping.get(lessons_dict["lesson7_done"]), callback_query="d7")],
     ]
     await callback_query.message.edit_text("Неделя 1", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
