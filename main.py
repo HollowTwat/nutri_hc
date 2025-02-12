@@ -122,7 +122,7 @@ async def main_menu_no_edit(callback_query: CallbackQuery, state: FSMContext) ->
 
 @router.callback_query(lambda c: c.data == 'menu_course')
 async def main_process_menu_course(callback_query: CallbackQuery, state: FSMContext):
-    await process_menu_course(callback_query.message, state, callback_query.message.from_user.id)
+    await process_menu_course(callback_query.message, state, callback_query.from_user.id)
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik')
 async def main_process_menu_dnevnik(callback_query: CallbackQuery, state: FSMContext):

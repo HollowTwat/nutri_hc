@@ -85,7 +85,7 @@ async def menu_no_edit(callback_query, state) -> None:
     step0txt = "Меню"
     await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
-async def process_menu_course(callback_query, state, id):
+async def process_menu_course(message, state, id):
     iserror, last_lesson = await get_last_user_lesson(id)
     current_lesson = int(last_lesson)+1
     await state.update_data(current_lesson=current_lesson)
@@ -97,9 +97,9 @@ async def process_menu_course(callback_query, state, id):
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "📚 Курс:"
     try:
-        await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+        await message.edit_text(step0txt, reply_markup=keyboard)
     except Exception as e:
-        await callback_query.message.answer(step0txt, reply_markup=keyboard)
+        await message.answer(step0txt, reply_markup=keyboard)
     # await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
 async def process_menu_dnevnik(message, state):
