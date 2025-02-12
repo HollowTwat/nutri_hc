@@ -89,7 +89,7 @@ async def get_user_lessons(id):
         
 async def get_last_user_lesson(id):
     async with aiohttp.ClientSession() as session:
-        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetLastUserLesson?UserTgId={str(id)}"
+        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetLastUserLesson?UserTgId={id}"
         try:
             async with session.get(url=url) as response:
                 last_lesson = await response.text()
