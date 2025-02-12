@@ -21,6 +21,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 VISION_ASS_ID_2 = os.getenv("VISION_ASS_ID_2")
 RATE_WEEK_ASS_ID = os.getenv('RATE_WEEK_ASS_ID')
 RATE_TWONE_ASS_ID = os.getenv('RATE_TWONE_ASS_ID')
+RATE_DAY_ASS_ID = os.getenv("DAY_RATE")
 
 
 STICKER_ID = os.getenv("STICKER_ID")
@@ -77,7 +78,7 @@ async def request_longrate_question(id, period):
 
 async def long_rate(id, period):
     iserror, longrate_data = await request_longrate_question(id, period)
-    assistant_mapping = {"3": RATE_WEEK_ASS_ID, "4": RATE_TWONE_ASS_ID}
+    assistant_mapping = {"3": RATE_WEEK_ASS_ID, "4": RATE_TWONE_ASS_ID, "0": }
     assistant = assistant_mapping.get(period)
     if not iserror:
         gpt_resp1 = await no_thread_ass(str(longrate_data), assistant)
