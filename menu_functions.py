@@ -165,6 +165,7 @@ async def process_menu_course_info(callback_query, state):
         [InlineKeyboardButton(text="◀️", callback_data="menu_course"), 
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
+    step0txt = "💚 На первой неделе ты заметишь пищевые привычки, которые тебе мешают. \n💜 На второй получишь базу для формирования новых привычек. \n❤️ На третьей закрепишь новые привычки и начнёшь применять их в реальной жизни."
     media_files = [
         InputMediaPhoto(media=COU_LESS_IMG_1, caption=step0txt),
         InputMediaPhoto(media=COU_LESS_IMG_2),
@@ -172,7 +173,6 @@ async def process_menu_course_info(callback_query, state):
         InputMediaPhoto(media=COU_LESS_IMG_4)
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    step0txt = "💚 На первой неделе ты заметишь пищевые привычки, которые тебе мешают. \n💜 На второй получишь базу для формирования новых привычек. \n❤️ На третьей закрепишь новые привычки и начнёшь применять их в реальной жизни."
     step1txt = "Сейчас ты на X уроке этапа X 🧡"
     step2txt = "X уроков из 21 дня пройдено 💪  Осталось X уроков"
     # await callback_query.message.edit_text(step0txt, reply_markup=None)
