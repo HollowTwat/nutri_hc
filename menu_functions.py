@@ -86,8 +86,11 @@ async def menu_no_edit(callback_query, state) -> None:
     await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
 async def process_menu_course(message, state):
+    iserror, last_lesson = await get_last_user_lesson(message.from_user.id)
+    current_lesson = int(last_lesson)+1
+    await state.update_state(current_lesson=current_lesson)
     buttons = [
-        [InlineKeyboardButton(text="📖Начать Урок X", callback_data="menu_course_lesson_x")],
+        [InlineKeyboardButton(text=f"📖Начать Урок {current_lesson}", callback_data=f"menu_course_lesson_{current_lesson}")],
         [InlineKeyboardButton(text="✏️ Программа курса", callback_data="menu_course_info")],
         [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
@@ -160,6 +163,10 @@ async def process_menu_course_lesson(callback_query, state):
     await callback_query.message.edit_text(step0txt, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def process_menu_course_info(callback_query, state):
+    iserror, lessons_dict = await get_user_lessons(callback_query.from_user.id)
+    await state.update_data(lessons_dict=lessons_dict)
+    state_data = await state.get_data()
+    current_lesson = state_data["current_lesson"]
     buttons = [
         [InlineKeyboardButton(text="Посмотреть пройденные уроки", callback_data="menu_course_info_lessons")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_course"), 
@@ -173,13 +180,19 @@ async def process_menu_course_info(callback_query, state):
         InputMediaPhoto(media=COU_LESS_IMG_4)
     ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    step1txt = "Сейчас ты на X уроке этапа X 🧡"
-    step2txt = "X уроков из 21 дня пройдено 💪  Осталось X уроков"
-    # await callback_query.message.edit_text(step0txt, reply_markup=None)
+    lesson_week = int(current_lesson/7)
+    step = current_lesson-lesson_week*7
+    step1txt = f"Сейчас ты на {step} уроке этапа {lesson_week} 🧡"
+    step2txt = f"{current_lesson-1} уроков из 21 дня пройдено 💪  Осталось {22-current_lesson} уроков"
+
     await callback_query.message.delete()
     await callback_query.message.answer_media_group(media=media_files)
     await callback_query.message.answer(step1txt)
     await callback_query.message.answer(step2txt, reply_markup=keyboard)
+
+async def process_menu_cource_info_lessons(callback_query, state):
+    iserror, lessons_dict = await get_user_lessons(callback_query.from_user.id)
+    await state.update_data(lessons_dict=lessons_dict)
 
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 

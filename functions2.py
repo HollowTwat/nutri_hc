@@ -76,6 +76,40 @@ async def request_longrate_question(id, period):
             return True, ""
     return
 
+async def get_user_lessons(id):
+    async with aiohttp.ClientSession() as session:
+        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserLessons?UserTgId={id}"
+        try:
+            async with session.get(url=url) as response:
+                lesson_data = await response.text()
+                lessons_dict = {f"lesson{i+1}_done": status for i, status in enumerate(lesson_data)}
+                return False, lessons_dict
+        except aiohttp.ClientError as e:
+            return True, e
+        
+async def get_last_user_lesson(id):
+    async with aiohttp.ClientSession() as session:
+        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetLastUserLesson?UserTgId={id}"
+        try:
+            async with session.get(url=url) as response:
+                data = await response.json()
+                print(data)
+                return False, data
+        except aiohttp.ClientError as e:
+            return True, e
+
+async def add_user_lesson(id, lesson):
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/AddUserLesson?UserTgId={id}&lesson={lesson}"
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url) as response:
+                data = await response.text()
+                if data == "true":
+                    return True
+                else: return False
+        except aiohttp.ClientError as e:
+            return False
+
 async def long_rate(id, period):
     iserror, longrate_data = await request_longrate_question(id, period)
     assistant_mapping = {"3": RATE_WEEK_ASS_ID, "4": RATE_TWONE_ASS_ID, "0": RATE_DAY_ASS_ID}
