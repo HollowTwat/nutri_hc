@@ -85,8 +85,8 @@ async def menu_no_edit(callback_query, state) -> None:
     step0txt = "Меню"
     await callback_query.message.answer(step0txt, reply_markup=keyboard)
 
-async def process_menu_course(callback_query, state):
-    iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+async def process_menu_course(callback_query, state, id):
+    iserror, last_lesson = await get_last_user_lesson(id)
     current_lesson = int(last_lesson)+1
     await state.update_data(current_lesson=current_lesson)
     buttons = [
@@ -174,7 +174,6 @@ async def process_menu_course_info(callback_query, state):
         InputMediaPhoto(media=COU_LESS_IMG_3),
         InputMediaPhoto(media=COU_LESS_IMG_4)
     ]
-    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     lesson_week = int(current_lesson/7)
     step = current_lesson-lesson_week*7
     step1txt = f"Сейчас ты на {step} уроке этапа {lesson_week+1} 🧡"
@@ -184,6 +183,7 @@ async def process_menu_course_info(callback_query, state):
         [InlineKeyboardButton(text="◀️", callback_data="menu_course"), 
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
 
     await callback_query.message.delete()
     await callback_query.message.answer_media_group(media=media_files)

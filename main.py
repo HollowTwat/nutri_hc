@@ -122,7 +122,7 @@ async def main_menu_no_edit(callback_query: CallbackQuery, state: FSMContext) ->
 
 @router.callback_query(lambda c: c.data == 'menu_course')
 async def main_process_menu_course(callback_query: CallbackQuery, state: FSMContext):
-    await process_menu_course(callback_query, state)
+    await process_menu_course(callback_query.message, state, callback_query.message.from_user.id)
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik')
 async def main_process_menu_dnevnik(callback_query: CallbackQuery, state: FSMContext):
@@ -138,7 +138,7 @@ async def main_process_menu_settings(callback_query: CallbackQuery, state: FSMCo
 
 @router.message(Command("1"))
 async def menu_main_process_menu_course(message: Message, state: FSMContext) -> None:
-    await process_menu_course(message, state)
+    await process_menu_course(message, state, message.from_user.id)
 
 @router.message(Command("2"))
 async def menu_main_process_menu_dnevnik(message: Message, state: FSMContext) -> None:
