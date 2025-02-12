@@ -163,7 +163,7 @@ async def main_process_menu_course_lesson(callback_query: CallbackQuery, state: 
 async def main_process_menu_course_info(callback_query: CallbackQuery, state: FSMContext):
     await process_menu_course_info(callback_query, state)
 
-@router.callback_query(lambda c: c.data == 'menu_course_info_lessons')
+@router.callback_query(lambda c: c.data.startswith('menu_course_info_lessons_week'))
 async def main_process_menu_cource_info_lessons(callback_query: CallbackQuery, state: FSMContext):
     await process_menu_cource_info_lessons(callback_query, state)
 
