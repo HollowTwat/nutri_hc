@@ -78,7 +78,7 @@ async def request_longrate_question(id, period):
 
 def make_lesson_week_buttons(dict, week):
     emote_mapping = {True: "✅", False: "⭕️"}
-    weekdays = 7*week
+    weekdays = 7*(week-1)
     l1_emote = emote_mapping.get(dict[f"lesson{1+weekdays}_done"])
     l2_emote = emote_mapping.get(dict[f"lesson{2+weekdays}_done"])
     l3_emote = emote_mapping.get(dict[f"lesson{3+weekdays}_done"])
