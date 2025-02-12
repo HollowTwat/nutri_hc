@@ -1,0 +1,99 @@
+import asyncio
+import aiogram
+import random
+import os
+import logging
+from aiogram import Bot, Dispatcher, types
+import openai
+import asyncio
+import logging
+import sys
+from aiogram import Bot, Dispatcher, html, Router, BaseMiddleware, types
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.filters import CommandStart, Command
+from aiogram.filters.state import StateFilter
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.context import FSMContext
+from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo
+from openai import AsyncOpenAI, OpenAI
+
+import shelve
+import json
+
+from functions import *
+from functions2 import *
+
+from all_states import *
+
+IMG1 = "AgACAgIAAxkBAAIGXGerlcpl4ZSNjCjURh9HKDLZr4_nAAJ36jEbJvVhSaGMIUUaTggAAQEAAwIAA3kAAzYE"
+IMG2 = "AgACAgIAAxkBAAIGYGerlc97j_sAAR9OjAjy2lC71bO_CwACeOoxGyb1YUkdNDNGxkAGowEAAwIAA3kAAzYE"
+IMG3 = "AgACAgIAAxkBAAIGZGerldN6u3XMYaAUgTYvGc91cGKjAAJ56jEbJvVhSVTjQ1L7iW6WAQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAIGaGerldcqeRKJiWi7kM_xyFB4zWrzAAJ66jEbJvVhSbGoYw3UyZv1AQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAIGbGerldtlz7WueA2LoYXn7MS115LRAAJ76jEbJvVhSb6RQkgNfusuAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAIGcGerld-RzvHG5onqfx-4d9Jp2ysdAAJ86jEbJvVhSYc2y06eFAE7AQADAgADeQADNgQ"
+
+
+
+
+async def process_l17_step_1(callback_query, state):
+    await state.set_state(LessonStates17.step_2)
+    await callback_query.message.answer(
+        "<i>«Нутри, я ведь ем не только дома, я бываю в кафе и ресторанах!»,</i> — скажете вы. \n\nА я отвечу: «Это здорово»! \n\nИ совсем никак не мешает осознанному питанию. \n\nВ сегодняшнем уроке вместе с нутрициологом даём несколько советов, на что обращать внимание в меню, чтобы найти блюдо, от которого будет радостно и тебе, и твоему дневнику питания.",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Пройти урок", callback_data="next"), InlineKeyboardButton(text="Взять выходной", callback_data="stop")]
+        ])
+    )
+    await callback_query.answer()
+
+async def process_l17_step_2(callback_query, state):
+    await state.set_state(LessonStates17.step_3)
+    text = "<b>Урок 3 \nКак питаться осознанно в кафе и ресторанах</b> \n\n🍝 Паста карбонара — 623 ккал в порции \n🥓 Хашбрауны с беконом — 485 ккал в порции \n🧀 Кесадилья с говядиной — 462 ккал в порции \n\nВсё это — калорийность блюд из популярной сети кофеен. \n\nВроде бы блюда сами по себе неплохие. Но порции большие, а в составе много соусов и добавок. Отсюда и столько калорий. \n\nНо как понять это, если в меню не указана калорийность? По косвенным признакам из наших карточек!"
+    media_files = [
+        InputMediaPhoto(media=IMG1, caption=text),
+        InputMediaPhoto(media=IMG2),
+        InputMediaPhoto(media=IMG3),
+        InputMediaPhoto(media=IMG4),
+        InputMediaPhoto(media=IMG5),
+        InputMediaPhoto(media=IMG6)
+    ]
+    await callback_query.message.answer_media_group(media=media_files)
+    
+    await callback_query.message.answer(
+        "✍️<b>Задание на день:</b> \n\n🍎 Проверь себя с Нутри: сфотографируй блюдо, которое ты съешь в кафе. И занеси в дневник питания. Про завтрак  тоже не забудь.",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Дневник питания", callback_data="dnevnik")]
+        ])
+    )
+
+async def process_l17_step_2_2(callback_query, state):
+    await state.set_state(LessonStates17.step_3)
+    await callback_query.message.answer(
+        "Надеюсь, ты набираешься сил, чтобы потом наверстать упущенное! \n\nВозвращайся завтра, а сегодня не забудь заполнить дневник питания, для него выходных не существует 🤷",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]])
+        )
+    await callback_query.answer()
+
+async def process_l17_step_11(callback_query, state):
+    await callback_query.message.answer(
+        "Вечер! \nСамое время поужинать в каком-нибудь красивом месте. Или хотя бы пофантазировать, куда пойдёшь и что съешь в следующий раз. \n\nПолучилось ли сфотографировать меню?",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="Да!", callback_data="next"),InlineKeyboardButton(text="Пока нет", callback_data="stop")],
+        ])
+        )
+    await callback_query.answer()
+
+async def process_l17_step_12(callback_query, state):
+    await callback_query.message.answer(
+        "Па-бам! \nКажется, теперь все фишки Нутри тебе подвластны. И ты ещё ближе к привычке питаться осознанно. \n\nОчень рада за тебя ❤️ \n\nВозвращайся завтра, чтобы проверить знания, полученные на трёх этапах обучения.",
+        )
+    await callback_query.answer()
+
+async def process_l17_step_12_2(callback_query, state):
+    await callback_query.message.answer(
+        "Понимаю! \nКафе и рестораны всё-таки случаются не каждый день. \n\nНичего страшного. Просто помни, что у меня есть такая функция, когда выберешься поесть вне дома. Просто вызови её в меню, и я приду на помощь 😉 \n\nИ возвращайся завтра, чтобы проверить знания, полученные на трёх этапах обучения."
+        )
+    await callback_query.answer()
+
+
