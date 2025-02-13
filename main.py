@@ -290,6 +290,7 @@ async def main_process_menu_nutri_etiketka(callback_query: CallbackQuery, state:
 
 @router.callback_query(lambda c: c.data.startswith("recimt_"))
 async def main_process_menu_nutri_rec_mealtype(callback_query: CallbackQuery, state: FSMContext):
+    await remove_rec_thread(str(callback_query.from_user.id))
     await state.set_state(UserState.reci_mt)
     meal_type_rec = callback_query.data.split("_")[1]
     await state.update_data(meal_type_rec=meal_type_rec)
