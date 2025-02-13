@@ -315,12 +315,14 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         await menu_nutri_rec_input_2(callback_query, state)
         return
     elif input_type == "3":
+        buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_3")]]
         await state.set_state(UserState.reci)
         user_data = await get_user_info(callback_query.from_user.id)
         question = f"Придумай полезный и вкусный рецепт {meal_type_mapping.get(meal_type)} для пользователя с информацией: {user_data}"
         iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
         if not iserror:
             await callback_query.message.edit_text(gptresponse, reply_markup=None)
+            await callback_query.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 @router.message(StateFilter(UserState.reci))
 async def layover_functional_redact(message: Message, state: FSMContext):
@@ -329,6 +331,7 @@ async def layover_functional_redact(message: Message, state: FSMContext):
     input_type = state_data["input_rec_type"]
     meal_type = state_data["meal_type_rec"]
     user_data = await get_user_info(message.from_user.id)
+    buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_3")]]
     if message.text:
         user_input = message.text
     elif message.voice:
@@ -339,11 +342,13 @@ async def layover_functional_redact(message: Message, state: FSMContext):
         iserror, gptresponse = await create_reciepie(question, message.from_user.id)
         if not iserror:
             await message.answer(gptresponse)
+            await message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     elif input_type == "2":
         question = f"Придумай рецепт {meal_type_mapping.get(meal_type)} вот с этими продуктами: {user_input} для пользователя с информацией: {user_data}"
         iserror, gptresponse = await create_reciepie(question, message.from_user.id)
         if not iserror:
             await message.answer(gptresponse)
+            await message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 
 ################## RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE ##################

@@ -502,7 +502,7 @@ async def yapp_assistant(message_body, usr_id, assistant):
     return new_message
 
 async def rec_assistant(message_body, usr_id, assistant):
-    debug = True
+    debug = False
     if debug: print(f"hit rec_ass with info {message_body}, {usr_id}, {assistant}")
 
     thread_id = await check_if_rec_thread_exists(usr_id)
