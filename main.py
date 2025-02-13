@@ -324,7 +324,13 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         if not iserror:
             await callback_query.message.edit_text(gptresponse, reply_markup=None)
             await callback_query.message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
-
+    elif input_type == "retry":
+        question = f"Придумай другой рецепт"
+        iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
+        if not iserror:
+            await callback_query.message.edit_text(gptresponse, reply_markup=None)
+            await callback_query.message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            
 @router.message(StateFilter(UserState.reci))
 async def layover_functional_redact(message: Message, state: FSMContext):
     meal_type_mapping = {"0": "Завтрака", "2": "Обеда", "4": "Ужина", "5":"Перекуса"}
@@ -332,7 +338,7 @@ async def layover_functional_redact(message: Message, state: FSMContext):
     input_type = state_data["input_rec_type"]
     meal_type = state_data["meal_type_rec"]
     user_data = await get_user_info(message.from_user.id)
-    buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_3")]]
+    buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
     if message.text:
         user_input = message.text
     elif message.voice:
