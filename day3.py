@@ -178,17 +178,17 @@ async def process_l3_step_12_2(callback_query, state):
 async def process_l3_step_13(callback_query, state):
     await state.set_state(LessonStates3.step_13)
     await callback_query.message.answer("Здорово, что получилось его определить! \n\nНе вини себя! Эта эмоция не помогает осознанному питанию. \n\nЗавтра будем учиться работать с эмоциями, а пока занеси этот приём пищи в дневник питания.", 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
 
 async def process_l3_step_13_2(callback_query, state):
     await state.set_state(LessonStates3.step_13)
     await callback_query.message.answer("Здорово, что удалось его определить! \n\nНадеюсь, у тебя получилось не переесть. А если не получилось, то не вини себя, ведь мы только учимся! \n\nЕсли в следующий раз хочется попробовать новое, можно не спеша положить в рот кусочек, прожевать его и получить удовольствие. А потом сделать паузу подумать: надо ли мне ещё? И так после каждого кусочка. \n\nНе забудь занести этот приём пищи в дневник питания!", 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
 
 async def process_l3_step_13_3(callback_query, state):
     await state.set_state(LessonStates3.step_13)
     await callback_query.message.answer("Отлично! \nНе забывай оценивать уровень насыщения по 10-баллльной шкале. \n\nСытость на 6–7 баллов — то, к чему мы стремимся. \n\nИ обязательно занеси этот приём пищи в дневник питания.", 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
