@@ -293,7 +293,7 @@ async def process_menu_nutri_rec_inputType(callback_query, state):
     ]
     await callback_query.message.edit_text(step0txt, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
-async def process_menu_nutri_rec_inputType(callback_query, state):
+async def process_menu_nutri_rec_inputType_2(callback_query, state):
     step0txt = "Уже знаешь, какие продукты хочешь использовать в рецепте?"
     buttons = [
         [InlineKeyboardButton(text="Да", callback_data="reciIt_2")],
