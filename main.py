@@ -903,7 +903,7 @@ async def main_process_l3_step_12(callback_query: types.CallbackQuery, state: FS
 
 @router.callback_query(StateFilter(LessonStates3.step_13), lambda c: True)
 async def main_process_l3_step_13(callback_query: types.CallbackQuery, state: FSMContext):
-    await main_menu_cb_handler(callback_query, state)
+    await main_process_menu_dnevnik_input(callback_query, state)
 
 ################## LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 #################
 

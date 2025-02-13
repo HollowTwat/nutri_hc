@@ -108,5 +108,5 @@ async def process_l7_step_7(poll_answer, state):
     if not iserror:
         await bot.send_message(chat_id=poll_answer.user.id,text = week_resp)
     else: 
-        await bot.send_message(chat_id=poll_answer.user.id,text = "офибка")
+        await bot.send_message(chat_id=poll_answer.user.id,text = "Ошибка")
 

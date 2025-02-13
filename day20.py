@@ -35,9 +35,11 @@ async def process_l20_step_1(callback_query, state):
     )
     await callback_query.message.answer_photo(photo=IMG1)
 
-    await callback_query.message.answer(
-        "Тут будет оценка недели"
-    )
+    iserror, week_resp = await long_rate(callback_query.from_user.id, "4")
+    if not iserror:
+        await callback_query.message.answer(chat_id=callback_query.from_user.id,text = week_resp)
+    else: 
+        await callback_query.message.answer(callback_query.from_user.id.id,text = "Ошибка")
 
     await callback_query.message.answer(
         "<b>Что будет дальше?</b> \n\nЭти три недели я учила тебя пользоваться функциями Нутри. А ещё вместе мы изучали базу, необходимую для осознанного питания. \n\nЧтобы закрепить новые привычки, сохранить и улучшить результаты, продолжай пользоваться Нутри."
