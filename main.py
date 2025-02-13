@@ -307,6 +307,9 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         await state.set_state(UserState.reci)
         await menu_nutri_rec_input_1(callback_query, state)
         return
+    elif input_type == "0":
+        await process_menu_nutri_rec_inputType_2(callback_query, state)
+        return
     elif input_type == "2":
         await state.set_state(UserState.reci)
         await menu_nutri_rec_input_2(callback_query, state)
