@@ -274,13 +274,42 @@ async def process_menu_nutri_yapp(callback_query, state):
     await callback_query.message.edit_text(step0txt, reply_markup=None)
 
 async def process_menu_nutri_reciepie(callback_query, state):
-
-    step0txt = "in dev"
-    await callback_query.message.edit_text(step0txt, reply_markup=None)
+    step0txt = "Какой приём пищи будем готовить? 🍽"
+    buttons = [
+        [InlineKeyboardButton(text="Завтрак", callback_data="recimt_0"), InlineKeyboardButton(text="Обед", callback_data="recimt_2")],
+        [InlineKeyboardButton(text="Ужин", callback_data="recimt_4"), InlineKeyboardButton(text="Перекус", callback_data="recimt_5")]
+    ]
+    await callback_query.message.edit_text(step0txt, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def process_menu_nutri_etiketka(callback_query, state):
     step0txt = "Отправь мне фото с этикеткой любого товара. Я проанализирую состав за тебя и напишу, есть ли в нём ингредиенты, которых стоит опасаться 🔍   \n\nПодсказка💡 \n<i>Делай фото состава, не названия продукта. \nФото должно быть четким без бликов, на ровной поверхности</i>"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
+
+async def process_menu_nutri_rec_inputType(callback_query, state):
+    step0txt = "У тебя уже есть рецепт? 🥦"
+    buttons = [
+        [InlineKeyboardButton(text="Да", callback_data="reciIt_1")],
+        [InlineKeyboardButton(text="Нет, придумай", callback_data="reciIt_0")]
+    ]
+    await callback_query.message.edit_text(step0txt, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+async def process_menu_nutri_rec_inputType(callback_query, state):
+    step0txt = "Уже знаешь, какие продукты хочешь использовать в рецепте?"
+    buttons = [
+        [InlineKeyboardButton(text="Да", callback_data="reciIt_2")],
+        [InlineKeyboardButton(text="Импровизирyю", callback_data="reciIt_3")]
+    ]
+    await callback_query.message.edit_text(step0txt, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+async def menu_nutri_rec_input_1(callback_query, state):
+    text = "Напиши или надиктуй 🎤 название рецепта"
+    await callback_query.message.edit_text(text, reply_markup=None)
+
+async def menu_nutri_rec_input_2(callback_query, state):
+    text = "Напиши или надиктуй голосом 🎤 список продуктов, которые хочешь использовать в рецепте. Можно назвать те, что уже есть у тебя в холодильнике."
+    await callback_query.message.edit_text(text, reply_markup=None)
+
+
 
 ################## YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU ##################
 

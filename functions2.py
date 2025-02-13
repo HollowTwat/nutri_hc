@@ -22,6 +22,7 @@ VISION_ASS_ID_2 = os.getenv("VISION_ASS_ID_2")
 RATE_WEEK_ASS_ID = os.getenv('RATE_WEEK_ASS_ID')
 RATE_TWONE_ASS_ID = os.getenv('RATE_TWONE_ASS_ID')
 RATE_DAY_ASS_ID = os.getenv("DAY_RATE")
+RECIPE_ASS_ID = os.getenv("RECIPE_ASS_ID")
 
 
 STICKER_ID = os.getenv("STICKER_ID")
@@ -178,6 +179,17 @@ async def get_user_info(id):
             except aiohttp.ClientError as e:
                 return True, ""
             
+
+async def create_reciepie(question, id):
+    try: 
+        assistant_response = await rec_assistant(question, id, RECIPE_ASS_ID)
+        if assistant_response == "error":
+            return True, assistant_response
+        else:
+            return False, assistant_response
+    except Exception as e: 
+        return True, f"ERROR {e}"
+
 async def get_total_kkal(id, period):
     url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserMealsTotal?userTgId={id}&period={period}"
     async with aiohttp.ClientSession() as session:

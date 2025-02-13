@@ -23,6 +23,8 @@ class UserState(StatesGroup):
     morning_ping_change = State()
     evening_ping_change = State()
     notif_toggle = State()
+    reci_mt = State()
+    reci = State()
 
 class LayoverState(StatesGroup):
     recognition = State()

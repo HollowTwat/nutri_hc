@@ -286,6 +286,60 @@ async def main_process_menu_nutri_etiketka(callback_query: CallbackQuery, state:
 
 ################## YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU ##################
 
+################## RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE ##################
+
+@router.callback_query(lambda c: c.data.startswith("recimt_"))
+async def main_process_menu_nutri_rec_mealtype(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.reci_mt)
+    meal_type_rec = callback_query.data.split("_")[1]
+    await state.update_data(meal_type_rec=meal_type_rec)
+    await process_menu_nutri_rec_inputType(callback_query, state)
+
+@router.callback_query(lambda c: c.data.startswith("reciIt_"))
+async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, state: FSMContext):
+    input_type = callback_query.data.split("_")[1]
+    await state.update_data(input_rec_type=input_type)
+    if input_type == "1":
+        await state.set_state(UserState.reci)
+        await menu_nutri_rec_input_1(callback_query, state)
+        return
+    elif input_type == "2":
+        await state.set_state(UserState.reci)
+        await menu_nutri_rec_input_2(callback_query, state)
+        return
+    elif input_type == "3":
+        await state.set_state(UserState.reci)
+        user_data = await get_user_info(callback_query.from_user.id)
+        question = f"Придумай полезный и вкусный рецепт для пользователя с информацией: {user_data}"
+        iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
+        if not iserror:
+            await callback_query.message.edit_text(gptresponse, reply_markup=None)
+
+@router.message(StateFilter(LayoverState.reci))
+async def layover_functional_redact(message: Message, state: FSMContext):
+    state_data = await state.get_data()
+    input_type = state_data("input_rec_type")
+    user_data = await get_user_info(message.from_user.id)
+    if message.text:
+        user_input = message.text
+    elif message.voice:
+        user_input = await audio_file(message.voice.file_id)
+
+    if input_type == "1":
+        question = f"Распиши рецепт вот этого блюда : {user_input} для пользователя с информацией: {user_data}, "
+        iserror, gptresponse = await create_reciepie(question, message.from_user.id)
+        if not iserror:
+            await message.answer(gptresponse)
+    elif input_type == "2":
+        question = f"Придумай рецепт вот с этими продуктами: {user_input} для пользователя с информацией: {user_data}"
+        iserror, gptresponse = await create_reciepie(question, message.from_user.id)
+        if not iserror:
+            await message.answer(gptresponse)
+
+
+################## RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE ##################
+
+
 async def get_url(file_id: str) -> str:
     file = await bot.get_file(file_id)
     file_path = file.file_path
