@@ -123,8 +123,7 @@ async def process_url(url, usr_id, assistant):
 
 
 
-async def process_url_etik(url, allergies, usr_id, assistant):
-
+async def process_url_etik(url, allergies, assistant):
     thread = await aclient.beta.threads.create(
         messages=[
 

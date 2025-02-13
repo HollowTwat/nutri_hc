@@ -282,9 +282,26 @@ async def main_process_menu_nutri_reciepie(callback_query: CallbackQuery, state:
 
 @router.callback_query(lambda c: c.data == 'menu_nutri_etiketka')
 async def main_process_menu_nutri_etiketka(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.etiketka)
     await process_menu_nutri_etiketka(callback_query, state)
 
 ################## YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU ##################
+
+################## ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ##################
+
+@router.message(StateFilter(UserState.etiketka))
+async def main_process_etiketka_input(message: Message, state: FSMContext):
+    if message.photo:
+        iserror, user_data = get_user_info(message.from_user.id)
+        allergies = user_data.get("user_info_meals_ban")
+        url = await get_url(message.photo[-1].file_id)
+        gpt_response = await process_url_etik(url, allergies, ETIK_ASS_ID)
+        await message.answer(gpt_response)
+        await state.set_state(UserState.menu)
+    else:
+        await message.answer("Отправь, пожалуйста, фото")
+
+################## ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ##################
 
 ################## RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE ##################
 
@@ -318,7 +335,7 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
     elif input_type == "3":
         buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
         await state.set_state(UserState.reci)
-        user_data = await get_user_info(callback_query.from_user.id)
+        iserror1, user_data = await get_user_info(callback_query.from_user.id)
         question = f"Придумай полезный и вкусный рецепт {meal_type_mapping.get(meal_type)} для пользователя с информацией: {user_data}"
         iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
         if not iserror:
@@ -333,12 +350,12 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
             await callback_query.message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             
 @router.message(StateFilter(UserState.reci))
-async def layover_functional_redact(message: Message, state: FSMContext):
+async def main_process_reci_input(message: Message, state: FSMContext):
     meal_type_mapping = {"0": "Завтрака", "2": "Обеда", "4": "Ужина", "5":"Перекуса"}
     state_data = await state.get_data()
     input_type = state_data["input_rec_type"]
     meal_type = state_data["meal_type_rec"]
-    user_data = await get_user_info(message.from_user.id)
+    iserror1, user_data = await get_user_info(message.from_user.id)
     buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
     if message.text:
         user_input = message.text

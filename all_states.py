@@ -25,6 +25,7 @@ class UserState(StatesGroup):
     notif_toggle = State()
     reci_mt = State()
     reci = State()
+    etiketka= State()
 
 class LayoverState(StatesGroup):
     recognition = State()
