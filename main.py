@@ -323,7 +323,7 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
         if not iserror:
             await callback_query.message.edit_text(gptresponse, reply_markup=None)
-            await callback_query.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            await callback_query.message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 @router.message(StateFilter(UserState.reci))
 async def layover_functional_redact(message: Message, state: FSMContext):
