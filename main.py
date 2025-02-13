@@ -316,7 +316,7 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         await menu_nutri_rec_input_2(callback_query, state)
         return
     elif input_type == "3":
-        buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_3")]]
+        buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
         await state.set_state(UserState.reci)
         user_data = await get_user_info(callback_query.from_user.id)
         question = f"Придумай полезный и вкусный рецепт {meal_type_mapping.get(meal_type)} для пользователя с информацией: {user_data}"
@@ -325,6 +325,7 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
             await callback_query.message.edit_text(gptresponse, reply_markup=None)
             await callback_query.message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     elif input_type == "retry":
+        buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
         question = f"Придумай другой рецепт"
         iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
         if not iserror:
