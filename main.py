@@ -299,6 +299,10 @@ async def main_process_menu_nutri_rec_mealtype(callback_query: CallbackQuery, st
 async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, state: FSMContext):
     input_type = callback_query.data.split("_")[1]
     await state.update_data(input_rec_type=input_type)
+
+    state_data = await state.get_data()
+    meal_type = state_data["meal_type_rec"]
+    meal_type_mapping = {"0": "Завтрак", "2": "Обед", "4": "Ужин", "5":"Перекус"}
     if input_type == "1":
         await state.set_state(UserState.reci)
         await menu_nutri_rec_input_1(callback_query, state)
@@ -310,15 +314,17 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
     elif input_type == "3":
         await state.set_state(UserState.reci)
         user_data = await get_user_info(callback_query.from_user.id)
-        question = f"Придумай полезный и вкусный рецепт для пользователя с информацией: {user_data}"
+        question = f"Придумай полезный и вкусный рецепт {meal_type_mapping.get(meal_type)} для пользователя с информацией: {user_data}"
         iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
         if not iserror:
             await callback_query.message.edit_text(gptresponse, reply_markup=None)
 
 @router.message(StateFilter(UserState.reci))
 async def layover_functional_redact(message: Message, state: FSMContext):
+    meal_type_mapping = {"0": "Завтрака", "2": "Обеда", "4": "Ужина", "5":"Перекуса"}
     state_data = await state.get_data()
-    input_type = state_data("input_rec_type")
+    input_type = state_data["input_rec_type"]
+    meal_type = state_data["meal_type_rec"]
     user_data = await get_user_info(message.from_user.id)
     if message.text:
         user_input = message.text
@@ -326,12 +332,12 @@ async def layover_functional_redact(message: Message, state: FSMContext):
         user_input = await audio_file(message.voice.file_id)
 
     if input_type == "1":
-        question = f"Распиши рецепт вот этого блюда : {user_input} для пользователя с информацией: {user_data}, "
+        question = f"Распиши рецепт {meal_type_mapping.get(meal_type)} по рецепту : {user_input} для пользователя с информацией: {user_data}, "
         iserror, gptresponse = await create_reciepie(question, message.from_user.id)
         if not iserror:
             await message.answer(gptresponse)
     elif input_type == "2":
-        question = f"Придумай рецепт вот с этими продуктами: {user_input} для пользователя с информацией: {user_data}"
+        question = f"Придумай рецепт {meal_type_mapping.get(meal_type)} вот с этими продуктами: {user_input} для пользователя с информацией: {user_data}"
         iserror, gptresponse = await create_reciepie(question, message.from_user.id)
         if not iserror:
             await message.answer(gptresponse)
