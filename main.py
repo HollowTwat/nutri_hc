@@ -315,7 +315,7 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         if not iserror:
             await callback_query.message.edit_text(gptresponse, reply_markup=None)
 
-@router.message(StateFilter(LayoverState.reci))
+@router.message(StateFilter(UserState.reci))
 async def layover_functional_redact(message: Message, state: FSMContext):
     state_data = await state.get_data()
     input_type = state_data("input_rec_type")
