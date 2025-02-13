@@ -502,12 +502,17 @@ async def yapp_assistant(message_body, usr_id, assistant):
     return new_message
 
 async def rec_assistant(message_body, usr_id, assistant):
+    debug = True
+    if debug: print(f"hit rec_ass with info {message_body}, {usr_id}, {assistant}")
+
     thread_id = await check_if_rec_thread_exists(usr_id)
+    if debug: print(thread_id)
 
     if thread_id is None:
         thread = await aclient.beta.threads.create()
         thread_id = thread.id
         await store_rec_thread(usr_id, thread_id)
+        if debug: print(thread_id)
     else:
         print(f"Retrieving existing thread {usr_id}")
         thread = await aclient.beta.threads.retrieve(thread_id)

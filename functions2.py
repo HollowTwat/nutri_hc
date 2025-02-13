@@ -183,7 +183,7 @@ async def get_user_info(id):
 async def create_reciepie(question, id):
     print(f"create_rec_hit with question: {question}")
     try: 
-        assistant_response = await rec_assistant(question, id, RECIPE_ASS_ID)
+        assistant_response = await rec_assistant(question, str(id), RECIPE_ASS_ID)
         if assistant_response == "error":
             return True, assistant_response
         else:
