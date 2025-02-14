@@ -14,7 +14,7 @@ VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
 CITY_ASSISTANT_ID = os.getenv('CITY_ASSISTANT_ID')
 ASSISTANT2_ID = os.getenv('ASSISTANT2_ID')
 YAPP_SESH_ASSISTANT_ID = os.getenv('YAPP_SESH_ASSISTANT_ID')
-client = openai.OpenAI(api_key=OPENAI_KEY)
+# client = openai.OpenAI(api_key=OPENAI_KEY)
 aclient = AsyncOpenAI(api_key=OPENAI_KEY)
 openai.api_key = OPENAI_KEY
 TELETOKEN_2 = os.getenv('TELEBOT')
@@ -288,7 +288,7 @@ async def run_assistant(thread, assistant):
     
         messages = await aclient.beta.threads.messages.list(thread_id=thread.id)
         latest_mssg = messages.data[0].content[0].text.value
-        print(f"generated: {latest_mssg}")
+        print(f"generated: {latest_mssg}   test outptut {messages}")
         # await send_mssg(TELETOKEN_2, bug_channel, f"тест на работу send_mssg")
         return latest_mssg
     except Exception as e:
@@ -297,13 +297,13 @@ async def run_assistant(thread, assistant):
         return "error"
 
 
-async def handle_assistant_response(prompt):
-    response = client.completions.create(
-        model="gpt-3.5-turbo-instruct",
-        prompt=prompt,
-        max_tokens=150
-    )
-    return response.choices[0].text.strip()
+# async def handle_assistant_response(prompt):
+#     response = client.completions.create(
+#         model="gpt-3.5-turbo-instruct",
+#         prompt=prompt,
+#         max_tokens=150
+#     )
+#     return response.choices[0].text.strip()
 
 
 async def use_vision64(file_path):
