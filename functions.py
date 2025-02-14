@@ -138,16 +138,16 @@ async def run_assistant_b(thread, assistant):
 
 
 async def process_url_b(url, usr_id, assistant):
-    thread_id = await check_if_thread_exists(usr_id)
+    # thread_id = await check_if_thread_exists(usr_id)
 
-    if thread_id is None:
-        print(f"Creating new thread for {usr_id}")
-        thread = await bclient.beta.threads.create()
-        await store_thread(usr_id, thread.id)
-        thread_id = thread.id
-    else:
-        print(f"Retrieving existing thread {usr_id}")
-        thread = await bclient.beta.threads.retrieve(thread_id)
+    # if thread_id is None:
+    #     print(f"Creating new thread for {usr_id}")
+    #     thread = await bclient.beta.threads.create()
+    #     await store_thread(usr_id, thread.id)
+    #     thread_id = thread.id
+    # else:
+    #     print(f"Retrieving existing thread {usr_id}")
+    #     thread = await bclient.beta.threads.retrieve(thread_id)
     print(url)
     thread = await bclient.beta.threads.create(
         messages=[
@@ -163,7 +163,7 @@ async def process_url_b(url, usr_id, assistant):
     )
     await store_thread(usr_id, thread.id)
 
-    new_message = await run_assistant(thread, assistant)
+    new_message = await run_assistant_b(thread, assistant)
 
     return new_message
 
