@@ -292,7 +292,7 @@ async def main_process_menu_nutri_etiketka(callback_query: CallbackQuery, state:
 @router.message(StateFilter(UserState.etiketka))
 async def main_process_etiketka_input(message: Message, state: FSMContext):
     if message.photo:
-        sticker_mssg = message.answer_sticker(STICKER_ID)
+        sticker_mssg = await message.answer_sticker(STICKER_ID)
         iserror, user_data = await get_user_info(message.from_user.id)
         user_info = json.loads(user_data)
         allergies = user_info.get("user_info_meals_ban")
