@@ -160,6 +160,7 @@ async def run_assistant_b(thread, assistant):
 
 
 async def process_url_b(url, usr_id, assistant):
+    await remove_thread(usr_id)
     thread_id = await check_if_thread_exists(usr_id)
 
     if thread_id is None:
