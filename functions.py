@@ -103,6 +103,17 @@ async def generate_response(message_body, usr_id, assistant):
 
 
 async def process_url(url, usr_id, assistant):
+    thread_id = await check_if_thread_exists(usr_id)
+
+    if thread_id is None:
+        print(f"Creating new thread for {usr_id}")
+        thread = await client.beta.threads.create()
+        await store_thread(usr_id, thread.id)
+        thread_id = thread.id
+    else:
+        print(f"Retrieving existing thread {usr_id}")
+        thread = await client.beta.threads.retrieve(thread_id)
+    print(url)
     thread = await aclient.beta.threads.create(
         messages=[
             {
