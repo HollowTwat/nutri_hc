@@ -187,7 +187,7 @@ async def process_url_b(url, usr_id, assistant):
     )
     await store_thread(usr_id, thread.id)
 
-    new_message = await run_assistant(thread, assistant)
+    new_message = await run_assistant_b(thread, assistant)
 
     return new_message
 
