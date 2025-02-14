@@ -107,12 +107,12 @@ async def process_url(url, usr_id, assistant):
 
     if thread_id is None:
         print(f"Creating new thread for {usr_id}")
-        thread = await client.beta.threads.create()
+        thread = await aclient.beta.threads.create()
         await store_thread(usr_id, thread.id)
         thread_id = thread.id
     else:
         print(f"Retrieving existing thread {usr_id}")
-        thread = await client.beta.threads.retrieve(thread_id)
+        thread = await aclient.beta.threads.retrieve(thread_id)
     print(url)
     thread = await aclient.beta.threads.create(
         messages=[
