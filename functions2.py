@@ -28,6 +28,10 @@ RECIPE_ASS_ID = os.getenv("RECIPE_ASS_ID")
 STICKER_ID = os.getenv("STICKER_ID")
 
 
+
+VISION_ASSISTANT_ID_B = os.getenv("VISION_ASSISTANT_ID_B")
+
+
 TOKEN = BOT_TOKEN
 bot = Bot(token=TOKEN, default=DefaultBotProperties(
         parse_mode=ParseMode.HTML))
@@ -295,7 +299,7 @@ async def yapp(id, question, new_thread):
 async def process_img_rec(message, state, text, buttons):
     id = str(message.from_user.id)
     url = await get_url(message.photo[-1].file_id)
-    vision = await process_url(url, id, VISION_ASS_ID_2)
+    vision = await process_url_b(url, id, VISION_ASSISTANT_ID_B)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
         await message.answer(f"офибка!!! \n{pretty}")

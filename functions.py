@@ -20,6 +20,10 @@ openai.api_key = OPENAI_KEY
 TELETOKEN_2 = os.getenv('TELEBOT')
 bug_channel = "-1002345895875"
 
+OPENBI_KEY = os.getenv("OPENBI_KEY")
+VISION_ASSISTANT_ID_B = os.getenv("VISION_ASSISTANT_ID_B")
+bclient = AsyncOpenAI(api_key=OPENBI_KEY)
+
 
 async def check_mail(id, mail):
     link = f"https://nutridb-production.up.railway.app/api/Subscription/ActivateUser?userTgId={id}&userEmail={mail}"
@@ -99,6 +103,71 @@ async def generate_response(message_body, usr_id, assistant):
 
     new_message = await run_assistant(thread, assistant)
     return new_message
+
+
+
+async def run_assistant_b(thread, assistant):
+    try:
+        print("run_assistant hit")
+        assistant = await bclient.beta.assistants.retrieve(assistant)
+        run = await bclient.beta.threads.runs.create(
+            thread_id=thread.id,
+            assistant_id=assistant.id,
+        )
+    
+        while run.status != "completed":
+            if run.status == "failed":
+                messages = await bclient.beta.threads.messages.list(thread_id=thread.id)
+                raise Exception(f"messages: {messages}, run: {run}")
+                    # f"Run failed with status: \n{run.status} \nand generated \n{messages.data[0]} \nrun.failed_at: \n{run.failed_at} \nrun.incomplete_details: \n{run.incomplete_details}")
+
+            print(run.status)
+            await asyncio.sleep(1.5)
+            run = await bclient.beta.threads.runs.retrieve(
+                thread_id=thread.id, run_id=run.id)
+    
+        messages = await bclient.beta.threads.messages.list(thread_id=thread.id)
+        latest_mssg = messages.data[0].content[0].text.value
+        print(f"generated: {latest_mssg}   test outptut {messages}")
+        # await send_mssg(TELETOKEN_2, bug_channel, f"тест на работу send_mssg")
+        return latest_mssg
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        await send_mssg(TELETOKEN_2, bug_channel, f"exception: {e}")
+        return "error"
+
+
+async def process_url_b(url, usr_id, assistant):
+    thread_id = await check_if_thread_exists(usr_id)
+
+    if thread_id is None:
+        print(f"Creating new thread for {usr_id}")
+        thread = await bclient.beta.threads.create()
+        await store_thread(usr_id, thread.id)
+        thread_id = thread.id
+    else:
+        print(f"Retrieving existing thread {usr_id}")
+        thread = await bclient.beta.threads.retrieve(thread_id)
+    print(url)
+    thread = await bclient.beta.threads.create(
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": url},
+                    },]
+            },
+        ]
+    )
+    await store_thread(usr_id, thread.id)
+
+    new_message = await run_assistant(thread, assistant)
+
+    return new_message
+
+
 
 
 
