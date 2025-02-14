@@ -104,6 +104,29 @@ async def generate_response(message_body, usr_id, assistant):
     new_message = await run_assistant(thread, assistant)
     return new_message
 
+async def generate_response_b(message_body, usr_id, assistant):
+    thread_id = await check_if_thread_exists(usr_id)
+    print(message_body, thread_id)
+
+    if thread_id is None:
+        print(f"Creating new thread for {usr_id}")
+        thread = await bclient.beta.threads.create()
+        await store_thread(usr_id, thread.id)
+        thread_id = thread.id
+    else:
+        print(f"Retrieving existing thread {usr_id}")
+        thread = await bclient.beta.threads.retrieve(thread_id)
+
+    message = await bclient.beta.threads.messages.create(
+        thread_id=thread_id,
+        role="user",
+        content=message_body,
+    )
+    print(message)
+
+    new_message = await run_assistant_b(thread, assistant)
+    return new_message
+
 
 
 async def run_assistant_b(thread, assistant):
@@ -475,29 +498,6 @@ async def run_city(message_body, assistant):
     new_message = await run_assistant(thread, assistant)
     return new_message
 
-
-async def generate_response(message_body, usr_id, assistant):
-    thread_id = await check_if_thread_exists(usr_id)
-    print(message_body, thread_id)
-
-    if thread_id is None:
-        print(f"Creating new thread for {usr_id}")
-        thread = await aclient.beta.threads.create()
-        await store_thread(usr_id, thread.id)
-        thread_id = thread.id
-    else:
-        print(f"Retrieving existing thread {usr_id}")
-        thread = await aclient.beta.threads.retrieve(thread_id)
-
-    message = await aclient.beta.threads.messages.create(
-        thread_id=thread_id,
-        role="user",
-        content=message_body,
-    )
-    print(message)
-
-    new_message = await run_assistant(thread, assistant)
-    return new_message
 
 
 async def create_str(data):

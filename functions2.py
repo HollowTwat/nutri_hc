@@ -300,6 +300,7 @@ async def process_img_rec(message, state, text, buttons):
     id = str(message.from_user.id)
     url = await get_url(message.photo[-1].file_id)
     vision = await process_url_b(url, id, VISION_ASSISTANT_ID_B)
+    print(vision)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
         await message.answer(f"офибка!!! \n{pretty}")
