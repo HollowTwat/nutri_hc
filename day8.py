@@ -121,7 +121,7 @@ async def process_l8_step_3(callback_query, state):
     await callback_query.message.answer(
         "✍️ <b>Задание на день</b> \n\nПопроси Нутри составить тебе рецепт по принципам Гарвардской тарелки и приготовь его на ужин. Для этого просто напиши в чат: <b>«Нутри, предложи рецепт по принципу Гарвадской тарелки».</b> \n\nИ, конечно, не забывай заполнять дневник питания!",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Дневник питания", callback_data="dnevnik"), InlineKeyboardButton(text="Составить рецепт", callback_data="recept")]
+            [InlineKeyboardButton(text="Дневник питания", callback_data="menu_dnevnik"), InlineKeyboardButton(text="Составить рецепт", callback_data="menu_nutri_reciepie")]
         ])
     )
     await callback_query.answer()

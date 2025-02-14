@@ -77,7 +77,7 @@ async def process_l4_step_2_2(callback_query, state):
     await callback_query.answer()
 
 async def process_l4_step_3(callback_query, state):
-    await state.set_state(LessonStates4.step_4)
+    await state.clear()
     text = "Есть много способов с ними работать! \n\nВ карточках — несколько практик, которые помогают справиться с эмоциями, которые мы «заедаем» чаще всего. \n\nНа самом деле таких практик больше, а полностью изменить поведение и реакции поможет когнитивно-поведенческая терапия. Но ведь надо с чего-то начать!"
     media_files = [
         InputMediaPhoto(media=IMG6, caption=text),
@@ -92,7 +92,7 @@ async def process_l4_step_3(callback_query, state):
     await callback_query.message.answer_media_group(media=media_files)
     text1 = "✍️<b>Задание на день:</b> \n\n🍎 Выполни одну из практик. \n🍎Не забывай заполнять дневник питания — он тоже помогает отследить, как эмоции влияют на желание поесть."
     await callback_query.message.answer(text1,reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Меню", callback_data="menu")]
+            [InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]
         ])
     )
 

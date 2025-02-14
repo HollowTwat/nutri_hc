@@ -63,7 +63,7 @@ async def process_l17_step_2(callback_query, state):
     await callback_query.message.answer(
         "✍️<b>Задание на день:</b> \n\n🍎 Проверь себя с Нутри: сфотографируй блюдо, которое ты съешь в кафе. И занеси в дневник питания. Про завтрак  тоже не забудь.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Дневник питания", callback_data="dnevnik")]
+            [InlineKeyboardButton(text="Дневник питания", callback_data="menu_dnevnik")]
         ])
     )
 

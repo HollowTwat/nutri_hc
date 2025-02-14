@@ -68,7 +68,7 @@ async def process_l12_step_2(callback_query, state):
     )
     text = "Но до этого домашнего задания ещё целый день! А в этом дне — несколько приёмов пищи 🍳🥗🥘 \n\nЗаноси их в дневник питания. \n\nМожно фотографировать тарелку, можно записывать голосовые, можно описывать съеденное текстом."
     await callback_query.message.answer(text,reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Дневник питания", callback_data="dnenik")],
+            [InlineKeyboardButton(text="Дневник питания", callback_data="menu_dnevnik")],
         ])
     )
     await callback_query.answer()

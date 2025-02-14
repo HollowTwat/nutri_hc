@@ -58,7 +58,7 @@ async def process_l10_step_2(callback_query, state):
     await callback_query.message.answer_media_group(media=media_files)
     text = "✍️ <b>Задание на сегодняшний день — моё любимое!</b> \n\n🍰 Долой запреты — включи любимый десерт в сегодняшний рацион! Но так, чтобы сохранить норму КБЖУ (в этом весь подвох!). \n\n🍰Чтобы всё получилось, заноси приёмы пищи в дневник питания — и Нутри подскажет, как показать этот фокус с десертом без ущерба фигуре."
     await callback_query.message.answer(text,reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Дневник питания", callback_data="dnenik")],
+            [InlineKeyboardButton(text="Дневник питания", callback_data="menu_dnevnik")],
         ])
     )
     await callback_query.answer()

@@ -69,7 +69,7 @@ async def process_l13_step_2(callback_query, state):
     await callback_query.message.answer_media_group(media=media_files)
     await callback_query.message.answer(text2,disable_web_page_preview=True,
                                         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Сделать зарядку", url = "https://www.youtube.com/watch?v=M-8FvC3GD8c&ab_channel=YogaWithAdriene")],[InlineKeyboardButton(text="Дневник питания", callback_data="dnevnik")],
+            [InlineKeyboardButton(text="Сделать зарядку", url = "https://www.youtube.com/watch?v=M-8FvC3GD8c&ab_channel=YogaWithAdriene")],[InlineKeyboardButton(text="Дневник питания", callback_data="menu_dnevnik")],
         ])
     )
     await callback_query.answer()

@@ -73,11 +73,11 @@ async def process_l6_step_2_2(callback_query, state):
     await state.clear()
     await callback_query.message.answer(
         "Не могу тебе отказать!  \n\nНо для дневника питания выходных не бывает. Заполняй его после каждого приёма пищи. Так я сама расскажу, чего не хватает в твоём рационе 🥦",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="💬 Задать вопрос", callback_data="menu_nutri_yapp")],[InlineKeyboardButton(text="📖 Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
 
 async def process_l6_step_11(callback_query, state):
     await callback_query.message.answer(
         "Вечер — время душевных разговоров. Если весь день было не до вопросов Нутри, то сейчас — самое время спросить всё, что ты хотел(а) узнать о питании, но боялся(лась) спросить!",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="💬 Задать вопрос", callback_data="menu")]]))
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="💬 Задать вопрос", callback_data="menu_nutri_yapp")]]))
     await callback_query.answer()

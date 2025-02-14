@@ -96,7 +96,7 @@ async def process_l16_step_12_2(callback_query, state):
     await state.set_state(LessonStates16.step_12)
     await callback_query.message.answer(
         "Тогда не откладывай и попробуй проверить что-то, что у тебя под рукой. \n\nА завтра нас ждёт ещё сложный уровень в нашем квесте: отправимся в кафе и выберем там уже готовое блюдо!",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Анализ этикетки", callback_data="etiketka")]])
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Анализ этикетки", callback_data="menu_nutri_etiketka")]])
         )
     await callback_query.answer()
 
