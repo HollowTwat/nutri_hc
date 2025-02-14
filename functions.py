@@ -104,92 +104,92 @@ async def generate_response(message_body, usr_id, assistant):
     new_message = await run_assistant(thread, assistant)
     return new_message
 
-async def generate_response_b(message_body, usr_id, assistant):
-    thread_id = await check_if_thread_exists(usr_id)
-    print(message_body, thread_id)
+# async def generate_response_b(message_body, usr_id, assistant):
+#     thread_id = await check_if_thread_exists(usr_id)
+#     print(message_body, thread_id)
 
-    if thread_id is None:
-        print(f"Creating new thread for {usr_id}")
-        thread = await bclient.beta.threads.create()
-        await store_thread(usr_id, thread.id)
-        thread_id = thread.id
-    else:
-        print(f"Retrieving existing thread {usr_id}")
-        thread = await bclient.beta.threads.retrieve(thread_id)
+#     if thread_id is None:
+#         print(f"Creating new thread for {usr_id}")
+#         thread = await bclient.beta.threads.create()
+#         await store_thread(usr_id, thread.id)
+#         thread_id = thread.id
+#     else:
+#         print(f"Retrieving existing thread {usr_id}")
+#         thread = await bclient.beta.threads.retrieve(thread_id)
 
-    message = await bclient.beta.threads.messages.create(
-        thread_id=thread_id,
-        role="user",
-        content=message_body,
-    )
-    print(message)
+#     message = await bclient.beta.threads.messages.create(
+#         thread_id=thread_id,
+#         role="user",
+#         content=message_body,
+#     )
+#     print(message)
 
-    new_message = await run_assistant_b(thread, assistant)
-    return new_message
-
-
-
-async def run_assistant_b(thread, assistant):
-    try:
-        print("run_assistant hit")
-        assistant = await bclient.beta.assistants.retrieve(assistant)
-        run = await bclient.beta.threads.runs.create(
-            thread_id=thread.id,
-            assistant_id=assistant.id,
-        )
-
-        while run.status != "completed":
-            if run.status == "failed":
-                messages = await bclient.beta.threads.messages.list(thread_id=thread.id)
-                raise Exception(
-                    f"Run failed with status: {run.status} and generated {messages.data[0]}")
-
-            print(run.status)
-            await asyncio.sleep(1.5)
-            run = await bclient.beta.threads.runs.retrieve(
-                thread_id=thread.id, run_id=run.id)
-
-        messages = await bclient.beta.threads.messages.list(thread_id=thread.id)
-        latest_mssg = messages.data[0].content[0].text.value
-        print(f"generated: {latest_mssg}")
-        return latest_mssg
-
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        return f"exception: {e}"
+#     new_message = await run_assistant_b(thread, assistant)
+#     return new_message
 
 
-async def process_url_b(url, usr_id, assistant):
-    await remove_thread(usr_id)
-    thread_id = await check_if_thread_exists(usr_id)
 
-    if thread_id is None:
-        print(f"Creating new thread for {usr_id}")
-        thread = await bclient.beta.threads.create()
-        await store_thread(usr_id, thread.id)
-        thread_id = thread.id
-    else:
-        print(f"Retrieving existing thread {usr_id}")
-        thread = await bclient.beta.threads.retrieve(thread_id)
-    print(url)
-    thread = await bclient.beta.threads.create(
-        messages=[
+# async def run_assistant_b(thread, assistant):
+#     try:
+#         print("run_assistant hit")
+#         assistant = await bclient.beta.assistants.retrieve(assistant)
+#         run = await bclient.beta.threads.runs.create(
+#             thread_id=thread.id,
+#             assistant_id=assistant.id,
+#         )
 
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": url},
-                    },]
-            },
-        ]
-    )
-    await store_thread(usr_id, thread.id)
+#         while run.status != "completed":
+#             if run.status == "failed":
+#                 messages = await bclient.beta.threads.messages.list(thread_id=thread.id)
+#                 raise Exception(
+#                     f"Run failed with status: {run.status} and generated {messages.data[0]}")
 
-    new_message = await run_assistant_b(thread, assistant)
+#             print(run.status)
+#             await asyncio.sleep(1.5)
+#             run = await bclient.beta.threads.runs.retrieve(
+#                 thread_id=thread.id, run_id=run.id)
 
-    return new_message
+#         messages = await bclient.beta.threads.messages.list(thread_id=thread.id)
+#         latest_mssg = messages.data[0].content[0].text.value
+#         print(f"generated: {latest_mssg}")
+#         return latest_mssg
+
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
+#         return f"exception: {e}"
+
+
+# async def process_url_b(url, usr_id, assistant):
+#     await remove_thread(usr_id)
+#     thread_id = await check_if_thread_exists(usr_id)
+
+#     if thread_id is None:
+#         print(f"Creating new thread for {usr_id}")
+#         thread = await bclient.beta.threads.create()
+#         await store_thread(usr_id, thread.id)
+#         thread_id = thread.id
+#     else:
+#         print(f"Retrieving existing thread {usr_id}")
+#         thread = await bclient.beta.threads.retrieve(thread_id)
+#     print(url)
+#     thread = await bclient.beta.threads.create(
+#         messages=[
+
+#             {
+#                 "role": "user",
+#                 "content": [
+#                     {
+#                         "type": "image_url",
+#                         "image_url": {"url": url},
+#                     },]
+#             },
+#         ]
+#     )
+#     await store_thread(usr_id, thread.id)
+
+#     new_message = await run_assistant_b(thread, assistant)
+
+#     return new_message
 
 
 

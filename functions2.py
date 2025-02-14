@@ -299,7 +299,7 @@ async def yapp(id, question, new_thread):
 async def process_img_rec(message, state, text, buttons):
     id = str(message.from_user.id)
     url = await get_url(message.photo[-1].file_id)
-    vision = await process_url_b(url, id, VISION_ASSISTANT_ID_B)
+    vision = await process_url(url, id, VISION_ASS_ID_2)
     print(vision)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
