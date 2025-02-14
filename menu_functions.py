@@ -284,6 +284,7 @@ async def process_menu_nutri_reciepie(callback_query, state):
 async def process_menu_nutri_etiketka(callback_query, state):
     step0txt = "Отправь мне фото с этикеткой любого товара. Я проанализирую состав за тебя и напишу, есть ли в нём ингредиенты, которых стоит опасаться 🔍   \n\nПодсказка💡 \n<i>Делай фото состава, не названия продукта. \nФото должно быть четким без бликов, на ровной поверхности</i>"
     await callback_query.message.edit_text(step0txt, reply_markup=None)
+    
 
 async def process_menu_nutri_rec_inputType(callback_query, state):
     step0txt = "У тебя уже есть рецепт? 🥦"

@@ -268,6 +268,7 @@ def create_day_rate_question(user_info, food):
     return str(parsed_info)
 
 async def yapp(id, question, new_thread):
+    
     print('day1_yapp triggered')
     
     if new_thread:
@@ -289,7 +290,6 @@ async def yapp(id, question, new_thread):
             final_response = "Ошибка: неверный запрос"
             if debug == 1:
                 print(f"{isError} {final_response}")
-        
         return isError, final_response
 
     except Exception as e:
@@ -297,20 +297,24 @@ async def yapp(id, question, new_thread):
         return True, "Ошибка обработки запроса"
     
 async def process_img_rec(message, state, text, buttons):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     id = str(message.from_user.id)
     url = await get_url(message.photo[-1].file_id)
     vision = await process_url(url, id, VISION_ASS_ID_2)
     print(vision)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
+        await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 
 async def process_audio_rec(message, state, text, buttons):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     id = str(message.from_user.id)
     transcription = await audio_file(message.voice.file_id)
     if await state.get_state() == UserState.recognition:
@@ -320,14 +324,17 @@ async def process_audio_rec(message, state, text, buttons):
     vision = await generate_response(transcription, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
+        await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         
 
 async def process_txt_rec(message, state, text, buttons):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     id = str(message.from_user.id)
     if await state.get_state() == UserState.recognition:
         await remove_thread(id)
@@ -336,14 +343,17 @@ async def process_txt_rec(message, state, text, buttons):
     vision = await generate_response(message.text, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
+        await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         
 
 async def edit_txt_rec(message, state, text, buttons):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     id = str(message.from_user.id)
     state_data = await state.get_data()
     old = state_data["old_food"]
@@ -352,13 +362,16 @@ async def edit_txt_rec(message, state, text, buttons):
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
+        await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def edit_audio_rec(message, state, text, buttons):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     id = str(message.from_user.id)
     transcription = await audio_file(message.voice.file_id)
     await remove_thread(id)
@@ -368,8 +381,10 @@ async def edit_audio_rec(message, state, text, buttons):
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
+        await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))

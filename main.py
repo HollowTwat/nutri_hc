@@ -292,11 +292,13 @@ async def main_process_menu_nutri_etiketka(callback_query: CallbackQuery, state:
 @router.message(StateFilter(UserState.etiketka))
 async def main_process_etiketka_input(message: Message, state: FSMContext):
     if message.photo:
+        sticker_mssg = message.answer_sticker(STICKER_ID)
         iserror, user_data = await get_user_info(message.from_user.id)
         user_info = json.loads(user_data)
         allergies = user_info.get("user_info_meals_ban")
         url = await get_url(message.photo[-1].file_id)
         gpt_response = await process_url_etik(url, allergies, ETIK_ASS_ID)
+        await sticker_mssg.delete()
         await message.answer(gpt_response)
         await state.set_state(UserState.menu)
     else:
@@ -334,24 +336,29 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         await menu_nutri_rec_input_2(callback_query, state)
         return
     elif input_type == "3":
+        sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
         buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
         await state.set_state(UserState.reci)
         iserror1, user_data = await get_user_info(callback_query.from_user.id)
         question = f"Придумай полезный и вкусный рецепт {meal_type_mapping.get(meal_type)} для пользователя с информацией: {user_data}"
         iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
         if not iserror:
+            await sticker_mssg.delete()
             await callback_query.message.edit_text(gptresponse, reply_markup=None)
             await callback_query.message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     elif input_type == "retry":
+        sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
         buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
         question = f"Придумай другой рецепт"
         iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
         if not iserror:
+            await sticker_mssg.delete()
             await callback_query.message.edit_text(gptresponse, reply_markup=None)
             await callback_query.message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             
 @router.message(StateFilter(UserState.reci))
 async def main_process_reci_input(message: Message, state: FSMContext):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     meal_type_mapping = {"0": "Завтрака", "2": "Обеда", "4": "Ужина", "5":"Перекуса"}
     state_data = await state.get_data()
     input_type = state_data["input_rec_type"]
@@ -367,12 +374,14 @@ async def main_process_reci_input(message: Message, state: FSMContext):
         question = f"Распиши рецепт {meal_type_mapping.get(meal_type)} по рецепту : {user_input} для пользователя с информацией: {user_data}, "
         iserror, gptresponse = await create_reciepie(question, message.from_user.id)
         if not iserror:
+            await sticker_mssg.delete()
             await message.answer(gptresponse)
             await message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     elif input_type == "2":
         question = f"Придумай рецепт {meal_type_mapping.get(meal_type)} вот с этими продуктами: {user_input} для пользователя с информацией: {user_data}"
         iserror, gptresponse = await create_reciepie(question, message.from_user.id)
         if not iserror:
+            await sticker_mssg.delete()
             await message.answer(gptresponse)
             await message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
@@ -404,19 +413,25 @@ async def yapp_functional(message: Message, state: FSMContext):
     buttons = [[InlineKeyboardButton(text='Меню', callback_data='menu')]]
     errormessage = "Гпт вернул ошибку"
     if message.text:
+        sticker_mssg = await message.answer_sticker(STICKER_ID)
         flag, response = await yapp(id, message.text, new_thread)
         if flag:
+            sticker_mssg.delete()
             await message.answer(errormessage)
         else: 
+            sticker_mssg.delete()
             await message.answer(f"{response}\n\nТы можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             await state.set_state(UserState.yapp)
         
     elif message.voice:
+        sticker_mssg = await message.answer_sticker(STICKER_ID)
         transcription = await audio_file(message.voice.file_id)
         flag, response = await yapp(id, transcription, new_thread)
         if flag:
+            sticker_mssg.delete()
             await message.answer(errormessage)
         else:
+            sticker_mssg.delete()
             await message.answer(f"{response}\n\n Ты можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             await state.set_state(UserState.yapp)
             
