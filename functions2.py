@@ -283,7 +283,7 @@ async def yapp(id, question, new_thread):
         
         if response != "error":
             isError = False
-            final_response = f"Ответ: {response}"
+            final_response = response
             if debug == 1:
                 print(f"{isError} {final_response}")
         else:
