@@ -273,7 +273,8 @@ async def yapp(id, question, new_thread):
     
     if new_thread:
         await remove_yapp_thread(id)
-        await create_thread_with_extra_info("user_info_is_empty_for_now", id, YAPP_SESH_ASSISTANT_ID)
+        iserror, user_data = await get_user_info(id)
+        await create_thread_with_extra_info(f"{str(user_data)}", id, YAPP_SESH_ASSISTANT_ID)
     
     try:
         response = await yapp_assistant(question, id, YAPP_SESH_ASSISTANT_ID)
