@@ -629,7 +629,7 @@ async def edit_new_await(callback_query: types.CallbackQuery, state: FSMContext)
     await state.set_state(UserState.edit_rec)
 
 @router.message(StateFilter(UserState.edit_rec))
-async def dnevnik_functional(message: Message, state: FSMContext):
+async def dnevnik_functional_recc(message: Message, state: FSMContext):
     edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
     confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
     buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
