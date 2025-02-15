@@ -508,11 +508,12 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == 'meal_rate')
 async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
+    sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
     state_data = await state.get_data()
     food = state_data["latest_food"]
     Iserror, user_data = await get_user_info(callback_query.from_user.id)
-    await callback_query.message.edit_text(f"{user_data}")
     if Iserror:
+        await sticker_mssg.delete()
         await callback_query.message.edit_text("Ошибка при получении инфы пользователя из дб")
         return
     question = create_day_rate_question(user_data, food)
@@ -522,6 +523,7 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     buttons = [
         [InlineKeyboardButton(text="⏏️", callback_data="menu")]
     ]
+    await sticker_mssg.delete()
     await callback_query.message.edit_text(cleaned_resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.clear()
 
