@@ -1870,7 +1870,10 @@ async def default_handler(message: Message, state: FSMContext) -> None:
                 await state.set_state(UserState.recognition)
                 await dnevnik_functional(message, state)
             elif message.voice:
-                state.set_state(UserState.perehvat)
+                await state.set_state(UserState.perehvat)
+                await perehvat(message, state)
+            elif message.text:
+                await state.set_state(UserState.perehvat)
                 await perehvat(message, state)
             else:
                 await message.answer("Будут перехватчики", reply_markup=keyboard)
