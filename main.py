@@ -401,6 +401,20 @@ async def audio_file(file_id: str) -> str:
     return transcription
 
 
+@router.callback_query(StateFilter(UserState.perehvat))
+async def perehvat_actual(callback_query: CallbackQuery, state: FSMContext):
+    state_data = await state.get_data()
+    perehvat_mssg = state_data["perehvat_mssg"]
+    if callback_query.data == "perehvat_yapp":
+        await state.set_state(UserState.yapp_new)
+        await yapp_functional(perehvat_mssg, state)
+    elif callback_query.data == "perehvat_dnevnik":
+        await state.set_state(UserState.recognition)
+        await dnevnik_functional(perehvat_mssg, state)
+
+
+
+
 ################## YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP ##################
 
 @router.message(StateFilter(UserState.yapp_new, UserState.yapp))
@@ -1852,7 +1866,14 @@ async def default_handler(message: Message, state: FSMContext) -> None:
             sticker_id = message.sticker.file_id
             await message.answer(f"{sticker_id}")
         else: 
-            await message.answer("Будут перехватчики", reply_markup=keyboard)
+            if message.photo:
+                await state.set_state(UserState.recognition)
+                await dnevnik_functional(message, state)
+            elif message.voice:
+                state.set_state(UserState.perehvat)
+                await perehvat(message, state)
+            else:
+                await message.answer("Будут перехватчики", reply_markup=keyboard)
     else:
         await message.answer(f"Текущее состояние: {current_state}")
 

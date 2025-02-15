@@ -26,6 +26,7 @@ class UserState(StatesGroup):
     reci_mt = State()
     reci = State()
     etiketka= State()
+    perehvat = State()
 
 class LayoverState(StatesGroup):
     recognition = State()
