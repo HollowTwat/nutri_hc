@@ -90,6 +90,7 @@ class StateMiddleware(BaseMiddleware):
 @router.message(CommandStart())
 async def command_start_handler(message: Message, state: FSMContext) -> None:
     await state.set_state(Questionnaire.prefirst)
+    await ensure_user(message)
     await process_prefirst(message, state)
     await state.set_state(Questionnaire.first)
     # await state.update_data(full_sequence=False)

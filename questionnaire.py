@@ -383,7 +383,7 @@ async def process_city(message, state):
     response_text = data["response"]
     city = data["city"]
     timeslide = data["timeslide"]
-    state.update_data(timeslide=timeslide, city=city)
+    await state.update_data(timeslide=timeslide, city=city)
     text1 = response_text
     text2 = "Я буду писать два раза в день: перед завтраком и после ужина.   \n\nВ какое время тебе удобно получать от меня утренний план на день?   \n\nИдеально, если это будет перед едой: так ты сможешь делать все мои задания вовремя.   \n\nУкажи время в формате ЧЧ:ММ \nНапример 10:00"
 
