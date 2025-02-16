@@ -249,6 +249,17 @@ async def add_or_update_usr_info(data):
                 return False, user_data
         except aiohttp.ClientError as e:
             return True, ""
+        
+async def ensure_user(message):
+   async with aiohttp.ClientSession() as session:
+        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/EnsureUser?userTgId={message.from_user.id}&userNoId=#{client_id}"
+        try:
+            async with session.get(url=url) as response:
+                lesson_data = await response.json()
+                lessons_dict = {f"lesson{i+1}_done": status for i, status in enumerate(lesson_data)}
+                return False, lessons_dict
+        except aiohttp.ClientError as e:
+            return True, e
 
 def create_day_rate_question(user_info, food):
     data = json.loads(user_info)
