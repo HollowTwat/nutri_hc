@@ -255,9 +255,8 @@ async def ensure_user(message):
         url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/EnsureUserH?userTgId={message.from_user.id}"
         try:
             async with session.get(url=url) as response:
-                lesson_data = await response.json()
-                lessons_dict = {f"lesson{i+1}_done": status for i, status in enumerate(lesson_data)}
-                return False, lessons_dict
+                ensure_response = await response.text()
+                return False, ensure_response
         except aiohttp.ClientError as e:
             return True, e
 
