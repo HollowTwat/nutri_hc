@@ -1775,6 +1775,7 @@ async def main_process_city(message: Message, state: FSMContext):
 async def main_process_morning_ping(message: Message, state: FSMContext):
     pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
     if re.match(pattern, message.text):
+        await state.update_data(morning_ping=message.text)
         await process_morning_ping(message, state)
         await state.set_state(Questionnaire.evening_ping)
     else:

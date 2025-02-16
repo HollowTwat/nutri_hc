@@ -377,6 +377,7 @@ async def process_city(message, state):
     user_data = await state.get_data()
     goal = user_data["goal"]
     request_message = f"Цель: {goal}. Город: {message.text}"
+    print(request_message)
 
     response = await run_city(request_message, CITY_ASSISTANT_ID)
     data = json.loads(response)
