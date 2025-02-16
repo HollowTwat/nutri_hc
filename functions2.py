@@ -246,7 +246,6 @@ async def add_or_update_usr_info(data):
                 user_data = await response.text()
                 # print(f"НИКИТИН ОТВЕТ {user_data}")
                 # user_data = json.loads(text_data)
-                print(f"data updated: {user_data}")
                 return False, user_data
             
         except aiohttp.ClientError as e:

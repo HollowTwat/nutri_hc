@@ -376,6 +376,7 @@ async def give_plan(message, state, input_text):
 async def process_city(message, state):
     user_data = await state.get_data()
     goal = user_data["goal"]
+    goal_mapping = {"+": "Набрать", "-": "Похудеть", "=": "Сохранить вес"}
     request_message = f"Цель: {goal}. Город: {message.text}"
     print(request_message)
 

@@ -1792,34 +1792,35 @@ async def main_process_evening_ping(message: Message, state: FSMContext):
         data = {
             "userTgId": message.from_user.id,
             "info": {
-            "user_info_name": state_data["name"],
-            "user_info_timeslide" : state_data["timeslide"],
-            "user_info_morning_ping": state_data["morning_ping"],
-            "user_info_evening_ping": state_data["evening_ping"],
-            "user_info_city": state_data["city"],
-            "user_info_bmi":  state_data["bmi"],
-            "target_calories": state_data["target_calories"],
-            "bmr":  state_data["bmr"],
-            "tdee":  state_data["tdee"],
-            "user_info_weight_change":  state_data["w_loss_amount"],
-            "user_info_goal": state_data["goal"],
-            "user_info_sleep": state_data["sleep"],
-            "user_info_stress": state_data["stress"],
-            "user_info_gym_hrs": state_data["jogging"],
-            "user_info_excersise_hrs": state_data["lifting"],
-            "user_info_meals_ban": state_data["allergies"],
-            "user_info_meals_extra": state_data["meals_extra"],
-            "user_info_meal_amount": state_data["meals"],
-            "user_info_booze": state_data["booze"],
-            "user_info_water": state_data["water"],
-            "user_info_age": state_data["age"],
-            "user_info_weight": state_data["weight"],
-            "user_info_height": state_data["height"],
-            "user_info_breastfeeding": state_data["breastfeeding"],
-            "user_info_pregnancy": state_data["pregnancy"],
-            "user_info_gender": state_data["gender"]}
+                "user_info_name": state_data["name"],
+                "user_info_timeslide" : state_data["timeslide"],
+                "user_info_morning_ping": state_data["morning_ping"],
+                "user_info_evening_ping": state_data["evening_ping"],
+                "user_info_city": state_data["city"],
+                "user_info_bmi":  state_data["bmi"],
+                "target_calories": state_data["target_calories"],
+                "bmr":  state_data["bmr"],
+                "tdee":  state_data["tdee"],
+                "user_info_weight_change":  state_data["w_loss_amount"],
+                "user_info_goal": state_data["goal"],
+                "user_info_sleep": state_data["sleep"],
+                "user_info_stress": state_data["stress"],
+                "user_info_gym_hrs": state_data["jogging"],
+                "user_info_excersise_hrs": state_data["lifting"],
+                "user_info_meals_ban": state_data["allergies"],
+                "user_info_meals_extra": state_data["meals_extra"],
+                "user_info_meal_amount": state_data["meals"],
+                "user_info_booze": state_data["booze"],
+                "user_info_water": state_data["water"],
+                "user_info_age": state_data["age"],
+                "user_info_weight": state_data["weight"],
+                "user_info_height": state_data["height"],
+                "user_info_breastfeeding": state_data["breastfeeding"],
+                "user_info_pregnancy": state_data["pregnancy"],
+                "user_info_gender": state_data["gender"]
+                }
     }
-        iserror, response = await add_or_update_usr_info(data)
+        iserror, response = await add_or_update_usr_info(json.dumps(data))
         print(f"saving data for user {message.from_user.id} has returned {iserror}, {response}")
     else:
         await message.answer("Не поняла, попробуй, пожалуйста, ещё раз")
