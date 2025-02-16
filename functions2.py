@@ -252,7 +252,7 @@ async def add_or_update_usr_info(data):
         
 async def ensure_user(message):
    async with aiohttp.ClientSession() as session:
-        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/EnsureUser?userTgId={message.from_user.id}&userNoId=#{client_id}"
+        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/EnsureUserH?userTgId={message.from_user.id}"
         try:
             async with session.get(url=url) as response:
                 lesson_data = await response.json()
