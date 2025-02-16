@@ -256,6 +256,7 @@ async def ensure_user(message):
         try:
             async with session.get(url=url) as response:
                 ensure_response = await response.text()
+                print(ensure_response)
                 return False, ensure_response
         except aiohttp.ClientError as e:
             return True, e

@@ -374,7 +374,7 @@ async def give_plan(message, state, input_text):
     await message.answer(text5)
 
 async def process_city(message, state):
-    user_data = state.get_data()
+    user_data = await state.get_data()
     goal = user_data["goal"]
     request_message = f"Цель: {goal}. Город: {message.text}"
 
