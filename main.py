@@ -89,13 +89,16 @@ class StateMiddleware(BaseMiddleware):
 
 @router.message(CommandStart())
 async def command_start_handler(message: Message, state: FSMContext) -> None:
-    await state.update_data(full_sequence=False)
-    buttons = [
-        [InlineKeyboardButton(text="Меню", callback_data="menu")],
-        ]
-    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    step0txt = "in_dev"
-    await message.answer(step0txt, reply_markup=keyboard)
+    await state.set_state(Questionnaire.prefirst)
+    await process_prefirst(message, state)
+    await state.set_state(Questionnaire.first)
+    # await state.update_data(full_sequence=False)
+    # buttons = [
+    #     [InlineKeyboardButton(text="Меню", callback_data="menu")],
+    #     ]
+    # keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    # step0txt = "in_dev"
+    # await message.answer(step0txt, reply_markup=keyboard)
 
 
 
@@ -1720,6 +1723,7 @@ async def main_process_goal(callback_query: types.CallbackQuery, state: FSMConte
         await state.set_state(Questionnaire.w_loss)
     elif goal == "=":
         await process_w_loss_amount(callback_query.message, state, goal)
+        await state.update_data(w_loss_amount="0")
         input_text = await gen_text(state)
         await give_plan(callback_query.message, state, input_text)
         await state.set_state(Questionnaire.city)
@@ -1735,7 +1739,7 @@ async def main_process_w_loss(callback_query: types.CallbackQuery, state: FSMCon
 async def main_process_w_loss_amount(message: Message, state: FSMContext):
     pattern = r'^\d+$'
     if not re.match(pattern, message.text):
-        pass
+        await message.answer("Пожалуйста введи целое число")
     user_data = await state.get_data()
     goal = user_data["goal"]
     tdee = user_data['tdee']
@@ -1747,8 +1751,12 @@ async def main_process_w_loss_amount(message: Message, state: FSMContext):
         await give_plan(message, state, input_text)
     else:
         if goal in ["+","-"]:
-            if goal == "+": goal_txt = "набрать вес"
-            elif goal == "-": goal_txt = "сбросить вес"
+            if goal == "+": 
+                goal_txt = "набрать вес"
+                await state.update_data(w_loss_amount=f"+{message.text}")
+            elif goal == "-": 
+                goal_txt = "сбросить вес"
+                await state.update_data(w_loss_amount=f"-{message.text}")
             text1 = f"Чтобы помочь тебе в достижении твоей цели {goal_txt}, я рассчитала, сколько калорий тебе нужно есть в день. Я использую формулу Mifflin-St Jeor, так как она считается одной из самых точных.\n\n\nТвои результаты следующие:\nБазовый уровень метаболизма (BMR): примерно <b>{bmr}</b> ккал/день.\nОбщая суточная потребность в энергии (TDEE) при умеренной активности: примерно <b>{tdee}</b> ккал/день."
             await message.answer(text1)
             await give_plan(message, state, input_text)
@@ -1757,8 +1765,9 @@ async def main_process_w_loss_amount(message: Message, state: FSMContext):
 
 @router.message(StateFilter(Questionnaire.city))
 async def main_process_city(message: Message, state: FSMContext):
-    timeslide, city = await process_city(message, state)
-    state.update_data(timeslide=timeslide, city=city)
+    # timeslide, city = await process_city(message, state)
+    # state.update_data(timeslide=timeslide, city=city)
+    await process_city(message, state)
     await state.set_state(Questionnaire.morning_ping)
 
 @router.message(StateFilter(Questionnaire.morning_ping))
@@ -1777,44 +1786,46 @@ async def main_process_evening_ping(message: Message, state: FSMContext):
         await state.update_data(evening_ping=message.text)
         await process_evening_ping(message, state)
         await state.set_state(Questionnaire.community_invite)
+        state_data = await state.get_data()
+        data = {
+            "userTgId": message.from_user.id,
+            "info": {
+            "user_info_name": state_data["name"],
+            "user_info_timeslide" : state_data["timeslide"],
+            "user_info_morning_ping": state_data["morning_ping"],
+            "user_info_evening_ping": state_data["evening_ping"],
+            "user_info_city": state_data["city"],
+            "user_info_bmi":  state_data["bmi"],
+            "target_calories": state_data["target_calories"],
+            "bmr":  state_data["bmr"],
+            "tdee":  state_data["tdee"],
+            "user_info_weight_change":  state_data["w_loss_amount"],
+            "user_info_goal": state_data["goal"],
+            "user_info_sleep": state_data["sleep"],
+            "user_info_stress": state_data["stress"],
+            "user_info_gym_hrs": state_data["jogging"],
+            "user_info_excersise_hrs": state_data["lifting"],
+            "user_info_meals_ban": state_data["allergies"],
+            "user_info_meals_extra": state_data["meals_extra"],
+            "user_info_meal_amount": state_data["meals"],
+            "user_info_booze": state_data["booze"],
+            "user_info_water": state_data["water"],
+            "user_info_age": state_data["age"],
+            "user_info_weight": state_data["weight"],
+            "user_info_height": state_data["height"],
+            "user_info_breastfeeding": state_data["breastfeeding"],
+            "user_info_pregnancy": state_data["pregnancy"],
+            "user_info_gender": state_data["gender"]}
+    }
+        iserror, response = await add_or_update_usr_info(data)
+        print(f"saving data for user {message.from_user.id} has returned {iserror}, {response}")
     else:
         await message.answer("Не поняла, попробуй, пожалуйста, ещё раз")
 
 @router.callback_query(StateFilter(Questionnaire.community_invite), lambda c: True)
 async def main_process_community_invite(callback_query: types.CallbackQuery, state: FSMContext):
     await process_community_invite(callback_query.message, state)
-    await state.clear()
-    state_data = await state.get_data()
-    data = {
-        "userTgId": callback_query.from_user.id,
-        "info": {
-        "user_info_name": data.get("name"),
-        "user_info_timeslide" : data.get("timeslide"),
-        "user_info_morning_ping": data.get("morning_ping"),
-        "user_info_evening_ping": data.get("evening_ping"),
-        "user_info_city": data.get("city"),
-        "user_info_bmi":  "#{user_info_bmi}",
-        "target_calories": "#{target_calories}",
-        "bmr":  "#{bmr}",
-        "tdee":  "#{tdee}",
-        "user_info_weight_change":  "#{user_info_weight_change}",
-        "user_info_goal": data.get("goal"),
-        "user_info_sleep": "#{user_info_sleep}",
-        "user_info_stress": "#{user_info_stress}",
-        "user_info_gym_hrs": "#{user_info_gym_hrs}",
-        "user_info_excersise_hrs": "#{user_info_excersise_hrs}",
-        "user_info_meals_ban": data.get("allergies"),
-        "user_info_meals_extra": "#{user_info_meals_extra}",
-        "user_info_meal_amount": "#{user_info_meal_amount}",
-        "user_info_booze": data.get("booze"),
-        "user_info_water": data.get("water"),
-        "user_info_age": data.get("age"),
-        "user_info_weight": data.get("weight"),
-        "user_info_height": data.get("height"),
-        "user_info_breastfeeding": data.get("breastfeeding"),
-        "user_info_pregnancy": data.get("pregnancy"),
-        "user_info_gender": data.get("gender")}
-}
+
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
