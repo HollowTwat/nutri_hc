@@ -377,7 +377,8 @@ async def process_city(message, state):
     user_data = await state.get_data()
     goal = user_data["goal"]
     goal_mapping = {"+": "Набрать", "-": "Похудеть", "=": "Сохранить вес"}
-    request_message = f"Цель: {goal}. Город: {message.text}"
+    goal_str = goal_mapping.get(goal)
+    request_message = f"Цель: {goal_str}. Город: {message.text}"
     print(request_message)
 
     response = await run_city(request_message, CITY_ASSISTANT_ID)
@@ -413,7 +414,7 @@ async def process_community_invite(message, state):
         InputMediaPhoto(media=IMG12),
         InputMediaPhoto(media=IMG13),
         InputMediaPhoto(media=IMG14),
-        InputMediaPhoto(media=IMG15),
+        # InputMediaPhoto(media=IMG15),  #ПО ИДЕЕ ТА ФОТКА, КОТОРУЮ НАДО БЫЛО УБРАТЬ
         InputMediaPhoto(media=IMG16),
     ]
     await message.answer_media_group(media=media_files)
