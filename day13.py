@@ -27,19 +27,33 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIFj2eqPsZVhAHk7bv_lao1GBkg0l5lAAIK6zEbtfVQSa4jK804YRo2AQADAgADeQADNgQ"
-IMG2 = "AgACAgIAAxkBAAIFk2eqPstfB9UgcNfiSUnlmTOuaScTAAJ3_TEbMp9RSb2eBuJnHJQcAQADAgADeQADNgQ"
-IMG3 = "AgACAgIAAxkBAAIFl2eqPtC9ONDgMph3G93xPo1frA7IAAJ4_TEbMp9RSRdSBl09DQ8nAQADAgADeQADNgQ"
-IMG4 = "AgACAgIAAxkBAAIFm2eqPtSDifQTEdwWXtfrhfa7f1AGAAJ5_TEbMp9RSZutfQ_t1ChIAQADAgADeQADNgQ"
-IMG5 = "AgACAgIAAxkBAAIFn2eqPtjOsqnKaQNlZlZsXxkyAiPWAAJ6_TEbMp9RSWYamNyTK4iOAQADAgADeQADNgQ"
-IMG6 = "AgACAgIAAxkBAAIFo2eqPtz8avVqLF5iB1jLmILQUMtVAAJ9_TEbMp9RSfOEwk25vNTjAQADAgADeQADNgQ"
-IMG7 = "AgACAgIAAxkBAAIFp2eqPuGJUlNiHBglq5jtQoPJZ_KUAAJ-_TEbMp9RSfgFoffBVYcrAQADAgADeQADNgQ"
-IMG8 = "AgACAgIAAxkBAAIFq2eqPuWKBxHBTFlxIxPHfSORlIZbAAJ__TEbMp9RSU5K8EZVSgH_AQADAgADeQADNgQ"
-IMG9 = "AgACAgIAAxkBAAIFr2eqPuqwRvG32m1mV115LWqd9qtqAAKA_TEbMp9RSU3sHpxXXg82AQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAIKvme1CxtGPCmPr8jeZxHLhd1tQelPAALL9TEb2NCpSUug-iwmzmprAQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAIKwme1Cx_PHq_tuv2BTr3jTNXVOg5MAALM9TEb2NCpSVufx0yJWlpvAQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAIKxme1CyPy4CA_XFPw0DgwsycSQ-z1AALN9TEb2NCpSW8xP5MmjMu_AQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAIKyme1CybyUMownpBRjd_iY77DrUXiAALO9TEb2NCpSekAAb13EvRLVAEAAwIAA3kAAzYE"
+IMG5 = "AgACAgIAAxkBAAIKzme1CyrloimMMv_YwcdLXxtq0TF1AALP9TEb2NCpSZkmXf5g6jsrAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAIK0me1Cy55d3PlGDYOMdZ66dREU8FAAALQ9TEb2NCpSQWeeGyEE947AQADAgADeQADNgQ"
+IMG7 = "AgACAgIAAxkBAAIK1me1CzLnEegWNSFTgdJMKmZ2tSVJAALR9TEb2NCpSaddbnMMSQr5AQADAgADeQADNgQ"
+IMG8 = "AgACAgIAAxkBAAIK2me1CzeSrUNUpk7jaga2oTKesob5AAIK8zEb41ioSZmPcKHz8B-FAQADAgADeQADNgQ"
+IMG9 = "AgACAgIAAxkBAAIK3me1CzoCuh_QWl33sPu_IsPmD_sAA9L1MRvY0KlJ5lyvRGK8BwoBAAMCAAN5AAM2BA"
+
+# IMG1 = "AgACAgIAAxkBAAIFj2eqPsZVhAHk7bv_lao1GBkg0l5lAAIK6zEbtfVQSa4jK804YRo2AQADAgADeQADNgQ"
+# IMG2 = "AgACAgIAAxkBAAIFk2eqPstfB9UgcNfiSUnlmTOuaScTAAJ3_TEbMp9RSb2eBuJnHJQcAQADAgADeQADNgQ"
+# IMG3 = "AgACAgIAAxkBAAIFl2eqPtC9ONDgMph3G93xPo1frA7IAAJ4_TEbMp9RSRdSBl09DQ8nAQADAgADeQADNgQ"
+# IMG4 = "AgACAgIAAxkBAAIFm2eqPtSDifQTEdwWXtfrhfa7f1AGAAJ5_TEbMp9RSZutfQ_t1ChIAQADAgADeQADNgQ"
+# IMG5 = "AgACAgIAAxkBAAIFn2eqPtjOsqnKaQNlZlZsXxkyAiPWAAJ6_TEbMp9RSWYamNyTK4iOAQADAgADeQADNgQ"
+# IMG6 = "AgACAgIAAxkBAAIFo2eqPtz8avVqLF5iB1jLmILQUMtVAAJ9_TEbMp9RSfOEwk25vNTjAQADAgADeQADNgQ"
+# IMG7 = "AgACAgIAAxkBAAIFp2eqPuGJUlNiHBglq5jtQoPJZ_KUAAJ-_TEbMp9RSfgFoffBVYcrAQADAgADeQADNgQ"
+# IMG8 = "AgACAgIAAxkBAAIFq2eqPuWKBxHBTFlxIxPHfSORlIZbAAJ__TEbMp9RSU5K8EZVSgH_AQADAgADeQADNgQ"
+# IMG9 = "AgACAgIAAxkBAAIFr2eqPuqwRvG32m1mV115LWqd9qtqAAKA_TEbMp9RSU3sHpxXXg82AQADAgADeQADNgQ"
 
 
 
 async def process_l13_step_1(callback_query, state):
+    last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 12:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates13.step_2)
     await callback_query.message.answer(
         "Доброе утро! \nПоспали, теперь можно и… позаниматься спортом! \n\nСпорт и сон — два наших помощника на пути к осознанному питанию и здоровому телу. Спорт может быть разным, но вот совсем без него не получится 🤷‍♀️ Точно так же, как не получится заниматься спортом и не следить за питанием. Почему? \n\nВыясним в сегодняшнем уроке!",

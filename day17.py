@@ -27,17 +27,28 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIGXGerlcpl4ZSNjCjURh9HKDLZr4_nAAJ36jEbJvVhSaGMIUUaTggAAQEAAwIAA3kAAzYE"
-IMG2 = "AgACAgIAAxkBAAIGYGerlc97j_sAAR9OjAjy2lC71bO_CwACeOoxGyb1YUkdNDNGxkAGowEAAwIAA3kAAzYE"
-IMG3 = "AgACAgIAAxkBAAIGZGerldN6u3XMYaAUgTYvGc91cGKjAAJ56jEbJvVhSVTjQ1L7iW6WAQADAgADeQADNgQ"
-IMG4 = "AgACAgIAAxkBAAIGaGerldcqeRKJiWi7kM_xyFB4zWrzAAJ66jEbJvVhSbGoYw3UyZv1AQADAgADeQADNgQ"
-IMG5 = "AgACAgIAAxkBAAIGbGerldtlz7WueA2LoYXn7MS115LRAAJ76jEbJvVhSb6RQkgNfusuAQADAgADeQADNgQ"
-IMG6 = "AgACAgIAAxkBAAIGcGerld-RzvHG5onqfx-4d9Jp2ysdAAJ86jEbJvVhSYc2y06eFAE7AQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAILLme1EEhUiHkJ9dUX_lYLZvqPCn-2AAL49TEb2NCpSdCeQkaYhoYXAQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAILMme1EEzBQNg_pBoH7YebH_OIPgfZAAL59TEb2NCpSY7zKTHnVzgZAQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAILNme1EFCTknx6EjXYUL67NQ1lDRcYAAL69TEb2NCpSbTLirFy7TvWAQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAILOme1EFQcLnlioQxg5GNSFQ-JN3pOAAL79TEb2NCpSZiI6L6bpGHLAQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAILPme1EFgYytCU9ph6nwGaSKTzSky9AAL89TEb2NCpSWZNrAV89PfIAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAILQme1EFst0lSyeiHPKjWD0FlncuTcAAL99TEb2NCpSUfZl-FfPeWiAQADAgADeQADNgQ"
+
+# IMG1 = "AgACAgIAAxkBAAIGXGerlcpl4ZSNjCjURh9HKDLZr4_nAAJ36jEbJvVhSaGMIUUaTggAAQEAAwIAA3kAAzYE"
+# IMG2 = "AgACAgIAAxkBAAIGYGerlc97j_sAAR9OjAjy2lC71bO_CwACeOoxGyb1YUkdNDNGxkAGowEAAwIAA3kAAzYE"
+# IMG3 = "AgACAgIAAxkBAAIGZGerldN6u3XMYaAUgTYvGc91cGKjAAJ56jEbJvVhSVTjQ1L7iW6WAQADAgADeQADNgQ"
+# IMG4 = "AgACAgIAAxkBAAIGaGerldcqeRKJiWi7kM_xyFB4zWrzAAJ66jEbJvVhSbGoYw3UyZv1AQADAgADeQADNgQ"
+# IMG5 = "AgACAgIAAxkBAAIGbGerldtlz7WueA2LoYXn7MS115LRAAJ76jEbJvVhSb6RQkgNfusuAQADAgADeQADNgQ"
+# IMG6 = "AgACAgIAAxkBAAIGcGerld-RzvHG5onqfx-4d9Jp2ysdAAJ86jEbJvVhSYc2y06eFAE7AQADAgADeQADNgQ"
 
 
 
 
 async def process_l17_step_1(callback_query, state):
+    last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 16:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates17.step_2)
     await callback_query.message.answer(
         "<i>«Нутри, я ведь ем не только дома, я бываю в кафе и ресторанах!»,</i> — скажете вы. \n\nА я отвечу: «Это здорово»! \n\nИ совсем никак не мешает осознанному питанию. \n\nВ сегодняшнем уроке вместе с нутрициологом даём несколько советов, на что обращать внимание в меню, чтобы найти блюдо, от которого будет радостно и тебе, и твоему дневнику питания.",

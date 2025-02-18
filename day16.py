@@ -27,20 +27,35 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIGNGerkueZkRiGJ59uh-IQWd6EnrKsAAJk6jEbJvVhSSQKPRcEjCMpAQADAgADeQADNgQ"
-IMG2 = "AgACAgIAAxkBAAIGOGerkuumA0X-sPpUIYKqtZFgT37jAAJl6jEbJvVhSSP3gb2x4DklAQADAgADeQADNgQ"
-IMG3 = "AgACAgIAAxkBAAIGPGerku-kfqYZSrRgfyRYqw55Zo_zAAJm6jEbJvVhST5f5WajqJiJAQADAgADeQADNgQ"
-IMG4 = "AgACAgIAAxkBAAIGQGerkvPGXO7KKPu17ssH8Beihk2BAAJn6jEbJvVhSb-RYU7VA_wSAQADAgADeQADNgQ"
-IMG5 = "AgACAgIAAxkBAAIGRGerkvaGSckeBGF1w3AccWHJ4kE-AAJo6jEbJvVhSfQPM3Lx4kkLAQADAgADeQADNgQ"
-IMG6 = "AgACAgIAAxkBAAIGSGerkvpk_S-oS5dXEui2n9uYvxX9AAJp6jEbJvVhSdevmnQnaPy-AQADAgADeQADNgQ"
-IMG7 = "AgACAgIAAxkBAAIGTGerkv-LUlbI6rOpaqB-VpreyMwuAAJq6jEbJvVhSejUBAoPRRg3AQADAgADeQADNgQ"
-IMG8 = "AgACAgIAAxkBAAIGUGerkwMElkSxuO3AmuwFZVS_w66fAAJr6jEbJvVhSYiMZTL8_AYEAQADAgADeQADNgQ"
-IMG9 = "AgACAgIAAxkBAAIGVGerkwf0O32YZ5d1kuHSGBXOwUCWAAJs6jEbJvVhSYpUwe5w0edoAQADAgADeQADNgQ"
-IMG10 = "AgACAgIAAxkBAAIGWGerkwv3xYhdeQABQDMoGTAFOkJsWAACbeoxGyb1YUnDCK-8Qfm15QEAAwIAA3kAAzYE"
+IMG1 = "AgACAgIAAxkBAAILBme1D8B1yWyEFbyV9aYd2MHdnhfIAALv9TEb2NCpSb-dC-WD4FwaAQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAILCme1D8M8vh6S32_ztWOi4bXMMpWVAALw9TEb2NCpSXqjDR5svBUBAQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAILDme1D8f5Epk0Ka64Jk25OTMcYvAHAALx9TEb2NCpSWqcNNqSLFMuAQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAILEme1D8sqK5DME6WZ6BmX7HDBeMoeAALy9TEb2NCpSW91Od2YvXY-AQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAILFme1D875jPvEGaRrE9OJBixko-YnAALz9TEb2NCpSSPyjSi1XqevAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAILGme1D9LSiq8JFh32M31leD2v7SkYAAL09TEb2NCpSeOEVmkTrY5ZAQADAgADeQADNgQ"
+IMG7 = "AgACAgIAAxkBAAILHme1D9ZhdDvQRHuPyS1JUDqCg2-ZAAIT8zEb41ioSbJMFBMfC7pRAQADAgADeQADNgQ"
+IMG8 = "AgACAgIAAxkBAAILIme1D9rFw9yAlMfmjTo-jaj0bp-WAAIU8zEb41ioSf-9HKSvqgAByQEAAwIAA3kAAzYE"
+IMG9 = "AgACAgIAAxkBAAILJme1D97a2Pda2rVOsFH2rmS635cYAAL29TEb2NCpSUny1AzMgoiCAQADAgADeQADNgQ"
+IMG10 = "AgACAgIAAxkBAAILKme1D-PfuG33bgABp9H97JHLNfFBeAAC9_UxG9jQqUlZENYpEV386gEAAwIAA3kAAzYE"
+
+# IMG1 = "AgACAgIAAxkBAAIGNGerkueZkRiGJ59uh-IQWd6EnrKsAAJk6jEbJvVhSSQKPRcEjCMpAQADAgADeQADNgQ"
+# IMG2 = "AgACAgIAAxkBAAIGOGerkuumA0X-sPpUIYKqtZFgT37jAAJl6jEbJvVhSSP3gb2x4DklAQADAgADeQADNgQ"
+# IMG3 = "AgACAgIAAxkBAAIGPGerku-kfqYZSrRgfyRYqw55Zo_zAAJm6jEbJvVhST5f5WajqJiJAQADAgADeQADNgQ"
+# IMG4 = "AgACAgIAAxkBAAIGQGerkvPGXO7KKPu17ssH8Beihk2BAAJn6jEbJvVhSb-RYU7VA_wSAQADAgADeQADNgQ"
+# IMG5 = "AgACAgIAAxkBAAIGRGerkvaGSckeBGF1w3AccWHJ4kE-AAJo6jEbJvVhSfQPM3Lx4kkLAQADAgADeQADNgQ"
+# IMG6 = "AgACAgIAAxkBAAIGSGerkvpk_S-oS5dXEui2n9uYvxX9AAJp6jEbJvVhSdevmnQnaPy-AQADAgADeQADNgQ"
+# IMG7 = "AgACAgIAAxkBAAIGTGerkv-LUlbI6rOpaqB-VpreyMwuAAJq6jEbJvVhSejUBAoPRRg3AQADAgADeQADNgQ"
+# IMG8 = "AgACAgIAAxkBAAIGUGerkwMElkSxuO3AmuwFZVS_w66fAAJr6jEbJvVhSYiMZTL8_AYEAQADAgADeQADNgQ"
+# IMG9 = "AgACAgIAAxkBAAIGVGerkwf0O32YZ5d1kuHSGBXOwUCWAAJs6jEbJvVhSYpUwe5w0edoAQADAgADeQADNgQ"
+# IMG10 = "AgACAgIAAxkBAAIGWGerkwv3xYhdeQABQDMoGTAFOkJsWAACbeoxGyb1YUnDCK-8Qfm15QEAAwIAA3kAAzYE"
 
 
 
 async def process_l16_step_1(callback_query, state):
+    last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 15:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates16.step_2)
     await callback_query.message.answer(
         "Доброе утро! \nЧто ни день, то новый квест! \nВчера мы научились составлять рацион на неделю. Сегодня счастливо отправляемся в магазин, а там... 20 видов йогуртов, 5 видов гречки, 3 вида курицы. Что выбрать? \n\nРешать тебе, но я немного помогу! Некоторые продукты можно отсеять только по этикетке, если читать её правильно 😉 \n\nВ сегодняшнем уроке будем учиться читать этикетки. Начнём?",

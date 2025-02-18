@@ -27,20 +27,36 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIFFGeqMIMK8onTuzHBn63DQya3i1tPAAKM_DEbMp9RSS4k844XM6Z2AQADAgADeQADNgQ"
-IMG2 = "AgACAgIAAxkBAAIFGGeqMIhZoXLOLwAB5kh8zW44XzSqJQACjfwxGzKfUUncx6zGRxp7cAEAAwIAA3kAAzYE"
-IMG3 = "AgACAgIAAxkBAAIFHGeqMIznLGg3c6NMt5yAIg_BwMHCAAKO_DEbMp9RSVTeDgnIN5qfAQADAgADeQADNgQ"
-IMG4 = "AgACAgIAAxkBAAIFIGeqMJFUPhYMarxLuq19gEm00pn9AAKP_DEbMp9RSUwDUHhhsiKEAQADAgADeQADNgQ"
-IMG5 = "AgACAgIAAxkBAAIFJGeqMJa5A8hpxq2eWBERlVInWLjaAAKQ_DEbMp9RSSlbwDqkrWqRAQADAgADeQADNgQ"
-IMG6 = "AgACAgIAAxkBAAIFKGeqMJv-KNoUX7g8d1VWRrypqUrdAAKR_DEbMp9RSR4vGBSLxNXTAQADAgADeQADNgQ"
-IMG7 = "AgACAgIAAxkBAAIFLGeqMKA2wtbwKGipqAkgb5aTbJlZAAKS_DEbMp9RSWp0H6B6sKI0AQADAgADeQADNgQ"
-IMG8 = "AgACAgIAAxkBAAIFMGeqMKS_AhrDm701yQ97ut3RCSA9AAKT_DEbMp9RSaGkYGIJKGrKAQADAgADeQADNgQ"
-IMG9 = "AgACAgIAAxkBAAIFNGeqMKldcDUbPmXnJvhvO4Cy_bDBAAKU_DEbMp9RSVvKSAhzFEQzAQADAgADeQADNgQ"
-IMG10 = "AgACAgIAAxkBAAIFOGeqMK37zgjZo3etekxffFCP2oikAAKV_DEbMp9RSf9mrdkqs9V6AQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAIKeme1CgWyX3NVY0SXFBCJLKbXSzx2AAL_8jEb41ioSQOWhy6xToo6AQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAIKfme1CgnO0TnDMLVJRwUCmyfc6udZAAK39TEb2NCpSSoK9BkJz6vaAQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAIKgme1CgyarddqSqloHiipV_zC7pJZAAK49TEb2NCpSafHiAn3_oHHAQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAIKhme1ChK4Aw39myaxGvo1gMH3xzwqAAK59TEb2NCpSZY-MUr2l1nlAQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAIKime1ChbNfyPLEUvNxIDB3cz8PXDdAAK69TEb2NCpSY6fVoqlnFLvAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAIKjme1Chsdmfk193VEm9l0wG9LfEmlAAK79TEb2NCpSdjA6zpLd_XWAQADAgADeQADNgQ"
+IMG7 = "AgACAgIAAxkBAAIKkme1Ch7-mw9EqeRGsvddCoKLJkjTAAK89TEb2NCpSRAN_yNjMUAyAQADAgADeQADNgQ"
+IMG8 = "AgACAgIAAxkBAAIKlme1CiPAjiEUhFIAAY2mivGecoEp5AACvfUxG9jQqUkSoJkHRZNDpgEAAwIAA3kAAzYE"
+IMG9 = "AgACAgIAAxkBAAIKmme1CibZp04Ydh3AscxOd2Tqla5TAAK-9TEb2NCpScY7iJdV54ICAQADAgADeQADNgQ"
+IMG10 = "AgACAgIAAxkBAAIKnme1Cios-zdoPG8VOBwaGk9P8OUPAAK_9TEb2NCpSc6dkneRy-rdAQADAgADeQADNgQ"
+
+
+# IMG1 = "AgACAgIAAxkBAAIFFGeqMIMK8onTuzHBn63DQya3i1tPAAKM_DEbMp9RSS4k844XM6Z2AQADAgADeQADNgQ"
+# IMG2 = "AgACAgIAAxkBAAIFGGeqMIhZoXLOLwAB5kh8zW44XzSqJQACjfwxGzKfUUncx6zGRxp7cAEAAwIAA3kAAzYE"
+# IMG3 = "AgACAgIAAxkBAAIFHGeqMIznLGg3c6NMt5yAIg_BwMHCAAKO_DEbMp9RSVTeDgnIN5qfAQADAgADeQADNgQ"
+# IMG4 = "AgACAgIAAxkBAAIFIGeqMJFUPhYMarxLuq19gEm00pn9AAKP_DEbMp9RSUwDUHhhsiKEAQADAgADeQADNgQ"
+# IMG5 = "AgACAgIAAxkBAAIFJGeqMJa5A8hpxq2eWBERlVInWLjaAAKQ_DEbMp9RSSlbwDqkrWqRAQADAgADeQADNgQ"
+# IMG6 = "AgACAgIAAxkBAAIFKGeqMJv-KNoUX7g8d1VWRrypqUrdAAKR_DEbMp9RSR4vGBSLxNXTAQADAgADeQADNgQ"
+# IMG7 = "AgACAgIAAxkBAAIFLGeqMKA2wtbwKGipqAkgb5aTbJlZAAKS_DEbMp9RSWp0H6B6sKI0AQADAgADeQADNgQ"
+# IMG8 = "AgACAgIAAxkBAAIFMGeqMKS_AhrDm701yQ97ut3RCSA9AAKT_DEbMp9RSaGkYGIJKGrKAQADAgADeQADNgQ"
+# IMG9 = "AgACAgIAAxkBAAIFNGeqMKldcDUbPmXnJvhvO4Cy_bDBAAKU_DEbMp9RSVvKSAhzFEQzAQADAgADeQADNgQ"
+# IMG10 = "AgACAgIAAxkBAAIFOGeqMK37zgjZo3etekxffFCP2oikAAKV_DEbMp9RSf9mrdkqs9V6AQADAgADeQADNgQ"
 
 
 
 async def process_l11_step_1(callback_query, state):
+    last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 10:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates11.step_2)
     await callback_query.message.answer(
         "Доброе утро! \n\nИногда мы исключаем из рациона продукты, в которых есть важные витамины и минералы. Происходить это может по разным причинам: аллергия, непереносимость, решение стать вегетарианцем. \n\nКак в такой ситуации поддерживать разнообразный рацион и получать все необходимые питательные вещества? Разберёмся в сегодняшнем уроке!",

@@ -26,9 +26,15 @@ from functions import *
 from functions2 import *
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIEG2encb1OSLDZT2oTOYOWLwfTzCsSAALK-jEbjtVBSVYXlKg8K9QKAQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAIJ_me1B2ueyOfFL9kc6WRIuOwtE7t6AAKO9TEb2NCpSTFCqmNxv7neAQADAgADeQADNgQ"
+
+# IMG1 = "AgACAgIAAxkBAAIEG2encb1OSLDZT2oTOYOWLwfTzCsSAALK-jEbjtVBSVYXlKg8K9QKAQADAgADeQADNgQ"
 
 async def process_l7_step_1(callback_query, state):
+    last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 6:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates7.step_2)
     await callback_query.message.answer(
         "Па-бам! \nПервая неделя с Нутри позади! Поздравляю 🎉🎉🎉 \n\nНа этой неделе мы учились осознавать свои потребности и налаживали контакт с телом и эмоциями. Теперь мы готовы менять питание! Этим займёмся на следующем этапе курса. \n\nНо сначала проверим, что тебе удалось сделать на этой неделе, и подведём итоги."

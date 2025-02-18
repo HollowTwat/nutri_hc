@@ -452,3 +452,6 @@ async def delete_meal(id, meal_id):
                 return False, data
         except aiohttp.ClientError as e:
             return True, e
+        
+async def get_last_user_lesson(id):
+    return 1
