@@ -479,6 +479,29 @@ async def save_meal(id, food, type):
         except aiohttp.ClientError as e:
             return True, e
         
+async def save_meal_old_date(id, food, type, date):
+    url = "https://nutridb-production.up.railway.app/api/TypesCRUD/CreateMeal"
+    req_headers = {
+        "Content-Type": "application/json"
+    }
+    meal_data ={
+            "userTgId": id,
+            "meal": {
+                "description": "string",
+                "totalWeight": 0,
+                "food": food,
+                "type": type
+            },
+            "eatedAt": date,
+    }
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
+                data = await response.text()
+                return False, data
+        except aiohttp.ClientError as e:
+            return True, e
+        
 async def edit_existing_meal(id, food, type, mealId):
     url = "https://nutridb-production.up.railway.app/api/TypesCRUD/EditMeal"
     req_headers = {

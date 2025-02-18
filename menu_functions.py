@@ -491,7 +491,7 @@ async def change_evening_ping(message, state):
             "user_info_evening_ping" : f"{message.text}"
         }
     }
-    text = "Я обновила твои данные ✅"  
+    text = "Я обновила твои данные ✅"
     buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
     iserror, answer = await add_or_update_usr_info(json.dumps(data))
     if not iserror:

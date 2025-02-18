@@ -19,7 +19,6 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo
 from openai import AsyncOpenAI, OpenAI
-# from stickerlist import STICKERLIST
 import shelve
 import json
 
@@ -243,10 +242,21 @@ async def layover_saving(callback_query: CallbackQuery, state: FSMContext):
     prev_state = data["prev_state"]
     str_food = str(data["latest_food"])
     id = str(callback_query.from_user.id)
-    meal_type = callback_query.data
-    state_data = state.get_data()
     buttons = [[InlineKeyboardButton(text="Ок", callback_data=callback_mssg)],]
-    await callback_query.message.edit_text(f"Тут будет сохранение приема пищи {callback_query.data} с инфой: \n {str_food}", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    if callback_mssg == "saving_edit":
+        await state.set_state(prev_state)
+        state_data = state.get_data()
+        old_date = state_data["date"]
+        Iserror, answer = await save_meal_old_date(callback_query.from_user.id, str_food, callback_query.data, old_date)
+    else:
+        Iserror, answer = await save_meal(callback_query.from_user.id, str_food, callback_query.data)
+    if Iserror:
+        await callback_query.message.edit_text("Ошибка при сохранении {answer}")
+    else:
+        if answer != 0:
+            await callback_query.message.edit_text(f"Успешно сохранено", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            await state.set_state(UserState.rating_meal)
+    
     await state.set_state(prev_state)
     
     
@@ -588,8 +598,7 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
         return
     else:
         meal_id, pretty, food_items = await get_singe_meal(id, date, meal_type)
-        await state.update_data(old_food=food_items)
-        await state.update_data(meal_id=meal_id)
+        await state.update_data(old_food=food_items, meal_id=meal_id)
         buttons = [
             [InlineKeyboardButton(text="Да", callback_data=f"yesChange_{meal_id}")],
             [InlineKeyboardButton(text="Удалить", callback_data=f"deletemeal_{meal_id}")],

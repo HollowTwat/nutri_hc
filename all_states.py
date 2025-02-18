@@ -55,7 +55,6 @@ class LessonStates2(StatesGroup):
     step_12 = State()
     step_13 = State()
 
-
 class LessonStates3(StatesGroup):
     step_1 = State()
     step_2 = State()
@@ -339,7 +338,6 @@ class LessonStates21(StatesGroup):
     step_12 = State()
     step_13 = State()
 
-
 class Questionnaire(StatesGroup):
     prefirst = State()
     first = State()
@@ -368,7 +366,6 @@ class Questionnaire(StatesGroup):
     morning_ping = State()
     evening_ping = State()
     community_invite = State()
-
 
 class ImageUploadState(StatesGroup):
     waiting_for_image = State()
