@@ -841,7 +841,11 @@ async def main_process_l2_step_12(callback_query: types.CallbackQuery, state: FS
 
 @router.message(StateFilter(LessonStates2.step_12))
 async def main_process_l2_step_13(message: Message, state: FSMContext):
-    await dnevnik_layover(message,state,xyz2)
+    await dnevnik_layover(message,state,"trigger_xyz2")
+
+@router.callback_query(lambda c: c.data == 'trigger_xyz2')
+async def trigger_xyz2(callback_query: types.CallbackQuery, state: FSMContext):
+    await xyz2(callback_query, state)
 
 @router.callback_query(StateFilter(LessonStates2.step_13), lambda c: True)
 async def main_process_l2_step_14(callback_query: types.CallbackQuery, state: FSMContext):
