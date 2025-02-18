@@ -150,9 +150,9 @@ async def process_l2_step_13(callback_query, state):
     await callback_query.message.answer("Занеси последний приём пищи в дневник питания с помощью текста или голосового сообщения. \n\nОпиши состав блюда и примерный вес ⚖️ \n\n<i>Например: Чебурек с мясом, примерно 300 граммов.</i>")
     await callback_query.answer()
 
-async def xyz2(message, state):
+async def xyz2(callback_query, state):
     await state.set_state(LessonStates2.step_13)
-    await message.answer(
+    await callback_query.message.answer(
         "Записала! А теперь прислушайся к себе и отметь, на сколько баллов ты чувствуешь насыщение.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
             [InlineKeyboardButton(text="4–5: по-прежнему есть лёгкий голод", callback_data="next"), 
