@@ -286,7 +286,7 @@ async def process_menu_dnevnik_instruction_3(callback_query, state):
     text = "💡 Внимательн﻿о изучи примеры, как правильно заносить приемы пищи в «Дневник питания»"
     buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik")]]
     await callback_query.message.answer_media_group(media=media_files)
-    await callback_query.message.asnwer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await callback_query.message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 ################## DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU ##################
 
