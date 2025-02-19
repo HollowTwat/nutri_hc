@@ -27,6 +27,7 @@ class UserState(StatesGroup):
     reci = State()
     etiketka= State()
     perehvat = State()
+    instruction = State()
 
 class LayoverState(StatesGroup):
     recognition = State()

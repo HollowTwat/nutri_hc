@@ -280,7 +280,17 @@ async def main_process_menu_dnevnik_analysis(callback_query: CallbackQuery, stat
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_instruction')
 async def main_process_menu_dnevnik_instruction(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.instruction)
     await process_menu_dnevnik_instruction(callback_query, state)
+
+@router.callback_query(StateFilter(UserState.instruction), lambda c: c.data == 'next')
+async def main_process_menu_dnevnik_instruction_2(callback_query: CallbackQuery, state: FSMContext):
+    await process_menu_dnevnik_instruction_2(callback_query, state)
+
+@router.callback_query(StateFilter(UserState.instruction), lambda c: c.data == 'next2')
+async def main_process_menu_dnevnik_instruction_3(callback_query: CallbackQuery, state: FSMContext):
+    await process_menu_dnevnik_instruction_3(callback_query, state)
+    await state.set_state(UserState.menu)
 
 ################## DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU ##################
 

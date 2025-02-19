@@ -32,6 +32,10 @@ COU_LESS_IMG_2 = "AgACAgIAAxkBAAIFr2espqUpBX8QZwXBahHhcR3-YadwAAIg7jEbb-RpSfx5HS
 COU_LESS_IMG_3 = "AgACAgIAAxkBAAIFs2esprGR_uTd7csprwsrrmbt7TzLAAKB7jEbLgppSZacNITqSzTvAQADAgADeQADNgQ"
 COU_LESS_IMG_4 = "AgACAgIAAxkBAAIFt2esprvvZMQtjmxdFXf-bqDwZ91vAAIj7jEbb-RpSQKI2EU19u5_AQADAgADeQADNgQ"
 
+INSTRUCTION_PIC_1 = "AgACAgIAAxkBAAILbme2CITGCDX5fJAajPUfK75t-Y1KAAJ36jEbZ-CwSSx3epwn3oViAQADAgADeQADNgQ"
+INSTRUCTION_PIC_2 = "AgACAgIAAxkBAAILcme2CItMydyR_3LA4W7pq-lhf8K-AAJ46jEbZ-CwSY0JnoeBwVzHAQADAgADeQADNgQ"
+INSTRUCTION_PIC_3 = "AgACAgIAAxkBAAILdme2CKEgDF7gW9bOZ4Boy2KBMz3YAAJ26DEb_SexSTHhMMkzPasDAQADAgADeQADNgQ"
+INSTRUCTION_PIC_4 = "AgACAgIAAxkBAAILeme2CLGp15IiQeLcI0ScfW04bSZBAAJ36DEb_SexSR6DG2rN4CZQAQADAgADeQADNgQ"
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 
 async def menu_handler(message, state) -> None:
@@ -260,9 +264,29 @@ async def process_menu_dnevnik_analysis(callback_query, state):
     await callback_query.message.edit_text(generated_text, reply_markup=keyboard)
 
 async def process_menu_dnevnik_instruction(callback_query, state):
+    step0txt = "📒 <b>Мы будем вести дневник питания\nВремя</b>: не больше 3 мин в день\n\n<b>Как это работает:</b>\n\nПросто присылай в чат фото приёма пищи или голосовое с описанием твоей еды, а я сама рассчитаю КБЖУ (калории, белки, жиры и углеводы) и внесу их в дневник.\n\nТебе только нужно будет выбрать, в какой из приёмов пищи мне записать блюдо: завтрак, обед или ужин."
+    buttons = [[InlineKeyboardButton(text="Надо вносить все приемы пищи?", callback_data="next")]]
+    await callback_query.message.edit_text(step0txt, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
-    step0txt = "in dev"
-    await callback_query.message.edit_text(step0txt, reply_markup=None)
+async def process_menu_dnevnik_instruction_2(callback_query, state):
+    txt1 = "<b>Вот пара причин, почему важно регулярно заполнять дневник:</b>\n\n✅ <b>Ты поймёшь, сколько калорий ешь на самом деле</b>\n\nМы склонны недооценивать количество съеденного за день Эксперименты доказывают: если порция большая, можно просчитаться на целых 356 ккал и даже больше!\n\n✅ <b>Заметишь, какие продукты «съедают» норму калорий за день и при этом не насыщают </b>\n\nНапример, булочка с корицей и кремом может быть приятным перекусом и при этом состоять из 500 ккал жира и углеводов. Для кого-то это треть дневной нормы. При этом после неё ты снова захочешь есть через полчаса.\n\n✅ <b>Отследишь, насколько разнообразен твой рацион</b>\nНапример, вовремя заметишь, что всю неделю в качестве гарнира ешь макароны что пора бы вместо них съесть какую-нибудь крупу."
+    link = "https://pmc.ncbi.nlm.nih.gov/articles/PMC3268700/"
+    txt0 = f"Звучит сложно, как и с любой новой привычкой, но я советую делать именно так!\nЕсть десятки исследований, которые <a href=\'{link}\'>доказывают</a>, что регулярное ведение дневника помогает успешно терять вес и сохранять достигнутые результаты."
+    buttons = [[InlineKeyboardButton(text="Примеры", callback_data="next2")]]
+    await callback_query.message.answer(txt0)
+    await callback_query.message.answer(txt1, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+async def process_menu_dnevnik_instruction_3(callback_query, state):
+    media_files = [
+        InputMediaPhoto(media=INSTRUCTION_PIC_1),
+        InputMediaPhoto(media=INSTRUCTION_PIC_2),
+        InputMediaPhoto(media=INSTRUCTION_PIC_3),
+        InputMediaPhoto(media=INSTRUCTION_PIC_4)
+    ]
+    text = "💡 Внимательн﻿о изучи примеры, как правильно заносить приемы пищи в «Дневник питания»"
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik")]]
+    await callback_query.message.answer_media_group(media=media_files)
+    await callback_query.message.asnwer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 ################## DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU ##################
 
