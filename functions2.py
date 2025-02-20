@@ -178,14 +178,12 @@ async def get_user_info(id):
                 async with session.post(url=url, headers=default_headers) as response:
                     user_data = await response.text()
                     print(f"НИКИТИН ОТВЕТ {user_data}")
-                    # user_data = json.loads(text_data)
                     return False, user_data
             except aiohttp.ClientError as e:
                 return True, ""
             
 
 async def create_reciepie(question, id):
-    # print(f"create_rec_hit with question: {question}")
     try: 
         assistant_response = await rec_assistant(question, str(id), RECIPE_ASS_ID)
         if assistant_response == "error":
@@ -202,7 +200,6 @@ async def get_total_kkal(id, period):
             async with session.get(url=url) as response:
                 user_data = await response.text()
                 print(f"НИКИТИН ОТВЕТ {user_data}")
-                # user_data = json.loads(text_data)
                 return False, user_data
         except aiohttp.ClientError as e:
             return True, ""
@@ -244,8 +241,6 @@ async def add_or_update_usr_info(data):
         try:
             async with session.post(url=url, data=data, headers=default_headers) as response:
                 user_data = await response.text()
-                # print(f"НИКИТИН ОТВЕТ {user_data}")
-                # user_data = json.loads(text_data)
                 return False, user_data
             
         except aiohttp.ClientError as e:
@@ -437,12 +432,9 @@ def generate_meal_buttons(data, day):
     return keyboard
 
 def parse_meal_data(response_json):
-    # print(response_json)
     data = json.loads(response_json)
-    # print(data)
     
     meal_id = data.get("MealId")
-    # pretty = data["pretty"] if "pretty" in data else None
     food_items = []
     
     for item in data.get("Meal", {}).get("food", []):
@@ -549,7 +541,6 @@ async def saving_edit(callback_query, state):
             },
             "eatedAt": f"{date}"
     }
-    # print(f"url={url}, data={json.dumps(meal_data)}, headers={req_headers}")
     async with aiohttp.ClientSession() as session:
         try:
             async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
@@ -569,7 +560,6 @@ async def get_singe_meal(id, date, mealtype):
     req_headers = {
         "Content-Type": "application/json"
     }
-    # print(f"url={url}, \ndata = {meal_data}, \nheaders={meal_data}")
     async with aiohttp.ClientSession() as session:
         try:
             async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:

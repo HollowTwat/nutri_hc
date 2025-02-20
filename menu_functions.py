@@ -439,7 +439,8 @@ async def process_menu_settings_help(callback_query, state):
 async def process_menu_settings_sub(callback_query, state):
     subtype, repayment_time = await get_user_sub_info(callback_query.from_user.id)
     buttons = [
-        [InlineKeyboardButton(text="Хочу отменить продление", callback_data="menu_settings_profile_sub_cancel")],
+        [InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")],
+        [InlineKeyboardButton(text="Хочу отменить продление", url="https://my.cloudpayments.ru/")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_settings"), 
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
@@ -457,7 +458,7 @@ async def process_menu_settings_sub(callback_query, state):
         message += "☑️ Тариф Бесплатный доступ"
     else:
         message += "☑️ Неизвестный тариф"
-        
+
     await callback_query.message.edit_text(message, reply_markup=keyboard)
 
 async def change_user_name(callback_query, state, name):
