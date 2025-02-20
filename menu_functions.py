@@ -445,7 +445,20 @@ async def process_menu_settings_sub(callback_query, state):
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = f"Твой текущий тариф:   \n\n☑️ Подписка на сервис Нутри {subtype} \n☑️ Дата автоматического продления: {repayment_time}"
-    await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
+    message = "Твой текущий тариф:\n\n"
+    if subtype == "Подписка навсегда" or subtype == "Тариф Навсегда":
+        message += "☑️ Подписка на сервис Нутри навсегда"
+    elif subtype == "Подписка на 1 год":
+        message += "☑️ Подписка на сервис Нутри на 1 год"
+    elif subtype == "Подписка на 3 месяца" or subtype == "Тариф на 3 месяца":
+        message += f"☑️ Подписка на сервис Нутри на 3 месяца\n"
+        message += f"☑️ Дата автоматического продления: {repayment_time}"
+    elif subtype == "Тариф Бесплатный доступ":
+        message += "☑️ Тариф Бесплатный доступ"
+    else:
+        message += "☑️ Неизвестный тариф"
+        
+    await callback_query.message.edit_text(message, reply_markup=keyboard)
 
 async def change_user_name(callback_query, state, name):
     buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
