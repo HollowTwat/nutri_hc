@@ -608,8 +608,8 @@ async def get_user_sub_info(id):
             async with session.get(url=url) as response:
                 data = await response.text()
                 data1 = json.loads(data)
-                type_value = data["type"]
-                date_update = data["dateUpdate"]
+                type_value = data1["type"]
+                date_update = data1["dateUpdate"]
                 formatted_date_update = datetime.fromisoformat(date_update).strftime("%Y-%m-%d")
                 return type_value, formatted_date_update
         except aiohttp.ClientError as e:
