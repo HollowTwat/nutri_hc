@@ -571,7 +571,7 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     iserror, resp = await long_rate(callback_query.from_user.id, "3")
     await sticker_mssg.delete()
     buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu")]]
-    if state.get_state() == UserState.graph:
+    if await state.get_state() == UserState.graph:
         await callback_query.message.answer(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     else:
         await callback_query.message.edit_text(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
