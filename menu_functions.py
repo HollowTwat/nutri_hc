@@ -260,7 +260,6 @@ async def process_menu_dnevnik_analysis(callback_query, state):
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     iserror, total_kkal = await get_total_kkal(callback_query.from_user.id, "0")
     generated_text = generate_kkal_text(total_kkal)
-    # step0txt = "<b>Ваша статистика на сегодня</b> 🍽\n\nДневная цель: X ккал., X г. белки, X г. жиры, X г. углеводы 💪.   \n\nСегодня вы съели: \nX ккал 🔥.   \n\nБелки: X г. \nЖиры: X г. \nУглеводы:X г.   \n\nТы можешь съесть еще 582 ккал."
     await callback_query.message.edit_text(generated_text, reply_markup=keyboard)
 
 async def process_menu_dnevnik_instruction(callback_query, state):
@@ -283,7 +282,7 @@ async def process_menu_dnevnik_instruction_3(callback_query, state):
         InputMediaPhoto(media=INSTRUCTION_PIC_3),
         InputMediaPhoto(media=INSTRUCTION_PIC_4)
     ]
-    text = "💡 Внимательн﻿о изучи примеры, как правильно заносить приемы пищи в «Дневник питания»"
+    text = "💡 Внимательно изучи примеры, как правильно заносить приемы пищи в «Дневник питания»"
     buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik")]]
     await callback_query.message.answer_media_group(media=media_files)
     await callback_query.message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
@@ -438,15 +437,14 @@ async def process_menu_settings_help(callback_query, state):
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
 
 async def process_menu_settings_sub(callback_query, state):
+    subtype, repayment_time = await get_user_sub_info(callback_query.from_user.id)
     buttons = [
-        [InlineKeyboardButton(text="📌 Ваш профиль", callback_data="menu_settings_profile")],
-        [InlineKeyboardButton(text="🆘 Помощь", callback_data="menu_settings_help")],
-        [InlineKeyboardButton(text="💰 Условия подписки", callback_data="menu_settings_sub")],
+        [InlineKeyboardButton(text="Хочу отменить продление", callback_data="menu_settings_profile_sub_cancel")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_settings"), 
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    step0txt = "Твой текущий тариф:   \n\n☑️ Подписка на сервис Нутри на X мес \n☑️Действует до:  X \n☑️ Дата автоматического продления: X"
+    step0txt = f"Твой текущий тариф:   \n\n☑️ Подписка на сервис Нутри {subtype} \n☑️ Дата автоматического продления: {repayment_time}"
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
 
 async def change_user_name(callback_query, state, name):

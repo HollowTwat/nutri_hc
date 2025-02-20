@@ -571,7 +571,10 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     iserror, resp = await long_rate(callback_query.from_user.id, "3")
     await sticker_mssg.delete()
     buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu")]]
-    await callback_query.message.edit_text(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    if state.get_state() == UserState.graph:
+        await callback_query.message.answer(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    else:
+        await callback_query.message.edit_text(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_analysis_rate-day')
 async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
@@ -701,6 +704,11 @@ async def dnevnik_functional_edit(message: Message, state: FSMContext):
         await process_txt_rec(message, state, confirm_text, buttons)
         await state.set_state(UserState.edit_save_confirm)
     else: message.answer("0_o")
+
+@router.callback_query(lambda c: c.data == 'menu_dnevnik_analysis_graph')
+async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.graph)
+    await request_for_graph(callback_query.from_user.id)
 
 ################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
 
@@ -1912,6 +1920,16 @@ async def default_handler(message: Message, state: FSMContext) -> None:
                 await message.answer("Будут перехватчики", reply_markup=keyboard)
     else:
         await message.answer(f"Текущее состояние: {current_state}")
+
+
+# async def on_startup(dp):
+#     conn = sqlite3.connect('user_states.db')
+#     cursor = conn.cursor()
+#     cursor.execute('SELECT user_id, state, data FROM user_states')
+#     for user_id, state, data in cursor.fetchall():
+#         await dp.storage.set_state(user=user_id, state=state)
+#         await dp.storage.set_data(user=user_id, data=eval(data))
+#     conn.close()
 
 
 async def main() -> None:

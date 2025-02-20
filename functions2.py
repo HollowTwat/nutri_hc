@@ -590,3 +590,27 @@ async def delete_meal(id, meal_id):
                 return False, data
         except aiohttp.ClientError as e:
             return True, e
+        
+async def request_for_graph(id):
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserWeekPlotH?userTgId={id}"
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url) as response:
+                data = await response.text()
+                return False, data
+        except aiohttp.ClientError as e:
+            return True, e
+        
+async def request_for_graph(id):
+    url = f"https://nutridb-production.up.railway.app/api/Subscription/GetUserSubDetail?tgId={id}"
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(url=url) as response:
+                data = await response.text()
+                data1 = json.loads(data)
+                type_value = data["type"]
+                date_update = data["dateUpdate"]
+                formatted_date_update = datetime.fromisoformat(date_update).strftime("%Y-%m-%d")
+                return type_value, formatted_date_update
+        except aiohttp.ClientError as e:
+            return False, e
