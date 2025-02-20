@@ -601,7 +601,7 @@ async def request_for_graph(id):
         except aiohttp.ClientError as e:
             return True, e
         
-async def request_for_graph(id):
+async def get_user_sub_info(id):
     url = f"https://nutridb-production.up.railway.app/api/Subscription/GetUserSubDetail?tgId={id}"
     async with aiohttp.ClientSession() as session:
         try:

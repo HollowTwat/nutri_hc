@@ -28,6 +28,7 @@ class UserState(StatesGroup):
     etiketka= State()
     perehvat = State()
     instruction = State()
+    graph = State()
 
 class LayoverState(StatesGroup):
     recognition = State()
