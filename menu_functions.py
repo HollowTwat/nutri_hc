@@ -94,7 +94,7 @@ async def process_menu_course(message, state, id):
     if last_lesson == 21:
         current_lesson = 21
     else:
-        current_lesson = int(last_lesson)+1
+        current_lesson = last_lesson+1
 
     await state.update_data(current_lesson=current_lesson)
     buttons = [
