@@ -25,6 +25,7 @@ import json
 from functions import *
 from functions2 import *
 from all_states import *
+CITY_ASSISTANT_ID = os.getenv("CITY_ASSISTANT_ID")
 
 IMG1 = "AgACAgIAAxkBAAIBNGeb_tu4yBOsz2-sDzPYYXUnWgzKAAIo4jEbaQvgSAw5usWAGBI6AQADAgADeQADNgQ"
 IMG2 = "AgACAgIAAxkBAAIBOGeb_uF2DBu8vwy4yAtDOuwtepHRAAIp4jEbaQvgSAcx4I3mM6pdAQADAgADeQADNgQ"
@@ -109,6 +110,7 @@ async def gen_text(state):
     proteins_grams = round((target_calories*proteins_percentage)/calories_per_gram_proteins)
     carbs_grams = round((target_calories*carbs_percentage)/calories_per_gram_carbs)
     fats_grams = round((target_calories*fats_percentage)/calories_per_gram_fats)
+    await state.update_data(target_calories=target_calories)
     
     text_preg = f"Во время беременности важно обеспечить достаточное количество питательных веществ для поддержки здоровья матери и ребёнка. Традиционные методы расчета дефицита или избытка калорий для снижения или набора веса не применяются в период беременности. Вместо этого фокус делается на сбалансированном питании, достаточном количестве калорий и питательных веществах.\n\nОднако я могу рассчитать твой базовый уровень метаболизма (BMR) и общую суточную потребность в энергии (TDEE) для информационных целей, используя формулу Mifflin-St Jeor, так как она считается одной из самых точных.\n\n- Базовый уровень метаболизма (BMR): примерно <b>{bmr}</b> ккал/день.\n- Общая суточная потребность в энергии (TDEE) при умеренной активности: примерно <b>{tdee}</b> ккал/день.\n\nВажно подчеркнуть, что эти расчеты предназначены только для информации и не должны использоваться для создания дефицита или избытка калорий во время беременности. Ваши пищевые потребности в этот период могут отличаться, и вам следует проконсультироваться с врачом, чтобы определить оптимальное питание для поддержания здоровья вашего и вашего ребенка."
     text_gain = f"Для постепенного и контролируемого набора массы рекомендую увеличить целевое количество калорий: примерно <b>{target_calories}</b> ккал/день (это на 500 ккал больше, чем ваш TDEE).\nРаспределение макронутриентов при целевом количестве калорий <b>{target_calories}</b> ккал/день:\n• Углеводы: примерно <b>{carbs_grams}</b> грамм (55% от общего количества калорий).\n• Белки: примерно <b>{proteins_grams}</b> грамм (22.5% от общего количества калорий).\n• Жиры: примерно <b>{fats_grams}</b> грамм (27.5% от общего количества калорий).\nЭти рекомендации учитывают твой текущий вес, твою цель и умеренную физическую активность. Основная цель — обеспечить твой организм достаточным количеством энергии и питательных веществ для построения мышечной массы. Важно сосредоточиться на качестве потребляемой пищи, включая достаточное количество белка для поддержки мышечного роста, здоровых жиров и сложных углеводов."
@@ -372,7 +374,20 @@ async def give_plan(message, state, input_text):
     await message.answer(text5)
 
 async def process_city(message, state):
-    text1 = "ответ гпт про город"
+    user_data = await state.get_data()
+    goal = user_data["goal"]
+    goal_mapping = {"+": "Набрать", "-": "Похудеть", "=": "Сохранить вес"}
+    goal_str = goal_mapping.get(goal)
+    request_message = f"Цель: {goal_str}. Город: {message.text}"
+    print(request_message)
+
+    response = await run_city(request_message, CITY_ASSISTANT_ID)
+    data = json.loads(response)
+    response_text = data["response"]
+    city = data["city"]
+    timeslide = data["timeslide"]
+    await state.update_data(timeslide=timeslide, city=city)
+    text1 = response_text
     text2 = "Я буду писать два раза в день: перед завтраком и после ужина.   \n\nВ какое время тебе удобно получать от меня утренний план на день?   \n\nИдеально, если это будет перед едой: так ты сможешь делать все мои задания вовремя.   \n\nУкажи время в формате ЧЧ:ММ \nНапример 10:00"
 
     await message.answer(text1),
@@ -399,7 +414,7 @@ async def process_community_invite(message, state):
         InputMediaPhoto(media=IMG12),
         InputMediaPhoto(media=IMG13),
         InputMediaPhoto(media=IMG14),
-        InputMediaPhoto(media=IMG15),
+        # InputMediaPhoto(media=IMG15),  #ПО ИДЕЕ ТА ФОТКА, КОТОРУЮ НАДО БЫЛО УБРАТЬ
         InputMediaPhoto(media=IMG16),
     ]
     await message.answer_media_group(media=media_files)

@@ -23,6 +23,10 @@ class UserState(StatesGroup):
     morning_ping_change = State()
     evening_ping_change = State()
     notif_toggle = State()
+    reci_mt = State()
+    reci = State()
+    etiketka= State()
+    perehvat = State()
 
 class LayoverState(StatesGroup):
     recognition = State()
@@ -50,7 +54,6 @@ class LessonStates2(StatesGroup):
     step_11 = State()
     step_12 = State()
     step_13 = State()
-
 
 class LessonStates3(StatesGroup):
     step_1 = State()
@@ -335,7 +338,6 @@ class LessonStates21(StatesGroup):
     step_12 = State()
     step_13 = State()
 
-
 class Questionnaire(StatesGroup):
     prefirst = State()
     first = State()
@@ -364,7 +366,6 @@ class Questionnaire(StatesGroup):
     morning_ping = State()
     evening_ping = State()
     community_invite = State()
-
 
 class ImageUploadState(StatesGroup):
     waiting_for_image = State()

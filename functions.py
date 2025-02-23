@@ -14,11 +14,15 @@ VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
 CITY_ASSISTANT_ID = os.getenv('CITY_ASSISTANT_ID')
 ASSISTANT2_ID = os.getenv('ASSISTANT2_ID')
 YAPP_SESH_ASSISTANT_ID = os.getenv('YAPP_SESH_ASSISTANT_ID')
-client = openai.OpenAI(api_key=OPENAI_KEY)
+# client = openai.OpenAI(api_key=OPENAI_KEY)
 aclient = AsyncOpenAI(api_key=OPENAI_KEY)
 openai.api_key = OPENAI_KEY
 TELETOKEN_2 = os.getenv('TELEBOT')
 bug_channel = "-1002345895875"
+
+OPENBI_KEY = os.getenv("OPENBI_KEY")
+VISION_ASSISTANT_ID_B = os.getenv("VISION_ASSISTANT_ID_B")
+bclient = AsyncOpenAI(api_key=OPENBI_KEY)
 
 
 async def check_mail(id, mail):
@@ -100,8 +104,6 @@ async def generate_response(message_body, usr_id, assistant):
     new_message = await run_assistant(thread, assistant)
     return new_message
 
-
-
 async def process_url(url, usr_id, assistant):
     thread_id = await check_if_thread_exists(usr_id)
 
@@ -116,7 +118,6 @@ async def process_url(url, usr_id, assistant):
     print(url)
     thread = await aclient.beta.threads.create(
         messages=[
-
             {
                 "role": "user",
                 "content": [
@@ -135,8 +136,7 @@ async def process_url(url, usr_id, assistant):
 
 
 
-async def process_url_etik(url, allergies, usr_id, assistant):
-
+async def process_url_etik(url, allergies, assistant):
     thread = await aclient.beta.threads.create(
         messages=[
 
@@ -280,8 +280,8 @@ async def run_assistant(thread, assistant):
         while run.status != "completed":
             if run.status == "failed":
                 messages = await aclient.beta.threads.messages.list(thread_id=thread.id)
-                raise Exception(
-                    f"Run failed with status: \n{run.status} \nand generated \n{messages.data[0]} \nrun.failed_at: \n{run.failed_at} \nrun.incomplete_details: \n{run.incomplete_details}")
+                raise Exception(f"error should be {run.last_error}  messages: {messages}, run: {run}")
+                    # f"Run failed with status: \n{run.status} \nand generated \n{messages.data[0]} \nrun.failed_at: \n{run.failed_at} \nrun.incomplete_details: \n{run.incomplete_details}")
 
             print(run.status)
             await asyncio.sleep(1.5)
@@ -290,23 +290,22 @@ async def run_assistant(thread, assistant):
     
         messages = await aclient.beta.threads.messages.list(thread_id=thread.id)
         latest_mssg = messages.data[0].content[0].text.value
-        print(f"generated: {latest_mssg}")
+        print(f"generated: {latest_mssg}   test outptut {messages}")
         # await send_mssg(TELETOKEN_2, bug_channel, f"тест на работу send_mssg")
         return latest_mssg
-
     except Exception as e:
         print(f"An error occurred: {e}")
         await send_mssg(TELETOKEN_2, bug_channel, f"exception: {e}")
         return "error"
 
 
-async def handle_assistant_response(prompt):
-    response = client.completions.create(
-        model="gpt-3.5-turbo-instruct",
-        prompt=prompt,
-        max_tokens=150
-    )
-    return response.choices[0].text.strip()
+# async def handle_assistant_response(prompt):
+#     response = client.completions.create(
+#         model="gpt-3.5-turbo-instruct",
+#         prompt=prompt,
+#         max_tokens=150
+#     )
+#     return response.choices[0].text.strip()
 
 
 async def use_vision64(file_path):
@@ -410,29 +409,6 @@ async def run_city(message_body, assistant):
     return new_message
 
 
-async def generate_response(message_body, usr_id, assistant):
-    thread_id = await check_if_thread_exists(usr_id)
-    print(message_body, thread_id)
-
-    if thread_id is None:
-        print(f"Creating new thread for {usr_id}")
-        thread = await aclient.beta.threads.create()
-        await store_thread(usr_id, thread.id)
-        thread_id = thread.id
-    else:
-        print(f"Retrieving existing thread {usr_id}")
-        thread = await aclient.beta.threads.retrieve(thread_id)
-
-    message = await aclient.beta.threads.messages.create(
-        thread_id=thread_id,
-        role="user",
-        content=message_body,
-    )
-    print(message)
-
-    new_message = await run_assistant(thread, assistant)
-    return new_message
-
 
 async def create_str(data):
     gender = data.get('user_info_gender')
@@ -515,12 +491,17 @@ async def yapp_assistant(message_body, usr_id, assistant):
     return new_message
 
 async def rec_assistant(message_body, usr_id, assistant):
+    debug = False
+    if debug: print(f"hit rec_ass with info {message_body}, {usr_id}, {assistant}")
+
     thread_id = await check_if_rec_thread_exists(usr_id)
+    if debug: print(thread_id)
 
     if thread_id is None:
         thread = await aclient.beta.threads.create()
         thread_id = thread.id
         await store_rec_thread(usr_id, thread_id)
+        if debug: print(thread_id)
     else:
         print(f"Retrieving existing thread {usr_id}")
         thread = await aclient.beta.threads.retrieve(thread_id)

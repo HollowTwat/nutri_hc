@@ -21,6 +21,15 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 VISION_ASS_ID_2 = os.getenv("VISION_ASS_ID_2")
 RATE_WEEK_ASS_ID = os.getenv('RATE_WEEK_ASS_ID')
 RATE_TWONE_ASS_ID = os.getenv('RATE_TWONE_ASS_ID')
+RATE_DAY_ASS_ID = os.getenv("DAY_RATE")
+RECIPE_ASS_ID = os.getenv("RECIPE_ASS_ID")
+
+
+STICKER_ID = os.getenv("STICKER_ID")
+
+
+
+VISION_ASSISTANT_ID_B = os.getenv("VISION_ASSISTANT_ID_B")
 
 
 TOKEN = BOT_TOKEN
@@ -72,9 +81,74 @@ async def request_longrate_question(id, period):
             return True, ""
     return
 
+def make_lesson_week_buttons(dict, week):
+    emote_mapping = {True: "✅", False: "⭕️"}
+    weekdays = 7*(week-1)
+    l1_emote = emote_mapping.get(dict[f"lesson{1+weekdays}_done"])
+    l2_emote = emote_mapping.get(dict[f"lesson{2+weekdays}_done"])
+    l3_emote = emote_mapping.get(dict[f"lesson{3+weekdays}_done"])
+    l4_emote = emote_mapping.get(dict[f"lesson{4+weekdays}_done"])
+    l5_emote = emote_mapping.get(dict[f"lesson{5+weekdays}_done"])
+    l6_emote = emote_mapping.get(dict[f"lesson{6+weekdays}_done"])
+    l7_emote = emote_mapping.get(dict[f"lesson{7+weekdays}_done"])
+    buttons = [
+        [InlineKeyboardButton(text=f"{l1_emote}Урок {1+weekdays}", callback_data=f"d{1+weekdays}")],
+        [InlineKeyboardButton(text=f"{l2_emote}Урок {2+weekdays}", callback_data=f"d{2+weekdays}")],
+        [InlineKeyboardButton(text=f"{l3_emote}Урок {3+weekdays}", callback_data=f"d{3+weekdays}")],
+        [InlineKeyboardButton(text=f"{l4_emote}Урок {4+weekdays}", callback_data=f"d{4+weekdays}")],
+        [InlineKeyboardButton(text=f"{l5_emote}Урок {5+weekdays}", callback_data=f"d{5+weekdays}")],
+        [InlineKeyboardButton(text=f"{l6_emote}Урок {6+weekdays}", callback_data=f"d{6+weekdays}")],
+        [InlineKeyboardButton(text=f"{l7_emote}Урок {7+weekdays}", callback_data=f"d{7+weekdays}")],
+    ]
+
+    navigation_buttons = []
+    if week > 1:
+        navigation_buttons.append(InlineKeyboardButton(text="◀️", callback_data=f"menu_course_info_lessons_week_{week-1}"))
+    if week < 3:
+        navigation_buttons.append(InlineKeyboardButton(text="▶️", callback_data=f"menu_course_info_lessons_week_{week+1}"))
+
+    if navigation_buttons:
+        buttons.append(navigation_buttons)
+
+    return buttons
+
+async def get_user_lessons(id):
+    async with aiohttp.ClientSession() as session:
+        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserLessons?UserTgId={id}"
+        try:
+            async with session.get(url=url) as response:
+                lesson_data = await response.json()
+                lessons_dict = {f"lesson{i+1}_done": status for i, status in enumerate(lesson_data)}
+                return False, lessons_dict
+        except aiohttp.ClientError as e:
+            return True, e
+        
+async def get_last_user_lesson(id):
+    async with aiohttp.ClientSession() as session:
+        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetLastUserLesson?UserTgId={id}"
+        try:
+            async with session.get(url=url) as response:
+                last_lesson = await response.text()
+                print(await response.json())
+                return False, last_lesson
+        except aiohttp.ClientError as e:
+            return True, e
+
+async def add_user_lesson(id, lesson):
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/AddUserLesson?UserTgId={id}&lesson={lesson}"
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url) as response:
+                data = await response.text()
+                if data == "true":
+                    return True
+                else: return False
+        except aiohttp.ClientError as e:
+            return False
+
 async def long_rate(id, period):
     iserror, longrate_data = await request_longrate_question(id, period)
-    assistant_mapping = {"3": RATE_WEEK_ASS_ID, "4": RATE_TWONE_ASS_ID}
+    assistant_mapping = {"3": RATE_WEEK_ASS_ID, "4": RATE_TWONE_ASS_ID, "0": RATE_DAY_ASS_ID}
     assistant = assistant_mapping.get(period)
     if not iserror:
         gpt_resp1 = await no_thread_ass(str(longrate_data), assistant)
@@ -109,6 +183,18 @@ async def get_user_info(id):
             except aiohttp.ClientError as e:
                 return True, ""
             
+
+async def create_reciepie(question, id):
+    # print(f"create_rec_hit with question: {question}")
+    try: 
+        assistant_response = await rec_assistant(question, str(id), RECIPE_ASS_ID)
+        if assistant_response == "error":
+            return True, assistant_response
+        else:
+            return False, assistant_response
+    except Exception as e: 
+        return True, f"ERROR {e}"
+
 async def get_total_kkal(id, period):
     url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserMealsTotal?userTgId={id}&period={period}"
     async with aiohttp.ClientSession() as session:
@@ -161,8 +247,20 @@ async def add_or_update_usr_info(data):
                 # print(f"НИКИТИН ОТВЕТ {user_data}")
                 # user_data = json.loads(text_data)
                 return False, user_data
+            
         except aiohttp.ClientError as e:
             return True, ""
+        
+async def ensure_user(message):
+   async with aiohttp.ClientSession() as session:
+        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/EnsureUserH?userTgId={message.from_user.id}"
+        try:
+            async with session.get(url=url) as response:
+                ensure_response = await response.text()
+                print(ensure_response)
+                return False, ensure_response
+        except aiohttp.ClientError as e:
+            return True, e
 
 def create_day_rate_question(user_info, food):
     data = json.loads(user_info)
@@ -182,11 +280,13 @@ def create_day_rate_question(user_info, food):
     return str(parsed_info)
 
 async def yapp(id, question, new_thread):
+    
     print('day1_yapp triggered')
     
     if new_thread:
         await remove_yapp_thread(id)
-        await create_thread_with_extra_info("user_info_is_empty_for_now", id, YAPP_SESH_ASSISTANT_ID)
+        iserror, user_data = await get_user_info(id)
+        await create_thread_with_extra_info(f"{str(user_data)}", id, YAPP_SESH_ASSISTANT_ID)
     
     try:
         response = await yapp_assistant(question, id, YAPP_SESH_ASSISTANT_ID)
@@ -195,7 +295,7 @@ async def yapp(id, question, new_thread):
         
         if response != "error":
             isError = False
-            final_response = f"Ответ: {response}"
+            final_response = response
             if debug == 1:
                 print(f"{isError} {final_response}")
         else:
@@ -203,7 +303,6 @@ async def yapp(id, question, new_thread):
             final_response = "Ошибка: неверный запрос"
             if debug == 1:
                 print(f"{isError} {final_response}")
-        
         return isError, final_response
 
     except Exception as e:
@@ -211,19 +310,24 @@ async def yapp(id, question, new_thread):
         return True, "Ошибка обработки запроса"
     
 async def process_img_rec(message, state, text, buttons):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     id = str(message.from_user.id)
     url = await get_url(message.photo[-1].file_id)
     vision = await process_url(url, id, VISION_ASS_ID_2)
+    print(vision)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
+        await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 
 async def process_audio_rec(message, state, text, buttons):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     id = str(message.from_user.id)
     transcription = await audio_file(message.voice.file_id)
     if await state.get_state() == UserState.recognition:
@@ -233,14 +337,17 @@ async def process_audio_rec(message, state, text, buttons):
     vision = await generate_response(transcription, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
+        await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         
 
 async def process_txt_rec(message, state, text, buttons):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     id = str(message.from_user.id)
     if await state.get_state() == UserState.recognition:
         await remove_thread(id)
@@ -249,14 +356,17 @@ async def process_txt_rec(message, state, text, buttons):
     vision = await generate_response(message.text, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
+        await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         
 
 async def edit_txt_rec(message, state, text, buttons):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     id = str(message.from_user.id)
     state_data = await state.get_data()
     old = state_data["old_food"]
@@ -265,13 +375,16 @@ async def edit_txt_rec(message, state, text, buttons):
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
+        await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def edit_audio_rec(message, state, text, buttons):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
     id = str(message.from_user.id)
     transcription = await audio_file(message.voice.file_id)
     await remove_thread(id)
@@ -281,8 +394,10 @@ async def edit_audio_rec(message, state, text, buttons):
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
     else: 
+        await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
@@ -355,6 +470,29 @@ async def save_meal(id, food, type):
                 "food": food,
                 "type": type
             },
+    }
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
+                data = await response.text()
+                return False, data
+        except aiohttp.ClientError as e:
+            return True, e
+        
+async def save_meal_old_date(id, food, type, date):
+    url = "https://nutridb-production.up.railway.app/api/TypesCRUD/CreateMeal"
+    req_headers = {
+        "Content-Type": "application/json"
+    }
+    meal_data ={
+            "userTgId": id,
+            "meal": {
+                "description": "string",
+                "totalWeight": 0,
+                "food": food,
+                "type": type
+            },
+            "eatedAt": date,
     }
     async with aiohttp.ClientSession() as session:
         try:

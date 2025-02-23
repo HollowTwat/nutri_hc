@@ -19,7 +19,6 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery, InputMediaPhoto, InputMediaVideo
 from openai import AsyncOpenAI, OpenAI
-# from stickerlist import STICKERLIST
 import shelve
 import json
 
@@ -52,6 +51,8 @@ from all_states import *
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")                    ##ACTUALISED
 OPENAI_KEY = os.getenv("OPENAI_KEY")                  ##ACTUALISED
+
+STICKER_ID = os.getenv("STICKER_ID")
 
 #ASSISTANTS FFS HOW MANY CAN THERE BE MAAAAAN
 VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
@@ -87,13 +88,17 @@ class StateMiddleware(BaseMiddleware):
 
 @router.message(CommandStart())
 async def command_start_handler(message: Message, state: FSMContext) -> None:
-    await state.update_data(full_sequence=False)
-    buttons = [
-        [InlineKeyboardButton(text="Меню", callback_data="menu")],
-        ]
-    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    step0txt = "in_dev"
-    await message.answer(step0txt, reply_markup=keyboard)
+    await state.set_state(Questionnaire.prefirst)
+    await ensure_user(message)
+    await process_prefirst(message, state)
+    await state.set_state(Questionnaire.first)
+    # await state.update_data(full_sequence=False)
+    # buttons = [
+    #     [InlineKeyboardButton(text="Меню", callback_data="menu")],
+    #     ]
+    # keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    # step0txt = "in_dev"
+    # await message.answer(step0txt, reply_markup=keyboard)
 
 
 
@@ -114,9 +119,13 @@ async def main_menu_cb_handler(callback_query: CallbackQuery, state: FSMContext)
 async def main_menu_back_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     await menu_back_handler(callback_query, state)
 
+@router.callback_query(lambda c: c.data == 'menu_no_edit')
+async def main_menu_no_edit(callback_query: CallbackQuery, state: FSMContext) -> None:
+    await menu_no_edit(callback_query, state)
+
 @router.callback_query(lambda c: c.data == 'menu_course')
 async def main_process_menu_course(callback_query: CallbackQuery, state: FSMContext):
-    await process_menu_course(callback_query.message, state)
+    await process_menu_course(callback_query.message, state, callback_query.from_user.id)
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik')
 async def main_process_menu_dnevnik(callback_query: CallbackQuery, state: FSMContext):
@@ -132,7 +141,7 @@ async def main_process_menu_settings(callback_query: CallbackQuery, state: FSMCo
 
 @router.message(Command("1"))
 async def menu_main_process_menu_course(message: Message, state: FSMContext) -> None:
-    await process_menu_course(message, state)
+    await process_menu_course(message, state, message.from_user.id)
 
 @router.message(Command("2"))
 async def menu_main_process_menu_dnevnik(message: Message, state: FSMContext) -> None:
@@ -156,6 +165,10 @@ async def main_process_menu_course_lesson(callback_query: CallbackQuery, state: 
 @router.callback_query(lambda c: c.data == 'menu_course_info')
 async def main_process_menu_course_info(callback_query: CallbackQuery, state: FSMContext):
     await process_menu_course_info(callback_query, state)
+
+@router.callback_query(lambda c: c.data.startswith('menu_course_info_lessons_week'))
+async def main_process_menu_cource_info_lessons(callback_query: CallbackQuery, state: FSMContext):
+    await process_menu_cource_info_lessons(callback_query, state)
 
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
@@ -229,10 +242,21 @@ async def layover_saving(callback_query: CallbackQuery, state: FSMContext):
     prev_state = data["prev_state"]
     str_food = str(data["latest_food"])
     id = str(callback_query.from_user.id)
-    meal_type = callback_query.data
-    state_data = state.get_data()
     buttons = [[InlineKeyboardButton(text="Ок", callback_data=callback_mssg)],]
-    await callback_query.message.edit_text(f"Тут будет сохранение приема пищи {callback_query.data} с инфой: \n {str_food}", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    if callback_mssg == "saving_edit":
+        await state.set_state(prev_state)
+        state_data = state.get_data()
+        old_date = state_data["date"]
+        Iserror, answer = await save_meal_old_date(callback_query.from_user.id, str_food, callback_query.data, old_date)
+    else:
+        Iserror, answer = await save_meal(callback_query.from_user.id, str_food, callback_query.data)
+    if Iserror:
+        await callback_query.message.edit_text("Ошибка при сохранении {answer}")
+    else:
+        if answer != 0:
+            await callback_query.message.edit_text(f"Успешно сохранено", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            await state.set_state(UserState.rating_meal)
+    
     await state.set_state(prev_state)
     
     
@@ -272,9 +296,112 @@ async def main_process_menu_nutri_reciepie(callback_query: CallbackQuery, state:
 
 @router.callback_query(lambda c: c.data == 'menu_nutri_etiketka')
 async def main_process_menu_nutri_etiketka(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.etiketka)
     await process_menu_nutri_etiketka(callback_query, state)
 
 ################## YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU YAPP_MENU ##################
+
+################## ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ##################
+
+@router.message(StateFilter(UserState.etiketka))
+async def main_process_etiketka_input(message: Message, state: FSMContext):
+    if message.photo:
+        sticker_mssg = await message.answer_sticker(STICKER_ID)
+        iserror, user_data = await get_user_info(message.from_user.id)
+        user_info = json.loads(user_data)
+        allergies = user_info.get("user_info_meals_ban")
+        url = await get_url(message.photo[-1].file_id)
+        gpt_response = await process_url_etik(url, allergies, ETIK_ASS_ID)
+        await sticker_mssg.delete()
+        await message.answer(gpt_response)
+        await state.set_state(UserState.menu)
+    else:
+        await message.answer("Отправь, пожалуйста, фото")
+
+################## ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ETIKETKA ##################
+
+################## RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE ##################
+
+@router.callback_query(lambda c: c.data.startswith("recimt_"))
+async def main_process_menu_nutri_rec_mealtype(callback_query: CallbackQuery, state: FSMContext):
+    await remove_rec_thread(str(callback_query.from_user.id))
+    await state.set_state(UserState.reci_mt)
+    meal_type_rec = callback_query.data.split("_")[1]
+    await state.update_data(meal_type_rec=meal_type_rec)
+    await process_menu_nutri_rec_inputType(callback_query, state)
+
+@router.callback_query(lambda c: c.data.startswith("reciIt_"))
+async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, state: FSMContext):
+    input_type = callback_query.data.split("_")[1]
+    await state.update_data(input_rec_type=input_type)
+
+    state_data = await state.get_data()
+    meal_type = state_data["meal_type_rec"]
+    meal_type_mapping = {"0": "Завтрак", "2": "Обед", "4": "Ужин", "5":"Перекус"}
+    if input_type == "1":
+        await state.set_state(UserState.reci)
+        await menu_nutri_rec_input_1(callback_query, state)
+        return
+    elif input_type == "0":
+        await process_menu_nutri_rec_inputType_2(callback_query, state)
+        return
+    elif input_type == "2":
+        await state.set_state(UserState.reci)
+        await menu_nutri_rec_input_2(callback_query, state)
+        return
+    elif input_type == "3":
+        sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
+        buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
+        await state.set_state(UserState.reci)
+        iserror1, user_data = await get_user_info(callback_query.from_user.id)
+        question = f"Придумай полезный и вкусный рецепт {meal_type_mapping.get(meal_type)} для пользователя с информацией: {user_data}"
+        iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
+        if not iserror:
+            await sticker_mssg.delete()
+            await callback_query.message.edit_text(gptresponse, reply_markup=None)
+            await callback_query.message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    elif input_type == "retry":
+        sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
+        buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
+        question = f"Придумай другой рецепт"
+        iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
+        if not iserror:
+            await sticker_mssg.delete()
+            await callback_query.message.edit_text(gptresponse, reply_markup=None)
+            await callback_query.message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            
+@router.message(StateFilter(UserState.reci))
+async def main_process_reci_input(message: Message, state: FSMContext):
+    sticker_mssg = await message.answer_sticker(STICKER_ID)
+    meal_type_mapping = {"0": "Завтрака", "2": "Обеда", "4": "Ужина", "5":"Перекуса"}
+    state_data = await state.get_data()
+    input_type = state_data["input_rec_type"]
+    meal_type = state_data["meal_type_rec"]
+    iserror1, user_data = await get_user_info(message.from_user.id)
+    buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
+    if message.text:
+        user_input = message.text
+    elif message.voice:
+        user_input = await audio_file(message.voice.file_id)
+
+    if input_type == "1":
+        question = f"Распиши рецепт {meal_type_mapping.get(meal_type)} по рецепту : {user_input} для пользователя с информацией: {user_data}, "
+        iserror, gptresponse = await create_reciepie(question, message.from_user.id)
+        if not iserror:
+            await sticker_mssg.delete()
+            await message.answer(gptresponse)
+            await message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    elif input_type == "2":
+        question = f"Придумай рецепт {meal_type_mapping.get(meal_type)} вот с этими продуктами: {user_input} для пользователя с информацией: {user_data}"
+        iserror, gptresponse = await create_reciepie(question, message.from_user.id)
+        if not iserror:
+            await sticker_mssg.delete()
+            await message.answer(gptresponse)
+            await message.answer("Готовим по этому рецепту?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+
+################## RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE RECIEPE ##################
+
 
 async def get_url(file_id: str) -> str:
     file = await bot.get_file(file_id)
@@ -286,6 +413,20 @@ async def audio_file(file_id: str) -> str:
     file_url = await get_url(file_id)
     transcription = await transcribe_audio_from_url(file_url)
     return transcription
+
+
+@router.callback_query(StateFilter(UserState.perehvat))
+async def perehvat_actual(callback_query: CallbackQuery, state: FSMContext):
+    state_data = await state.get_data()
+    perehvat_mssg = state_data["perehvat_mssg"]
+    if callback_query.data == "perehvat_yapp":
+        await state.set_state(UserState.yapp_new)
+        await yapp_functional(perehvat_mssg, state)
+    elif callback_query.data == "perehvat_dnevnik":
+        await state.set_state(UserState.recognition)
+        await dnevnik_functional(perehvat_mssg, state)
+
+
 
 
 ################## YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP ##################
@@ -300,19 +441,25 @@ async def yapp_functional(message: Message, state: FSMContext):
     buttons = [[InlineKeyboardButton(text='Меню', callback_data='menu')]]
     errormessage = "Гпт вернул ошибку"
     if message.text:
+        sticker_mssg = await message.answer_sticker(STICKER_ID)
         flag, response = await yapp(id, message.text, new_thread)
         if flag:
+            sticker_mssg.delete()
             await message.answer(errormessage)
         else: 
+            sticker_mssg.delete()
             await message.answer(f"{response}\n\nТы можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             await state.set_state(UserState.yapp)
         
     elif message.voice:
+        sticker_mssg = await message.answer_sticker(STICKER_ID)
         transcription = await audio_file(message.voice.file_id)
         flag, response = await yapp(id, transcription, new_thread)
         if flag:
+            sticker_mssg.delete()
             await message.answer(errormessage)
         else:
+            sticker_mssg.delete()
             await message.answer(f"{response}\n\n Ты можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             await state.set_state(UserState.yapp)
             
@@ -389,11 +536,12 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == 'meal_rate')
 async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
+    sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
     state_data = await state.get_data()
     food = state_data["latest_food"]
     Iserror, user_data = await get_user_info(callback_query.from_user.id)
-    await callback_query.message.edit_text(f"{user_data}")
     if Iserror:
+        await sticker_mssg.delete()
         await callback_query.message.edit_text("Ошибка при получении инфы пользователя из дб")
         return
     question = create_day_rate_question(user_data, food)
@@ -403,12 +551,23 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     buttons = [
         [InlineKeyboardButton(text="⏏️", callback_data="menu")]
     ]
+    await sticker_mssg.delete()
     await callback_query.message.edit_text(cleaned_resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.clear()
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_analysis_rate-week')
 async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
+    sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
     iserror, resp = await long_rate(callback_query.from_user.id, "3")
+    await sticker_mssg.delete()
+    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu")]]
+    await callback_query.message.edit_text(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+@router.callback_query(lambda c: c.data == 'menu_dnevnik_analysis_rate-day')
+async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
+    sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
+    iserror, resp = await long_rate(callback_query.from_user.id, "0")
+    await sticker_mssg.delete()
     buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu")]]
     await callback_query.message.edit_text(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
@@ -439,8 +598,7 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
         return
     else:
         meal_id, pretty, food_items = await get_singe_meal(id, date, meal_type)
-        await state.update_data(old_food=food_items)
-        await state.update_data(meal_id=meal_id)
+        await state.update_data(old_food=food_items, meal_id=meal_id)
         buttons = [
             [InlineKeyboardButton(text="Да", callback_data=f"yesChange_{meal_id}")],
             [InlineKeyboardButton(text="Удалить", callback_data=f"deletemeal_{meal_id}")],
@@ -484,7 +642,7 @@ async def edit_new_await(callback_query: types.CallbackQuery, state: FSMContext)
     await state.set_state(UserState.edit_rec)
 
 @router.message(StateFilter(UserState.edit_rec))
-async def dnevnik_functional(message: Message, state: FSMContext):
+async def dnevnik_functional_recc(message: Message, state: FSMContext):
     edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
     confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
     buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
@@ -1573,6 +1731,7 @@ async def main_process_goal(callback_query: types.CallbackQuery, state: FSMConte
         await state.set_state(Questionnaire.w_loss)
     elif goal == "=":
         await process_w_loss_amount(callback_query.message, state, goal)
+        await state.update_data(w_loss_amount="0")
         input_text = await gen_text(state)
         await give_plan(callback_query.message, state, input_text)
         await state.set_state(Questionnaire.city)
@@ -1588,7 +1747,7 @@ async def main_process_w_loss(callback_query: types.CallbackQuery, state: FSMCon
 async def main_process_w_loss_amount(message: Message, state: FSMContext):
     pattern = r'^\d+$'
     if not re.match(pattern, message.text):
-        pass
+        await message.answer("Пожалуйста введи целое число")
     user_data = await state.get_data()
     goal = user_data["goal"]
     tdee = user_data['tdee']
@@ -1600,8 +1759,12 @@ async def main_process_w_loss_amount(message: Message, state: FSMContext):
         await give_plan(message, state, input_text)
     else:
         if goal in ["+","-"]:
-            if goal == "+": goal_txt = "набрать вес"
-            elif goal == "-": goal_txt = "сбросить вес"
+            if goal == "+": 
+                goal_txt = "набрать вес"
+                await state.update_data(w_loss_amount=f"+{message.text}")
+            elif goal == "-": 
+                goal_txt = "сбросить вес"
+                await state.update_data(w_loss_amount=f"-{message.text}")
             text1 = f"Чтобы помочь тебе в достижении твоей цели {goal_txt}, я рассчитала, сколько калорий тебе нужно есть в день. Я использую формулу Mifflin-St Jeor, так как она считается одной из самых точных.\n\n\nТвои результаты следующие:\nБазовый уровень метаболизма (BMR): примерно <b>{bmr}</b> ккал/день.\nОбщая суточная потребность в энергии (TDEE) при умеренной активности: примерно <b>{tdee}</b> ккал/день."
             await message.answer(text1)
             await give_plan(message, state, input_text)
@@ -1610,6 +1773,8 @@ async def main_process_w_loss_amount(message: Message, state: FSMContext):
 
 @router.message(StateFilter(Questionnaire.city))
 async def main_process_city(message: Message, state: FSMContext):
+    # timeslide, city = await process_city(message, state)
+    # state.update_data(timeslide=timeslide, city=city)
     await process_city(message, state)
     await state.set_state(Questionnaire.morning_ping)
 
@@ -1617,6 +1782,7 @@ async def main_process_city(message: Message, state: FSMContext):
 async def main_process_morning_ping(message: Message, state: FSMContext):
     pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
     if re.match(pattern, message.text):
+        await state.update_data(morning_ping=message.text)
         await process_morning_ping(message, state)
         await state.set_state(Questionnaire.evening_ping)
     else:
@@ -1626,15 +1792,50 @@ async def main_process_morning_ping(message: Message, state: FSMContext):
 async def main_process_evening_ping(message: Message, state: FSMContext):
     pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
     if re.match(pattern, message.text):
+        await state.update_data(evening_ping=message.text)
         await process_evening_ping(message, state)
         await state.set_state(Questionnaire.community_invite)
+        state_data = await state.get_data()
+        data = {
+            "userTgId": message.from_user.id,
+            "info": {
+                "user_info_name": state_data["name"],
+                "user_info_timeslide" : state_data["timeslide"],
+                "user_info_morning_ping": state_data["morning_ping"],
+                "user_info_evening_ping": state_data["evening_ping"],
+                "user_info_city": state_data["city"],
+                "user_info_bmi":  state_data["bmi"],
+                "target_calories": state_data["target_calories"],
+                "bmr":  state_data["bmr"],
+                "tdee":  state_data["tdee"],
+                "user_info_weight_change":  state_data["w_loss_amount"],
+                "user_info_goal": state_data["goal"],
+                "user_info_sleep": state_data["sleep"],
+                "user_info_stress": state_data["stress"],
+                "user_info_gym_hrs": state_data["jogging"],
+                "user_info_excersise_hrs": state_data["lifting"],
+                "user_info_meals_ban": state_data["allergies"],
+                "user_info_meals_extra": state_data["meals_extra"],
+                "user_info_meal_amount": state_data["meals"],
+                "user_info_booze": state_data["booze"],
+                "user_info_water": state_data["water"],
+                "user_info_age": state_data["age"],
+                "user_info_weight": state_data["weight"],
+                "user_info_height": state_data["height"],
+                "user_info_breastfeeding": state_data["breastfeeding"],
+                "user_info_pregnancy": state_data["pregnancy"],
+                "user_info_gender": state_data["gender"]
+                }
+    }
+        iserror, response = await add_or_update_usr_info(json.dumps(data))
+        print(f"saving data for user {message.from_user.id} has returned {iserror}, {response}")
     else:
         await message.answer("Не поняла, попробуй, пожалуйста, ещё раз")
 
 @router.callback_query(StateFilter(Questionnaire.community_invite), lambda c: True)
 async def main_process_community_invite(callback_query: types.CallbackQuery, state: FSMContext):
     await process_community_invite(callback_query.message, state)
-    await state.clear()
+
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
@@ -1686,7 +1887,17 @@ async def default_handler(message: Message, state: FSMContext) -> None:
             sticker_id = message.sticker.file_id
             await message.answer(f"{sticker_id}")
         else: 
-            await message.answer("Будут перехватчики", reply_markup=keyboard)
+            if message.photo:
+                await state.set_state(UserState.recognition)
+                await dnevnik_functional(message, state)
+            elif message.voice:
+                await state.set_state(UserState.perehvat)
+                await perehvat(message, state)
+            elif message.text:
+                await state.set_state(UserState.perehvat)
+                await perehvat(message, state)
+            else:
+                await message.answer("Будут перехватчики", reply_markup=keyboard)
     else:
         await message.answer(f"Текущее состояние: {current_state}")
 
