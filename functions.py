@@ -20,9 +20,6 @@ openai.api_key = OPENAI_KEY
 TELETOKEN_2 = os.getenv('TELEBOT')
 bug_channel = "-1002345895875"
 
-OPENBI_KEY = os.getenv("OPENBI_KEY")
-VISION_ASSISTANT_ID_B = os.getenv("VISION_ASSISTANT_ID_B")
-bclient = AsyncOpenAI(api_key=OPENBI_KEY)
 
 
 async def check_mail(id, mail):
