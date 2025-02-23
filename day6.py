@@ -26,19 +26,31 @@ from functions import *
 from functions2 import *
 from all_states import *
 
+IMG1 = "AgACAgIAAxkBAAIJ3me1B0Wk_5o82LsiLHnaqfNZuC2dAAKG9TEb2NCpSY88liLmyimZAQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAIJ4me1B0pXWi3bsfO-yHhBdUbmimA5AAKH9TEb2NCpSZ1ZfeEhm4B7AQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAIJ5me1B04LVXaTUsJXxAIuMKPE48emAAKI9TEb2NCpSc-ZjFfu_Um6AQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAIJ6me1B1LH93OnG0kYztSl5o9A68xUAAKJ9TEb2NCpSberV3bKagIxAQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAIJ7me1B1aH1VvKTYlnkJVHvCwc3UKcAAKK9TEb2NCpSXYrGxXWsvGBAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAIJ8me1B1r7aGB59eoo7TnaPAucBbTvAAKL9TEb2NCpSYVqHvJDB9ccAQADAgADeQADNgQ"
+IMG7 = "AgACAgIAAxkBAAIJ9me1B16jYLAEDjXDSzPXYFdjygABlgACjPUxG9jQqUkM7UaX3sSc9QEAAwIAA3kAAzYE"
+IMG8 = "AgACAgIAAxkBAAIJ-me1B2LB-3AyAAEKJtQ3fIjulDJD9wACjfUxG9jQqUmQOVYkmdK_PQEAAwIAA3kAAzYE"
 
-IMG1 = "AgACAgIAAxkBAAID22emtcBQwY0wC_Uj9oJ7Y_sT32sVAAIP7zEbjtU5STaq5zrIV-5lAQADAgADeQADNgQ"
-IMG2 = "AgACAgIAAxkBAAID32emtcWX4-7gl4hKd0r2k4NK43XjAAIQ7zEbjtU5SRnpDJpPn-ZLAQADAgADeQADNgQ"
-IMG3 = "AgACAgIAAxkBAAID42emtdIUSvug1I9Zt67aCYaMOcitAAIR7zEbjtU5SSn0UUomMAMjAQADAgADeQADNgQ"
-IMG4 = "AgACAgIAAxkBAAID52emtdnBismsA5CoPK-l9uwKuh8ZAAIS7zEbjtU5SRy4BBqUDcZ5AQADAgADeQADNgQ"
-IMG5 = "AgACAgIAAxkBAAID62emtd9w9rn6S3O-pC0NKUd88vfCAAIT7zEbjtU5SX4oWty96LyLAQADAgADeQADNgQ"
-IMG6 = "AgACAgIAAxkBAAID72emteQ1oF8OUwQz6nV4nAE1H0rsAAIU7zEbjtU5SW6rQijujG4bAQADAgADeQADNgQ"
-IMG7 = "AgACAgIAAxkBAAID82emtem3WG-nu_Yuaz-cJTgE-QABNwACFe8xG47VOUn_rPkka3goawEAAwIAA3kAAzYE"
-IMG8 = "AgACAgIAAxkBAAID92emte5fXca4lOpmc7QywDAMh0-7AAIW7zEbjtU5SVYdTiQjLfVGAQADAgADeQADNgQ"
+# IMG1 = "AgACAgIAAxkBAAID22emtcBQwY0wC_Uj9oJ7Y_sT32sVAAIP7zEbjtU5STaq5zrIV-5lAQADAgADeQADNgQ"
+# IMG2 = "AgACAgIAAxkBAAID32emtcWX4-7gl4hKd0r2k4NK43XjAAIQ7zEbjtU5SRnpDJpPn-ZLAQADAgADeQADNgQ"
+# IMG3 = "AgACAgIAAxkBAAID42emtdIUSvug1I9Zt67aCYaMOcitAAIR7zEbjtU5SSn0UUomMAMjAQADAgADeQADNgQ"
+# IMG4 = "AgACAgIAAxkBAAID52emtdnBismsA5CoPK-l9uwKuh8ZAAIS7zEbjtU5SRy4BBqUDcZ5AQADAgADeQADNgQ"
+# IMG5 = "AgACAgIAAxkBAAID62emtd9w9rn6S3O-pC0NKUd88vfCAAIT7zEbjtU5SX4oWty96LyLAQADAgADeQADNgQ"
+# IMG6 = "AgACAgIAAxkBAAID72emteQ1oF8OUwQz6nV4nAE1H0rsAAIU7zEbjtU5SW6rQijujG4bAQADAgADeQADNgQ"
+# IMG7 = "AgACAgIAAxkBAAID82emtem3WG-nu_Yuaz-cJTgE-QABNwACFe8xG47VOUn_rPkka3goawEAAwIAA3kAAzYE"
+# IMG8 = "AgACAgIAAxkBAAID92emte5fXca4lOpmc7QywDAMh0-7AAIW7zEbjtU5SVYdTiQjLfVGAQADAgADeQADNgQ"
 
 
 
 async def process_l6_step_1(callback_query, state):
+    iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 5:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates6.step_2)
     await callback_query.message.answer(
         "Доброе утро! ☀️ \n\nТы наверняка заметил(а): на этой неделе мы не пытаемся кардинально изменить твой рацион. \n\nМы просто учимся наедаться, а не переедать, утолять голод, а не заедать эмоции. Это база. Чтобы изменить рацион, сначала нужно слышать сигналы тела. Но это, конечно, не всё. \n\nНа следующей неделе на этот фундамент будем укладывать кирпичики в виде нового подхода к рациону. \n\nСегодняшний урок поможет понять, насколько сильно стоит поменять рацион. Будем разбираться, как организм говорит нам о том, что с рационом что-то не так. \n\nПройдём урок?",
@@ -73,11 +85,11 @@ async def process_l6_step_2_2(callback_query, state):
     await state.clear()
     await callback_query.message.answer(
         "Не могу тебе отказать!  \n\nНо для дневника питания выходных не бывает. Заполняй его после каждого приёма пищи. Так я сама расскажу, чего не хватает в твоём рационе 🥦",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="💬 Задать вопрос", callback_data="menu_nutri_yapp")],[InlineKeyboardButton(text="📖 Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
 
 async def process_l6_step_11(callback_query, state):
     await callback_query.message.answer(
         "Вечер — время душевных разговоров. Если весь день было не до вопросов Нутри, то сейчас — самое время спросить всё, что ты хотел(а) узнать о питании, но боялся(лась) спросить!",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="💬 Задать вопрос", callback_data="menu")]]))
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="💬 Задать вопрос", callback_data="menu_nutri_yapp")]]))
     await callback_query.answer()

@@ -27,19 +27,33 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIGFGerjVTN0WG0MhEFHbe_cmxsOCgsAAJK6jEbJvVhSbX5glq3ZQABwwEAAwIAA3kAAzYE"
-IMG2 = "AgACAgIAAxkBAAIGGGerjVnG-AVAb9NoRrklsdVd6uFQAAJL6jEbJvVhSbAwibVjfPowAQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAIK5me1DteT3rVopG4uXNndnOfXCcjbAALm9TEb2NCpSTDjtoCdWbfcAQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAIK6me1DtsU_4ZUv1UVO9-mXzXeF-Q-AAIR8zEb41ioSSmqsOx9oV_9AQADAgADeQADNgQ"
 
-IMG3 = "AgACAgIAAxkBAAIGHGerjWPMOpKGBT61-ORjeuiZedhjAAJM6jEbJvVhScHiJ48QWtm1AQADAgADeQADNgQ"
-IMG4 = "AgACAgIAAxkBAAIGIGerjWiJfd1wJOo4Xeda7IMDBKytAAJN6jEbJvVhSaJnngbnjJLpAQADAgADeQADNgQ"
-IMG5 = "AgACAgIAAxkBAAIGJGerjWxAVrQmBzgLNLPKoP6OpiLEAAJO6jEbJvVhSaLaWXF2wHLlAQADAgADeQADNgQ"
-IMG6 = "AgACAgIAAxkBAAIGKGerjXDUcxmr4FCt3YrYIgGQRJFNAAJP6jEbJvVhSVeJAYx2HlG-AQADAgADeQADNgQ"
-IMG7 = "AgACAgIAAxkBAAIGLGerjXTnJ0ZQpmescfTwkqQv__3vAAJQ6jEbJvVhSUyibzRnmttyAQADAgADeQADNgQ"
-IMG8 = "AgACAgIAAxkBAAIGMGerjXhG64ANryvwSfhb6B-et1iDAAJR6jEbJvVhSbx0QrgyLel1AQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAIK7me1Du2AKwN4OIy0FY-in6nXB0NnAALn9TEb2NCpSS5ry02-ZOdyAQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAIK8me1DvRKk7rGE4ZTOz9prFsI8dSYAALo9TEb2NCpSRro-211FrAYAQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAIK9me1Dvht9W9yJWPlfELtfOYD9lruAALp9TEb2NCpSdCXwPSFCM-2AQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAIK-me1DvwyZ_iAyHgnOzlSSEYGwiMfAALq9TEb2NCpScqAJYMerHZ4AQADAgADeQADNgQ"
+IMG7 = "AgACAgIAAxkBAAIK_me1DwABHhAWWHP8SkiH1j-aTcvXvQAC6_UxG9jQqUngfp3b3MbmmAEAAwIAA3kAAzYE"
+IMG8 = "AgACAgIAAxkBAAILAme1DwS6NFC7-KYIGOYYbJUZdab5AALs9TEb2NCpSafTGAxvM0RFAQADAgADeQADNgQ"
+
+# IMG1 = "AgACAgIAAxkBAAIGFGerjVTN0WG0MhEFHbe_cmxsOCgsAAJK6jEbJvVhSbX5glq3ZQABwwEAAwIAA3kAAzYE"
+# IMG2 = "AgACAgIAAxkBAAIGGGerjVnG-AVAb9NoRrklsdVd6uFQAAJL6jEbJvVhSbAwibVjfPowAQADAgADeQADNgQ"
+
+# IMG3 = "AgACAgIAAxkBAAIGHGerjWPMOpKGBT61-ORjeuiZedhjAAJM6jEbJvVhScHiJ48QWtm1AQADAgADeQADNgQ"
+# IMG4 = "AgACAgIAAxkBAAIGIGerjWiJfd1wJOo4Xeda7IMDBKytAAJN6jEbJvVhSaJnngbnjJLpAQADAgADeQADNgQ"
+# IMG5 = "AgACAgIAAxkBAAIGJGerjWxAVrQmBzgLNLPKoP6OpiLEAAJO6jEbJvVhSaLaWXF2wHLlAQADAgADeQADNgQ"
+# IMG6 = "AgACAgIAAxkBAAIGKGerjXDUcxmr4FCt3YrYIgGQRJFNAAJP6jEbJvVhSVeJAYx2HlG-AQADAgADeQADNgQ"
+# IMG7 = "AgACAgIAAxkBAAIGLGerjXTnJ0ZQpmescfTwkqQv__3vAAJQ6jEbJvVhSUyibzRnmttyAQADAgADeQADNgQ"
+# IMG8 = "AgACAgIAAxkBAAIGMGerjXhG64ANryvwSfhb6B-et1iDAAJR6jEbJvVhSbx0QrgyLel1AQADAgADeQADNgQ"
 
 
 
 async def process_l15_step_1(callback_query, state):
+    iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 14:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates15.step_2)
 
     media_files = [
@@ -71,7 +85,7 @@ async def process_l15_step_2(callback_query, state):
     
     text = "✍️<b>Задание на день:</b> \n\n🍎Составить рацион на ближайшую неделю \n\nЛайфхак \n\nЕсли хочешь облегчить задачу, попроси это сделать меня. \n\nДля этого нажми кнопку «Задать вопрос» и попроси с помощью текста или голосового сообщения: «Нутри, составь мне разнообразное меню на неделю». \n\nМожешь указать продукты, которые есть у тебя в холодильнике. Я предложу свой вариант, исходя из твоей нормы КБЖУ, а ты сможешь скорректировать его под себя."
     await callback_query.message.answer(text,reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Задать вопрос и составить меню", callback_data="question"),InlineKeyboardButton(text="Дневник питания", callback_data="dnenik")],
+            [InlineKeyboardButton(text="Задать вопрос и составить меню", callback_data="menu_nutri_yapp"),InlineKeyboardButton(text="Дневник питания", callback_data="menu_dnevnik")],
         ])
     )
     await callback_query.answer()

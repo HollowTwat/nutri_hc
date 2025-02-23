@@ -27,17 +27,29 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIFWmeqNpWACTNo_Icl7xPXMgABLPiH0gAC3PwxGzKfUUnc68oaV9w2vAEAAwIAA3kAAzYE"
-IMG2 = "AgACAgIAAxkBAAIFXmeqNqF2MMAZ-Fq5SW-e-m0FRWK7AALd_DEbMp9RSVbqgp_URwOVAQADAgADeQADNgQ"
-IMG3 = "AgACAgIAAxkBAAIFYmeqNqaieNZVknMEo6jNwNm9TifNAALe_DEbMp9RSf3CkZP80UNIAQADAgADeQADNgQ"
-IMG4 = "AgACAgIAAxkBAAIFZmeqNqrHgzkrwcho6l65iXnLbEF4AALf_DEbMp9RSdwie6ZzX2mFAQADAgADeQADNgQ"
-IMG5 = "AgACAgIAAxkBAAIFameqNq6_eHLGIUbAStrPXGzszkMUAALg_DEbMp9RSZKOb3hntt1aAQADAgADeQADNgQ"
-IMG6 = "AgACAgIAAxkBAAIFbmeqNrKSzF52ksbsAVtHo4-2H_DhAALi_DEbMp9RSQAB8xK-EX7EdwEAAwIAA3kAAzYE"
-IMG7 = "AgACAgIAAxkBAAIFcmeqNrYSvXXMi_3wlTB9_0DBjeIEAALj_DEbMp9RSSQSoA_DUKFPAQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAIKome1CsDE3tW_K1jt5yb0m2LDLcc_AAIG8zEb41ioSa9ssh8ShedEAQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAIKpme1CsWYAjByNq7nNhecyn9jTSTkAALC9TEb2NCpSWSROiO0sVRCAQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAIKqme1CsncokNy4fMalrwBabxGiEhyAALD9TEb2NCpSVt0Xu44sMD0AQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAIKrme1Cs0wj2KVXlJ4uApjwdMPSTvqAALE9TEb2NCpSTrBjvrutm0vAQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAIKsme1CtHfh4ep0BU9GB6pZPywzNJMAALF9TEb2NCpSTHY8ixwedHzAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAIKtme1CtTycnhqrtiVbDOsayTGGQJyAALG9TEb2NCpSWXeeKAJRZJ5AQADAgADeQADNgQ"
+IMG7 = "AgACAgIAAxkBAAIKume1CthGCveBa9w7k4trkfOEe7sTAAIH8zEb41ioSUFWyJlo6pQTAQADAgADeQADNgQ"
+
+# IMG1 = "AgACAgIAAxkBAAIFWmeqNpWACTNo_Icl7xPXMgABLPiH0gAC3PwxGzKfUUnc68oaV9w2vAEAAwIAA3kAAzYE"
+# IMG2 = "AgACAgIAAxkBAAIFXmeqNqF2MMAZ-Fq5SW-e-m0FRWK7AALd_DEbMp9RSVbqgp_URwOVAQADAgADeQADNgQ"
+# IMG3 = "AgACAgIAAxkBAAIFYmeqNqaieNZVknMEo6jNwNm9TifNAALe_DEbMp9RSf3CkZP80UNIAQADAgADeQADNgQ"
+# IMG4 = "AgACAgIAAxkBAAIFZmeqNqrHgzkrwcho6l65iXnLbEF4AALf_DEbMp9RSdwie6ZzX2mFAQADAgADeQADNgQ"
+# IMG5 = "AgACAgIAAxkBAAIFameqNq6_eHLGIUbAStrPXGzszkMUAALg_DEbMp9RSZKOb3hntt1aAQADAgADeQADNgQ"
+# IMG6 = "AgACAgIAAxkBAAIFbmeqNrKSzF52ksbsAVtHo4-2H_DhAALi_DEbMp9RSQAB8xK-EX7EdwEAAwIAA3kAAzYE"
+# IMG7 = "AgACAgIAAxkBAAIFcmeqNrYSvXXMi_3wlTB9_0DBjeIEAALj_DEbMp9RSSQSoA_DUKFPAQADAgADeQADNgQ"
 
 
 
 async def process_l12_step_1(callback_query, state):
+    iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 11:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates12.step_2)
     await callback_query.message.answer(
         "Утро — время рефлексии! \n\n<i>«Нутри, я считаю КБЖУ, чувствую голод и насыщение и уже гораздо лучше управляю эмоциями! Этого хватит для осознанного питания?».</i> \n\nПодозреваю, что ты хочешь спросить у Нутри что-то такое. Понимаю! \n\nМы уже заложили отличную базу для осознанного питания — два кирпичика — работу с эмоциями и телом 👷 Но есть ещё третий, без которого всё развалится — образ жизни. \n\nНапример, без здорового сна сложно поддерживать желаемый вес. Почему? Разберёмся в сегодняшнем уроке!",
@@ -68,7 +80,7 @@ async def process_l12_step_2(callback_query, state):
     )
     text = "Но до этого домашнего задания ещё целый день! А в этом дне — несколько приёмов пищи 🍳🥗🥘 \n\nЗаноси их в дневник питания. \n\nМожно фотографировать тарелку, можно записывать голосовые, можно описывать съеденное текстом."
     await callback_query.message.answer(text,reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Дневник питания", callback_data="dnenik")],
+            [InlineKeyboardButton(text="Дневник питания", callback_data="menu_dnevnik")],
         ])
     )
     await callback_query.answer()

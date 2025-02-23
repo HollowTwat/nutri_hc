@@ -26,9 +26,15 @@ from functions import *
 from functions2 import *
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIEG2encb1OSLDZT2oTOYOWLwfTzCsSAALK-jEbjtVBSVYXlKg8K9QKAQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAIJ_me1B2ueyOfFL9kc6WRIuOwtE7t6AAKO9TEb2NCpSTFCqmNxv7neAQADAgADeQADNgQ"
+
+# IMG1 = "AgACAgIAAxkBAAIEG2encb1OSLDZT2oTOYOWLwfTzCsSAALK-jEbjtVBSVYXlKg8K9QKAQADAgADeQADNgQ"
 
 async def process_l14_step_1(callback_query, state):
+    iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 13:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates14.step_2)
     await callback_query.message.answer(
         "Доброе утро! \n6 дней мы творили тело мечты, на седьмой можно и отдохнуть и подвести итоги недели. \n\nСегодня в программе: \n🍏чек-лист по выполнению заданий \n🍏твой прогресс за неделю, \n🍏как спланировать питание на следующей неделе, чтобы достичь твоих целей."
@@ -101,10 +107,11 @@ async def process_l14_step_7(poll_answer, state):
                          photo=IMG1
         )
     
-    await bot.send_message(
-        chat_id=poll_answer.user.id,
-        text = "Тут будет оценка недели"
-        )
+    iserror, week_resp = await long_rate(poll_answer.user.id, "3")
+    if not iserror:
+        await bot.send_message(chat_id=poll_answer.user.id,text = week_resp)
+    else: 
+        await bot.send_message(chat_id=poll_answer.user.id,text = "Ошибка")
     
     await bot.send_message(
         chat_id = poll_answer.user.id,

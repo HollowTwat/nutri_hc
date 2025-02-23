@@ -27,18 +27,31 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIEsGeqKGzyNjkrfqtXwg4bdo4-22uSAAIS_DEbMp9RSdNFzlKK2VB1AQADAgADeQADNgQ"
-IMG2 = "AgACAgIAAxkBAAIEtGeqKHPfBHkvkGPY0Av3OCqY2ti-AAIT_DEbMp9RSbpjxPpiTUjCAQADAgADeQADNgQ"
-IMG3 = "AgACAgIAAxkBAAIEuGeqKHgAAeLM5zN9xvt95wfUOn0VVgACFPwxGzKfUUmqXXRg11ukigEAAwIAA3kAAzYE"
-IMG4 = "AgACAgIAAxkBAAIEvGeqKH1RYkwnEeY7_LXbSOZfcdVRAAIV_DEbMp9RSUvLSYTKw2K6AQADAgADeQADNgQ"
-IMG5 = "AgACAgIAAxkBAAIEwGeqKIESpZCIiKSrysA9P1IZWSlwAAIW_DEbMp9RSVM4nCSLoM0oAQADAgADeQADNgQ"
-IMG6 = "AgACAgIAAxkBAAIExGeqKIZk8JuiVhOZ2Pp5aMn8IxY3AAIX_DEbMp9RSSPAXey4-PztAQADAgADeQADNgQ"
-IMG7 = "AgACAgIAAxkBAAIEyGeqKIpiJTCydV8081khUSCFEaSCAAIY_DEbMp9RSTQ-iBo8rkVlAQADAgADeQADNgQ"
-IMG8 = "AgACAgIAAxkBAAIEzGeqKI_zVEIupbtaZa3kRlktNKGPAAIZ_DEbMp9RSdgOO_vpCJiIAQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAIKRme1CPrk8NhVHu9S2MsHWSd-XTCVAAKm9TEb2NCpSSre-XU1tbZ6AQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAIKSme1CP5edoHrp8ie0NdjQkzPEbkSAAKn9TEb2NCpST8I6vftwIRwAQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAIKTme1CQLOjbO_crE0pra5pdyt_cI3AAKo9TEb2NCpSXlfTancXwR2AQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAIKUme1CQWydI9IoBv-Si8ulZaag0g8AAKp9TEb2NCpSWDCPQuFeieXAQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAIKVme1CQmy2Ixg1mVpa4XX_7hzH03bAAKq9TEb2NCpSZs9uFgakECLAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAIKWme1CQ3WLJqe0FbeXHbzM4xB6DIFAAKr9TEb2NCpSd5eDSDCQ9BmAQADAgADeQADNgQ"
+IMG7 = "AgACAgIAAxkBAAIKXme1CRHv9cS0fqDUtxvgN2GHv2HVAAKs9TEb2NCpSSQmv1GPnaM_AQADAgADeQADNgQ"
+IMG8 = "AgACAgIAAxkBAAIKYme1CRRdGcJD03R19ewFPE52gxVQAAKt9TEb2NCpSVu6xhlE66gKAQADAgADeQADNgQ"
+
+# IMG1 = "AgACAgIAAxkBAAIEsGeqKGzyNjkrfqtXwg4bdo4-22uSAAIS_DEbMp9RSdNFzlKK2VB1AQADAgADeQADNgQ"
+# IMG2 = "AgACAgIAAxkBAAIEtGeqKHPfBHkvkGPY0Av3OCqY2ti-AAIT_DEbMp9RSbpjxPpiTUjCAQADAgADeQADNgQ"
+# IMG3 = "AgACAgIAAxkBAAIEuGeqKHgAAeLM5zN9xvt95wfUOn0VVgACFPwxGzKfUUmqXXRg11ukigEAAwIAA3kAAzYE"
+# IMG4 = "AgACAgIAAxkBAAIEvGeqKH1RYkwnEeY7_LXbSOZfcdVRAAIV_DEbMp9RSUvLSYTKw2K6AQADAgADeQADNgQ"
+# IMG5 = "AgACAgIAAxkBAAIEwGeqKIESpZCIiKSrysA9P1IZWSlwAAIW_DEbMp9RSVM4nCSLoM0oAQADAgADeQADNgQ"
+# IMG6 = "AgACAgIAAxkBAAIExGeqKIZk8JuiVhOZ2Pp5aMn8IxY3AAIX_DEbMp9RSSPAXey4-PztAQADAgADeQADNgQ"
+# IMG7 = "AgACAgIAAxkBAAIEyGeqKIpiJTCydV8081khUSCFEaSCAAIY_DEbMp9RSTQ-iBo8rkVlAQADAgADeQADNgQ"
+# IMG8 = "AgACAgIAAxkBAAIEzGeqKI_zVEIupbtaZa3kRlktNKGPAAIZ_DEbMp9RSdgOO_vpCJiIAQADAgADeQADNgQ"
 
 
 
 async def process_l9_step_1(callback_query, state):
+    iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 8:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates9.step_2)
     await callback_query.message.answer(
         "Доброе утро! \n\nВпереди нас точно ждёт ситуация: вроде гарвардскую тарелку составили, а в КБЖУ всё равно не вписались! \n\nКак так? Возможно, дело в коварных продуктах, который незаметно съедают калории! В сегодняшних карточках делюсь секретами, чем их заменить так, чтобы не страдать.",
@@ -73,7 +86,7 @@ async def process_l9_step_2(callback_query, state):
     await callback_query.message.answer(
         "✍️Задание на день: \n\n🍎 Спросить у Нутри, как снизить калорийность блюда, которое собираешься съесть сегодня. Для этого нажми кнопку «Задать вопрос» и напиши его в свободной форме. \n\n<i>Например: «Как снизить калорийность салата Оливье»?</i> \n\n🍎Не забывай заполнять дневник питания. Ты уже наверняка заметил(а), что я анализирую, насколько полезны твои приёмы пищи, и предлагаю скорректировать рацион.",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Задать вопрос", callback_data="menu"),InlineKeyboardButton(text="Дневник питания", callback_data="dnevnik")]
+            [InlineKeyboardButton(text="Задать вопрос", callback_data="menu_nutri_yapp"),InlineKeyboardButton(text="Дневник питания", callback_data="menu_dnevnik")]
         ])
     )
 
