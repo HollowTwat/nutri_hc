@@ -56,7 +56,7 @@ IMG12 = "AgACAgIAAxkBAAIJ2me1BmZ_FDJ5s4GBfzrhNkWkeCcHAAJ89TEb2NCpScb1ad-ghrZHAQA
 from all_states import *
 
 async def process_l4_step_1(callback_query, state):
-    last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
     if last_lesson < 3:
         callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
         return

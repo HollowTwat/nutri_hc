@@ -32,7 +32,7 @@ IMG1 = "AgACAgIAAxkBAAILRme1EJkAAZGV3-UpIkYoDmMwOmDFAAT2MRvY0KlJw4krSXq24EYBAAMC
 # IMG1 = "AgACAgIAAxkBAAIGdGerwQ2j1C0knRa8zFO6R4dLr-AfAAJ06zEbJvVhSQbSY5xz9mkFAQADAgADeQADNgQ"
 
 async def process_l20_step_1(callback_query, state):
-    last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
     if last_lesson < 19:
         callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
         return
