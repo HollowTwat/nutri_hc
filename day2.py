@@ -58,7 +58,7 @@ from all_states import *
 
 async def process_l2_step_1(callback_query, state):
     last_lesson = await get_last_user_lesson(callback_query.from_user.id)
-    if last_lesson < 1:
+    if int(last_lesson) < 1:
         callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
         return
     await state.set_state(LessonStates2.step_2)
