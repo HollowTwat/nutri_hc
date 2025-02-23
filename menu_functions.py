@@ -440,7 +440,7 @@ async def process_menu_settings_sub(callback_query, state):
     subtype, repayment_time = await get_user_sub_info(callback_query.from_user.id)
     buttons = [
         [InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")],
-        [InlineKeyboardButton(text="Хочу отменить продление", url="https://my.cloudpayments.ru/")],
+        [InlineKeyboardButton(text="Хочу отменить продление", url="https://my.cloudpayments.ru/", callback_data="menu")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_settings"), 
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
