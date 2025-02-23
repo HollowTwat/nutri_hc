@@ -129,7 +129,6 @@ async def get_last_user_lesson(id):
         try:
             async with session.get(url=url) as response:
                 last_lesson = await response.text()
-                print(await response.json())
                 return False,  int(last_lesson)
         except aiohttp.ClientError as e:
             return True, e
