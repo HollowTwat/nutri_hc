@@ -27,25 +27,25 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIKvme1CxtGPCmPr8jeZxHLhd1tQelPAALL9TEb2NCpSUug-iwmzmprAQADAgADeQADNgQ"
-IMG2 = "AgACAgIAAxkBAAIKwme1Cx_PHq_tuv2BTr3jTNXVOg5MAALM9TEb2NCpSVufx0yJWlpvAQADAgADeQADNgQ"
-IMG3 = "AgACAgIAAxkBAAIKxme1CyPy4CA_XFPw0DgwsycSQ-z1AALN9TEb2NCpSW8xP5MmjMu_AQADAgADeQADNgQ"
-IMG4 = "AgACAgIAAxkBAAIKyme1CybyUMownpBRjd_iY77DrUXiAALO9TEb2NCpSekAAb13EvRLVAEAAwIAA3kAAzYE"
-IMG5 = "AgACAgIAAxkBAAIKzme1CyrloimMMv_YwcdLXxtq0TF1AALP9TEb2NCpSZkmXf5g6jsrAQADAgADeQADNgQ"
-IMG6 = "AgACAgIAAxkBAAIK0me1Cy55d3PlGDYOMdZ66dREU8FAAALQ9TEb2NCpSQWeeGyEE947AQADAgADeQADNgQ"
-IMG7 = "AgACAgIAAxkBAAIK1me1CzLnEegWNSFTgdJMKmZ2tSVJAALR9TEb2NCpSaddbnMMSQr5AQADAgADeQADNgQ"
-IMG8 = "AgACAgIAAxkBAAIK2me1CzeSrUNUpk7jaga2oTKesob5AAIK8zEb41ioSZmPcKHz8B-FAQADAgADeQADNgQ"
-IMG9 = "AgACAgIAAxkBAAIK3me1CzoCuh_QWl33sPu_IsPmD_sAA9L1MRvY0KlJ5lyvRGK8BwoBAAMCAAN5AAM2BA"
+# IMG1 = "AgACAgIAAxkBAAIKvme1CxtGPCmPr8jeZxHLhd1tQelPAALL9TEb2NCpSUug-iwmzmprAQADAgADeQADNgQ"
+# IMG2 = "AgACAgIAAxkBAAIKwme1Cx_PHq_tuv2BTr3jTNXVOg5MAALM9TEb2NCpSVufx0yJWlpvAQADAgADeQADNgQ"
+# IMG3 = "AgACAgIAAxkBAAIKxme1CyPy4CA_XFPw0DgwsycSQ-z1AALN9TEb2NCpSW8xP5MmjMu_AQADAgADeQADNgQ"
+# IMG4 = "AgACAgIAAxkBAAIKyme1CybyUMownpBRjd_iY77DrUXiAALO9TEb2NCpSekAAb13EvRLVAEAAwIAA3kAAzYE"
+# IMG5 = "AgACAgIAAxkBAAIKzme1CyrloimMMv_YwcdLXxtq0TF1AALP9TEb2NCpSZkmXf5g6jsrAQADAgADeQADNgQ"
+# IMG6 = "AgACAgIAAxkBAAIK0me1Cy55d3PlGDYOMdZ66dREU8FAAALQ9TEb2NCpSQWeeGyEE947AQADAgADeQADNgQ"
+# IMG7 = "AgACAgIAAxkBAAIK1me1CzLnEegWNSFTgdJMKmZ2tSVJAALR9TEb2NCpSaddbnMMSQr5AQADAgADeQADNgQ"
+# IMG8 = "AgACAgIAAxkBAAIK2me1CzeSrUNUpk7jaga2oTKesob5AAIK8zEb41ioSZmPcKHz8B-FAQADAgADeQADNgQ"
+# IMG9 = "AgACAgIAAxkBAAIK3me1CzoCuh_QWl33sPu_IsPmD_sAA9L1MRvY0KlJ5lyvRGK8BwoBAAMCAAN5AAM2BA"
 
-# IMG1 = "AgACAgIAAxkBAAIFj2eqPsZVhAHk7bv_lao1GBkg0l5lAAIK6zEbtfVQSa4jK804YRo2AQADAgADeQADNgQ"
-# IMG2 = "AgACAgIAAxkBAAIFk2eqPstfB9UgcNfiSUnlmTOuaScTAAJ3_TEbMp9RSb2eBuJnHJQcAQADAgADeQADNgQ"
-# IMG3 = "AgACAgIAAxkBAAIFl2eqPtC9ONDgMph3G93xPo1frA7IAAJ4_TEbMp9RSRdSBl09DQ8nAQADAgADeQADNgQ"
-# IMG4 = "AgACAgIAAxkBAAIFm2eqPtSDifQTEdwWXtfrhfa7f1AGAAJ5_TEbMp9RSZutfQ_t1ChIAQADAgADeQADNgQ"
-# IMG5 = "AgACAgIAAxkBAAIFn2eqPtjOsqnKaQNlZlZsXxkyAiPWAAJ6_TEbMp9RSWYamNyTK4iOAQADAgADeQADNgQ"
-# IMG6 = "AgACAgIAAxkBAAIFo2eqPtz8avVqLF5iB1jLmILQUMtVAAJ9_TEbMp9RSfOEwk25vNTjAQADAgADeQADNgQ"
-# IMG7 = "AgACAgIAAxkBAAIFp2eqPuGJUlNiHBglq5jtQoPJZ_KUAAJ-_TEbMp9RSfgFoffBVYcrAQADAgADeQADNgQ"
-# IMG8 = "AgACAgIAAxkBAAIFq2eqPuWKBxHBTFlxIxPHfSORlIZbAAJ__TEbMp9RSU5K8EZVSgH_AQADAgADeQADNgQ"
-# IMG9 = "AgACAgIAAxkBAAIFr2eqPuqwRvG32m1mV115LWqd9qtqAAKA_TEbMp9RSU3sHpxXXg82AQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAIFj2eqPsZVhAHk7bv_lao1GBkg0l5lAAIK6zEbtfVQSa4jK804YRo2AQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAIFk2eqPstfB9UgcNfiSUnlmTOuaScTAAJ3_TEbMp9RSb2eBuJnHJQcAQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAIFl2eqPtC9ONDgMph3G93xPo1frA7IAAJ4_TEbMp9RSRdSBl09DQ8nAQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAIFm2eqPtSDifQTEdwWXtfrhfa7f1AGAAJ5_TEbMp9RSZutfQ_t1ChIAQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAIFn2eqPtjOsqnKaQNlZlZsXxkyAiPWAAJ6_TEbMp9RSWYamNyTK4iOAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAIFo2eqPtz8avVqLF5iB1jLmILQUMtVAAJ9_TEbMp9RSfOEwk25vNTjAQADAgADeQADNgQ"
+IMG7 = "AgACAgIAAxkBAAIFp2eqPuGJUlNiHBglq5jtQoPJZ_KUAAJ-_TEbMp9RSfgFoffBVYcrAQADAgADeQADNgQ"
+IMG8 = "AgACAgIAAxkBAAIFq2eqPuWKBxHBTFlxIxPHfSORlIZbAAJ__TEbMp9RSU5K8EZVSgH_AQADAgADeQADNgQ"
+IMG9 = "AgACAgIAAxkBAAIFr2eqPuqwRvG32m1mV115LWqd9qtqAAKA_TEbMp9RSU3sHpxXXg82AQADAgADeQADNgQ"
 
 
 
@@ -100,7 +100,7 @@ async def process_l13_step_11(callback_query, state):
     await callback_query.message.answer(
         "Прислушайся к ощущениям! \n\nКак чувствует себя твоё тело в конце дня? Может быть, зажаты плечи или болит поясница? Может быть, чувствуется усталость? Или, наоборот, всё классно? \n\nКакие бы ощущения ни были внутри, вечерняя разминка поможет почувствовать себя лучше и более качественно спать. Сделаем её вместе?",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Спорт сегодня уже был!", callback_data="next")], [InlineKeyboardButton(text="Сделать разминку", url = "https://www.youtube.com/watch?v=v7SN-d4qXx0&ab_channel=YogaWithAdriene", callback_data="stop")]
+            [InlineKeyboardButton(text="Спорт сегодня уже был!", callback_data="next")], [InlineKeyboardButton(text="Сделать разминку", callback_data="stop")]
         ])
         )
     await callback_query.answer()
@@ -113,6 +113,7 @@ async def process_l13_step_12(callback_query, state):
 
 async def process_l13_step_12_2(callback_query, state):
     await state.clear()
+    await callback_query.answer(url = "https://www.youtube.com/watch?v=v7SN-d4qXx0&ab_channel=YogaWithAdriene")
     await callback_query.message.answer(
         "Приятная лёгкая разминка — отличное завершение второго этапа учёбы с Нутри. \n\nЗавтра будем подводить итоги, а пока желаю тебе хорошо выспаться ❤️"
         )
