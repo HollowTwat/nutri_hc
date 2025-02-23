@@ -113,7 +113,7 @@ async def process_l13_step_12(callback_query, state):
 
 async def process_l13_step_12_2(callback_query, state):
     await state.clear()
-    await callback_query.answer(url = "https://www.youtube.com/watch?v=v7SN-d4qXx0&ab_channel=YogaWithAdriene")
+    await callback_query.answer(url = "https://www.google.de/")
     await callback_query.message.answer(
         "Приятная лёгкая разминка — отличное завершение второго этапа учёбы с Нутри. \n\nЗавтра будем подводить итоги, а пока желаю тебе хорошо выспаться ❤️"
         )
