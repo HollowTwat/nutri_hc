@@ -27,17 +27,25 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIGdGerwQ2j1C0knRa8zFO6R4dLr-AfAAJ06zEbJvVhSQbSY5xz9mkFAQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAILRme1EJkAAZGV3-UpIkYoDmMwOmDFAAT2MRvY0KlJw4krSXq24EYBAAMCAAN5AAM2BA"
+
+# IMG1 = "AgACAgIAAxkBAAIGdGerwQ2j1C0knRa8zFO6R4dLr-AfAAJ06zEbJvVhSQbSY5xz9mkFAQADAgADeQADNgQ"
 
 async def process_l20_step_1(callback_query, state):
+    last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 19:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await callback_query.message.answer(
         "В этот знаменательный день хочу сказать, что образовательная программа от Нутри подошла к концу! 🎉🎉🎉 \n\nНадеваю на тебя шапочку выпускника курса по осознанному питанию 🎓 \n\nЧто бы ни говорили, 21 день — не так уж много для внедрения новых привычек. Но этого достаточно, чтобы почувствовать первые изменения. \n\nЯ уверена, раз ты до сих пор терпишь мою компанию (а я ведь бываю занудой, я в курсе), у тебя уже есть большой прогресс! Ниже анализируем, какой!"
     )
     await callback_query.message.answer_photo(photo=IMG1)
 
-    await callback_query.message.answer(
-        "Тут будет оценка недели"
-    )
+    iserror, week_resp = await long_rate(callback_query.from_user.id, "4")
+    if not iserror:
+        await callback_query.message.answer(week_resp)
+    else: 
+        await callback_query.message.answer("Ошибка")
 
     await callback_query.message.answer(
         "<b>Что будет дальше?</b> \n\nЭти три недели я учила тебя пользоваться функциями Нутри. А ещё вместе мы изучали базу, необходимую для осознанного питания. \n\nЧтобы закрепить новые привычки, сохранить и улучшить результаты, продолжай пользоваться Нутри."

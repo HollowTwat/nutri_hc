@@ -1017,7 +1017,11 @@ async def main_process_l2_step_12(callback_query: types.CallbackQuery, state: FS
 
 @router.message(StateFilter(LessonStates2.step_12))
 async def main_process_l2_step_13(message: Message, state: FSMContext):
-    await dnevnik_layover(message,state,xyz2)
+    await dnevnik_layover(message,state,"trigger_xyz2")
+
+@router.callback_query(lambda c: c.data == 'trigger_xyz2')
+async def trigger_xyz2(callback_query: types.CallbackQuery, state: FSMContext):
+    await xyz2(callback_query, state)
 
 @router.callback_query(StateFilter(LessonStates2.step_13), lambda c: True)
 async def main_process_l2_step_14(callback_query: types.CallbackQuery, state: FSMContext):
@@ -1077,9 +1081,6 @@ async def main_process_l3_step_12(callback_query: types.CallbackQuery, state: FS
     elif callback_query.data == "3":
        await process_l3_step_13_3(callback_query, state)
 
-@router.callback_query(StateFilter(LessonStates3.step_13), lambda c: True)
-async def main_process_l3_step_13(callback_query: types.CallbackQuery, state: FSMContext):
-    await main_menu_cb_handler(callback_query, state)
 
 ################## LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 LESSON_3 #################
 
@@ -1096,9 +1097,6 @@ async def main_process_l4_step_1(callback_query: types.CallbackQuery, state: FSM
 async def main_process_l4_step_2(callback_query: types.CallbackQuery, state: FSMContext):
     await process_l4_step_3(callback_query, state)
 
-@router.callback_query(StateFilter(LessonStates4.step_4), lambda c: True)
-async def main_process_l4_step_3(callback_query: types.CallbackQuery, state: FSMContext):
-    await main_menu_cb_handler(callback_query, state)
 
 ################################
 

@@ -25,28 +25,51 @@ import json
 from functions import *
 from functions2 import *
 
-IMG1 = "AgACAgIAAxkBAAIBtGejgPZ9kYJqt7Dv9CUIRGEnNJzaAAJX5jEbvHgYSeZUS6-m9-ooAQADAgADeQADNgQ"
-IMG2 = "AgACAgIAAxkBAAIBuGejgPwBj9RasqeLltCI1YxaQbn8AAJY5jEbvHgYSTykeXacbIEjAQADAgADeQADNgQ"
-IMG3 = "AgACAgIAAxkBAAIBvGejgQF5DSvk23CCGYtULNn_txN3AAJZ5jEbvHgYSQAB3JAZ0g0yiAEAAwIAA3kAAzYE"
-IMG4 = "AgACAgIAAxkBAAIBwGejgQdXiNy4lYaXTwhBkX9tmi4GAAJa5jEbvHgYScVLk2oUmCwKAQADAgADeQADNgQ"
-IMG5 = "AgACAgIAAxkBAAIBxGejgRKrCksTxH0SV0yK-osUez3ZAAJb5jEbvHgYSa5ckjn_I_LZAQADAgADeQADNgQ"
-IMG6 = "AgACAgIAAxkBAAIByGejgRgQIbk5UHZDlZ44NO2Dqq0VAAJd5jEbvHgYSXjg2nlFXbO5AQADAgADeQADNgQ"
-IMG7 = "AgACAgIAAxkBAAIBzGejgR9YP59KTqzQtMLW8oipOCLdAAJf5jEbvHgYSWA6B0s6O-OJAQADAgADeQADNgQ"
-IMG8 = "AgACAgIAAxkBAAIB0GejgSc9VTz-uLkk3LfgHsBMpcKxAAJg5jEbvHgYSdS75CHvKdQuAQADAgADeQADNgQ"
-IMG9 = "AgACAgIAAxkBAAIB1GejgS1QE5Ym2gABBIp1LW16RNw-sQACYeYxG7x4GEnpEukVH0FsrAEAAwIAA3kAAzYE"
-IMG10 = "AgACAgIAAxkBAAIB2GejgTMLnkurx3G2sn5qdMX_H3OsAAJi5jEbvHgYScsJrUjUnYPGAQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAIJXme1BNKaAAFyJqEkGpXO2pP3Og7c5QACX_UxG9jQqUl_7P6XmO6C1AEAAwIAA3kAAzYE"
+IMG2 = "AgACAgIAAxkBAAIJYme1BNa0wbhN5b5D8j21y2ezJkS9AAJg9TEb2NCpSVJuNJEoJuBSAQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAIJZme1BNqJdTfoPi59MPElfSVttHa1AAJh9TEb2NCpSe03yHwbDAQeAQADAgADeQADNgQ"
+IMG4 = "AgACAgIAAxkBAAIJame1BN7_RdevsGRG2_8rKlZi9WHcAALu8jEb41ioSSUOGi6jnhwLAQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAIJbme1BOIvZeRM4xgyF8nfhaWXFAjmAALv8jEb41ioSY0qEUIUC6HhAQADAgADeQADNgQ"
+IMG6 = "AgACAgIAAxkBAAIJcme1BOadleFr-Gk4v2RKT036VFsnAALw8jEb41ioSfCKEukq2fX8AQADAgADeQADNgQ"
+IMG7 = "AgACAgIAAxkBAAIJdme1BOpUrjCIEKtYrq76oWLOY57zAAJj9TEb2NCpSTJuFpKcuGg8AQADAgADeQADNgQ"
+IMG8 = "AgACAgIAAxkBAAIJeme1BO40a_lonDhSnXvFhE2LMyFyAAJk9TEb2NCpSZ46nzkkStjTAQADAgADeQADNgQ"
+IMG9 = "AgACAgIAAxkBAAIJfme1BPLEZVb_TtNPoqAvdbx__hsAA2X1MRvY0KlJao6Sbzlby-wBAAMCAAN5AAM2BA"
+IMG10 = "AgACAgIAAxkBAAIJgme1BPUEP_1Jef8GQdY3UqQKr9fmAALx8jEb41ioSYWw-1uc8spaAQADAgADeQADNgQ"
 
-IMG11 = "AgACAgIAAxkBAAIB3Gej1xJcP8kbd6APU-JLdi2swGFUAAK56DEbvHgYScWMPhn5afDkAQADAgADeQADNgQ"
-IMG12 = "AgACAgIAAxkBAAIB4Gej1xgvMcpDJa10xCZR6maSElxvAAIq6jEb12UgSToAAd4AAcz6SQ4BAAMCAAN5AAM2BA"
-IMG13 = "AgACAgIAAxkBAAIB5Gej1x5jB_9bkGpx0ROxEqiP1oaeAAK66DEbvHgYSajILPcL32KvAQADAgADeQADNgQ"
-IMG14 = "AgACAgIAAxkBAAIB6Gej1yQAATWOExQJZ6LpQG60XRUq0wACK-oxG9dlIEnSpxK1AiFNSAEAAwIAA3kAAzYE"
-IMG15 = "AgACAgIAAxkBAAIB7Gej1yooC9hUTceTs_MiOU7tgoSZAAK76DEbvHgYSUBlYugqvg7BAQADAgADeQADNgQ"
-IMG16 = "AgACAgIAAxkBAAIB8Gej1zDvqw7QuQwp7n4fPF56Lv0xAAK86DEbvHgYScpMWfGCFLfgAQADAgADeQADNgQ"
-IMG17 = "AgACAgIAAxkBAAIB9Gej1zY3a8Z7xip1ayWMXmDmk-MSAAK96DEbvHgYSUFGlyTS2hZRAQADAgADeQADNgQ"
-IMG18 = "AgACAgIAAxkBAAIB-Gej1zv0VBKCEoIp_AV8ZpMwrGdcAAK-6DEbvHgYSdZ_M9cr42pFAQADAgADeQADNgQ"
+IMG11 = "AgACAgIAAxkBAAIJhme1BWaVBsevREcf1GTv2YkDzf85AAJp9TEb2NCpSfZNFKBcc0XdAQADAgADeQADNgQ"
+IMG12 = "AgACAgIAAxkBAAIJime1BWq-5XMVuG5Pm6FVKYi7ku8HAAJq9TEb2NCpSVm2yQOS8vWzAQADAgADeQADNgQ"
+IMG13 = "AgACAgIAAxkBAAIJjme1BW5OMmoc8BnrJ_P4Y9Q1oyv7AAJr9TEb2NCpSXaRkvapPflcAQADAgADeQADNgQ"
+IMG14 = "AgACAgIAAxkBAAIJkme1BXPWQlZZJpzHpWxNC4JAm_FLAAJs9TEb2NCpSVhs4Ms7xVDoAQADAgADeQADNgQ"
+IMG15 = "AgACAgIAAxkBAAIJlme1BXfHzKXV9RXI5CmWO-24TQKSAAJt9TEb2NCpSdt4ko8Z_wzdAQADAgADeQADNgQ"
+IMG16 = "AgACAgIAAxkBAAIJmme1BXsCDR5Cr8qjlUjJt8q5Oy51AAJu9TEb2NCpSS2mNFAmJ6fpAQADAgADeQADNgQ"
+IMG17 = "AgACAgIAAxkBAAIJnme1BX8SCX4qsNNWui0brnfwJmy1AAJv9TEb2NCpSRcpWheH8WCIAQADAgADeQADNgQ"
+IMG18 = "AgACAgIAAxkBAAIJome1BYNBo6AjWiQNmtXLh3AEXNcHAAJw9TEb2NCpSUgCFFmX3tyPAQADAgADeQADNgQ"
 
-IMG19 = "AgACAgIAAxkBAAIB_Gej20bspZB55PIkWhQ_VRUloWzwAALQ6DEbvHgYSSgWPSVII5rcAQADAgADeQADNgQ"
-IMG20 = "AgACAgIAAxkBAAICAAFno9tNHqBoD6gPsX19BRK-fM3uKQAC0egxG7x4GElJz7snEJs-lwEAAwIAA3kAAzYE"
+IMG19 = "AgACAgIAAxkBAAIJPme1A7I3Cz4-QSg4MAef4gF7wTg_AAJV9TEb2NCpSWJ-ytyPzx84AQADAgADeQADNgQ"
+IMG20 = "AgACAgIAAxkBAAIJQme1A7YQUU3KYueuUylKtwdO8HLhAAJX9TEb2NCpSSP2uE-Io5kRAQADAgADeQADNgQ"
+
+# IMG1 = "AgACAgIAAxkBAAIBtGejgPZ9kYJqt7Dv9CUIRGEnNJzaAAJX5jEbvHgYSeZUS6-m9-ooAQADAgADeQADNgQ"
+# IMG2 = "AgACAgIAAxkBAAIBuGejgPwBj9RasqeLltCI1YxaQbn8AAJY5jEbvHgYSTykeXacbIEjAQADAgADeQADNgQ"
+# IMG3 = "AgACAgIAAxkBAAIBvGejgQF5DSvk23CCGYtULNn_txN3AAJZ5jEbvHgYSQAB3JAZ0g0yiAEAAwIAA3kAAzYE"
+# IMG4 = "AgACAgIAAxkBAAIBwGejgQdXiNy4lYaXTwhBkX9tmi4GAAJa5jEbvHgYScVLk2oUmCwKAQADAgADeQADNgQ"
+# IMG5 = "AgACAgIAAxkBAAIBxGejgRKrCksTxH0SV0yK-osUez3ZAAJb5jEbvHgYSa5ckjn_I_LZAQADAgADeQADNgQ"
+# IMG6 = "AgACAgIAAxkBAAIByGejgRgQIbk5UHZDlZ44NO2Dqq0VAAJd5jEbvHgYSXjg2nlFXbO5AQADAgADeQADNgQ"
+# IMG7 = "AgACAgIAAxkBAAIBzGejgR9YP59KTqzQtMLW8oipOCLdAAJf5jEbvHgYSWA6B0s6O-OJAQADAgADeQADNgQ"
+# IMG8 = "AgACAgIAAxkBAAIB0GejgSc9VTz-uLkk3LfgHsBMpcKxAAJg5jEbvHgYSdS75CHvKdQuAQADAgADeQADNgQ"
+# IMG9 = "AgACAgIAAxkBAAIB1GejgS1QE5Ym2gABBIp1LW16RNw-sQACYeYxG7x4GEnpEukVH0FsrAEAAwIAA3kAAzYE"
+# IMG10 = "AgACAgIAAxkBAAIB2GejgTMLnkurx3G2sn5qdMX_H3OsAAJi5jEbvHgYScsJrUjUnYPGAQADAgADeQADNgQ"
+
+# IMG11 = "AgACAgIAAxkBAAIB3Gej1xJcP8kbd6APU-JLdi2swGFUAAK56DEbvHgYScWMPhn5afDkAQADAgADeQADNgQ"
+# IMG12 = "AgACAgIAAxkBAAIB4Gej1xgvMcpDJa10xCZR6maSElxvAAIq6jEb12UgSToAAd4AAcz6SQ4BAAMCAAN5AAM2BA"
+# IMG13 = "AgACAgIAAxkBAAIB5Gej1x5jB_9bkGpx0ROxEqiP1oaeAAK66DEbvHgYSajILPcL32KvAQADAgADeQADNgQ"
+# IMG14 = "AgACAgIAAxkBAAIB6Gej1yQAATWOExQJZ6LpQG60XRUq0wACK-oxG9dlIEnSpxK1AiFNSAEAAwIAA3kAAzYE"
+# IMG15 = "AgACAgIAAxkBAAIB7Gej1yooC9hUTceTs_MiOU7tgoSZAAK76DEbvHgYSUBlYugqvg7BAQADAgADeQADNgQ"
+# IMG16 = "AgACAgIAAxkBAAIB8Gej1zDvqw7QuQwp7n4fPF56Lv0xAAK86DEbvHgYScpMWfGCFLfgAQADAgADeQADNgQ"
+# IMG17 = "AgACAgIAAxkBAAIB9Gej1zY3a8Z7xip1ayWMXmDmk-MSAAK96DEbvHgYSUFGlyTS2hZRAQADAgADeQADNgQ"
+# IMG18 = "AgACAgIAAxkBAAIB-Gej1zv0VBKCEoIp_AV8ZpMwrGdcAAK-6DEbvHgYSdZ_M9cr42pFAQADAgADeQADNgQ"
+
+# IMG19 = "AgACAgIAAxkBAAIB_Gej20bspZB55PIkWhQ_VRUloWzwAALQ6DEbvHgYSSgWPSVII5rcAQADAgADeQADNgQ"
+# IMG20 = "AgACAgIAAxkBAAICAAFno9tNHqBoD6gPsX19BRK-fM3uKQAC0egxG7x4GElJz7snEJs-lwEAAwIAA3kAAzYE"
 
 
 
@@ -54,6 +77,10 @@ from all_states import *
 
 
 async def process_l3_step_1(callback_query, state):
+    last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 2:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates3.step_2)
     await callback_query.message.answer(
         "Доброе утро! \n\nЯ уже проснулась и чертовски голодна! А ты? Как дела с определением голода? Если возникли сложности — это нормально! \n\nО том, как распознать истинный голод, поговорим в сегодняшнем уроке. Начнём учиться?",
@@ -143,19 +170,19 @@ async def process_l3_step_5(callback_query, state):
     await state.set_state(LessonStates3.step_6)
     await callback_query.message.answer("Здорово, что получилось его определить! \n\nПостарайся назвать эмоцию, которую испытываешь. \n\nЭто не всегда просто, поэтому завтра у нас будет отдельный урок. Но давай попробуем! \n\nКак ещё можно прожить эту эмоцию, без еды? Может быть, стоит отвлечься на пятиминутную зарядку?")
     await callback_query.message.answer("Если ты всё-таки заел(а) тревогу или скуку, не вини себя! Эта эмоция не помогает. Завтра будем учиться работать с эмоциями, а пока занеси этот приём пищи в дневник питания.", 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
 
 async def process_l3_step_5_2(callback_query, state):
     await state.set_state(LessonStates3.step_6)
     await callback_query.message.answer("Здорово, что получилось его определить! \n\nЕсли очень хочется попробовать новое, можно не спеша положить в рот кусочек, прожевать его и получить удовольствие. А потом сделать паузу подумать: надо ли мне ещё? И так после каждого кусочка. \n\nНе забудь занести этот приём пищи в дневник питания!", 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
 
 async def process_l3_step_5_3(callback_query, state):
     await state.set_state(LessonStates3.step_6)
     await callback_query.message.answer("Значит, действительно пора поесть! \n\nНе забывай: делай это не спеша, чтобы вовремя почувствовать насыщение. Старайся оценить его уровень по 10-баллльной шкале. \n\nСытость на 6–7 баллов — то, к чему мы стремимся. \n\nИ обязательно заноси приём пищи в дневник питания.", 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
 
     ############ EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING #############
@@ -178,17 +205,17 @@ async def process_l3_step_12_2(callback_query, state):
 async def process_l3_step_13(callback_query, state):
     await state.set_state(LessonStates3.step_13)
     await callback_query.message.answer("Здорово, что получилось его определить! \n\nНе вини себя! Эта эмоция не помогает осознанному питанию. \n\nЗавтра будем учиться работать с эмоциями, а пока занеси этот приём пищи в дневник питания.", 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
 
 async def process_l3_step_13_2(callback_query, state):
     await state.set_state(LessonStates3.step_13)
     await callback_query.message.answer("Здорово, что удалось его определить! \n\nНадеюсь, у тебя получилось не переесть. А если не получилось, то не вини себя, ведь мы только учимся! \n\nЕсли в следующий раз хочется попробовать новое, можно не спеша положить в рот кусочек, прожевать его и получить удовольствие. А потом сделать паузу подумать: надо ли мне ещё? И так после каждого кусочка. \n\nНе забудь занести этот приём пищи в дневник питания!", 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
 
 async def process_l3_step_13_3(callback_query, state):
     await state.set_state(LessonStates3.step_13)
     await callback_query.message.answer("Отлично! \nНе забывай оценивать уровень насыщения по 10-баллльной шкале. \n\nСытость на 6–7 баллов — то, к чему мы стремимся. \n\nИ обязательно занеси этот приём пищи в дневник питания.", 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()

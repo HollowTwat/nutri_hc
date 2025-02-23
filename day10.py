@@ -27,15 +27,26 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAIE7WeqLF10fuvplu_VTF6n6AnaOm2xAAJq_DEbMp9RSQ84VBzeGJ8fAQADAgADeQADNgQ"
-IMG2 = "AgACAgIAAxkBAAIE8WeqLGKAU_7POdsp7XASt4R5NKhrAAJr_DEbMp9RSW2l1Bxa0HHWAQADAgADeQADNgQ"
-IMG3 = "AgACAgIAAxkBAAIE9WeqLGc8vu3STd9EAgABn5MpGpLgSgACbPwxGzKfUUkLtrGV52DoOQEAAwIAA3kAAzYE"
-IMG4 = "AgACAgIAAxkBAAIE-WeqLGuo0KQ0a-OwGmsE73PW22NYAAJt_DEbMp9RSRSXogkvUgQeAQADAgADeQADNgQ"
-IMG5 = "AgACAgIAAxkBAAIE_WeqLG8gdivb3ziP4H6caz5ANhwKAAJu_DEbMp9RSSz0n5DZWgfYAQADAgADeQADNgQ"
+IMG1 = "AgACAgIAAxkBAAIKZme1CZCRiUYc4SVWo-Fww7dLF2nsAAKu9TEb2NCpSWb5HTeVjsyBAQADAgADeQADNgQ"
+IMG2 = "AgACAgIAAxkBAAIKame1CZTb-z3waniWfb_v5qoL9EYoAAKv9TEb2NCpSdr3O6dqqLgGAQADAgADeQADNgQ"
+IMG3 = "AgACAgIAAxkBAAIKbme1CZjogMdOGXyA8KgPvkDrAAEyNAACsPUxG9jQqUlBY96r1IjQnQEAAwIAA3kAAzYE"
+IMG4 = "AgACAgIAAxkBAAIKcme1CZw0fTcD9MylymM7-3KLEVVBAAKx9TEb2NCpSc9L17hhq-9GAQADAgADeQADNgQ"
+IMG5 = "AgACAgIAAxkBAAIKdme1CZ_GWGlzIdxcPRnYDlmSWLeiAAKy9TEb2NCpSSyo9e_IaSB-AQADAgADeQADNgQ"
+
+
+# IMG1 = "AgACAgIAAxkBAAIE7WeqLF10fuvplu_VTF6n6AnaOm2xAAJq_DEbMp9RSQ84VBzeGJ8fAQADAgADeQADNgQ"
+# IMG2 = "AgACAgIAAxkBAAIE8WeqLGKAU_7POdsp7XASt4R5NKhrAAJr_DEbMp9RSW2l1Bxa0HHWAQADAgADeQADNgQ"
+# IMG3 = "AgACAgIAAxkBAAIE9WeqLGc8vu3STd9EAgABn5MpGpLgSgACbPwxGzKfUUkLtrGV52DoOQEAAwIAA3kAAzYE"
+# IMG4 = "AgACAgIAAxkBAAIE-WeqLGuo0KQ0a-OwGmsE73PW22NYAAJt_DEbMp9RSRSXogkvUgQeAQADAgADeQADNgQ"
+# IMG5 = "AgACAgIAAxkBAAIE_WeqLG8gdivb3ziP4H6caz5ANhwKAAJu_DEbMp9RSSz0n5DZWgfYAQADAgADeQADNgQ"
 
 
 
 async def process_l10_step_1(callback_query, state):
+    last_lesson = await get_last_user_lesson(callback_query.from_user.id)
+    if last_lesson < 9:
+        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        return
     await state.set_state(LessonStates10.step_2)
     await callback_query.message.answer(
         "Доброе утро! \n\nНачнём его с признаний! Сколько раз за время учёбы с Нутри тебе хотелось сладкого? Лично мне хочется чего-нибудь вкусненького каждый раз, когда я вижу картинки с конфетами и тортиками в интернете. И это нормально! \n\nПревращать сладости в запретный плод — верный путь к срывам. Чтобы не съедать за раз целую пачку печенья или мармеладок, важно иногда себе их разрешать. \n\nКак именно — разберёмся в сегодняшнем уроке.",
@@ -58,7 +69,7 @@ async def process_l10_step_2(callback_query, state):
     await callback_query.message.answer_media_group(media=media_files)
     text = "✍️ <b>Задание на сегодняшний день — моё любимое!</b> \n\n🍰 Долой запреты — включи любимый десерт в сегодняшний рацион! Но так, чтобы сохранить норму КБЖУ (в этом весь подвох!). \n\n🍰Чтобы всё получилось, заноси приёмы пищи в дневник питания — и Нутри подскажет, как показать этот фокус с десертом без ущерба фигуре."
     await callback_query.message.answer(text,reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="Дневник питания", callback_data="dnenik")],
+            [InlineKeyboardButton(text="Дневник питания", callback_data="menu_dnevnik")],
         ])
     )
     await callback_query.answer()
