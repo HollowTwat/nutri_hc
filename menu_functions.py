@@ -251,9 +251,9 @@ async def process_menu_dnevnik_edit(callback_query, state):
 
 async def process_menu_dnevnik_analysis(callback_query, state):
     buttons = [
-        [InlineKeyboardButton(text="Показать график за неделю", callback_data="menu_dnevnik_analysis_graph")],
-        [InlineKeyboardButton(text="Получить анализ пищи за неделю", callback_data="menu_dnevnik_analysis_rate-week")],
-        [InlineKeyboardButton(text="Получить аналитику за сегодня", callback_data="menu_dnevnik_analysis_rate-day")],
+        [InlineKeyboardButton(text="Аналитика за сегодня", callback_data="menu_dnevnik_analysis_rate-day")],
+        [InlineKeyboardButton(text="Аналитика за неделю", callback_data="menu_dnevnik_analysis_rate-week")],
+        [InlineKeyboardButton(text="График за неделю", callback_data="menu_dnevnik_analysis_graph")],
         [InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik"), 
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
@@ -440,7 +440,7 @@ async def process_menu_settings_sub(callback_query, state):
     subtype, repayment_time = await get_user_sub_info(callback_query.from_user.id)
     buttons = [
         [InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")],
-        [InlineKeyboardButton(text="Хочу отменить продление", url="https://my.cloudpayments.ru/", callback_data="menu")],
+        [InlineKeyboardButton(text="Хочу отменить продление", url="https://my.cloudpayments.ru/", callback_data="menu")],   
         [InlineKeyboardButton(text="◀️", callback_data="menu_settings"), 
          InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]

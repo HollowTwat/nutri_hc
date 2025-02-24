@@ -454,10 +454,10 @@ async def yapp_functional(message: Message, state: FSMContext):
         sticker_mssg = await message.answer_sticker(STICKER_ID)
         flag, response = await yapp(id, message.text, new_thread)
         if flag:
-            sticker_mssg.delete()
+            await sticker_mssg.delete()
             await message.answer(errormessage)
         else: 
-            sticker_mssg.delete()
+            await sticker_mssg.delete()
             await message.answer(f"{response}\n\nТы можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             await state.set_state(UserState.yapp)
         
@@ -466,10 +466,10 @@ async def yapp_functional(message: Message, state: FSMContext):
         transcription = await audio_file(message.voice.file_id)
         flag, response = await yapp(id, transcription, new_thread)
         if flag:
-            sticker_mssg.delete()
+            await sticker_mssg.delete()
             await message.answer(errormessage)
         else:
-            sticker_mssg.delete()
+            await sticker_mssg.delete()
             await message.answer(f"{response}\n\n Ты можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             await state.set_state(UserState.yapp)
             
