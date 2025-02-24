@@ -70,6 +70,8 @@ RATE_TRIAL_ASS_ID = os.getenv('RATE_TRIAL_ASS_ID')
 VISION_ASS_ID_2 = os.getenv("VISION_ASS_ID_2")        ##ACTUALISED
 
 TOKEN = BOT_TOKEN
+arrow_back = "⬅️"
+arrow_menu = "⏏️" #🆕
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(
     parse_mode=ParseMode.HTML))
@@ -535,7 +537,7 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
     Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
     buttons = [
         [InlineKeyboardButton(text="Получить оценку", callback_data="meal_rate")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu")]
+        [InlineKeyboardButton(text=arrow_menu, callback_data="menu")]
     ]
     if Iserror:
         await callback_query.message.edit_text("Ошибка при сохранении {answer}")
@@ -559,7 +561,7 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     gpt_resp = await no_thread_ass(question, RATE_DAY_ASS_ID)
     cleaned_resp = await remove_reference(gpt_resp)
     buttons = [
-        [InlineKeyboardButton(text="⏏️", callback_data="menu")]
+        [InlineKeyboardButton(text=arrow_menu, callback_data="menu")]
     ]
     await sticker_mssg.delete()
     await callback_query.message.edit_text(cleaned_resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
@@ -570,7 +572,7 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
     iserror, resp = await long_rate(callback_query.from_user.id, "3")
     await sticker_mssg.delete()
-    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu")]]
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu")]]
     if await state.get_state() == UserState.graph:
         await callback_query.message.answer(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     else:
@@ -581,7 +583,7 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
     iserror, resp = await long_rate(callback_query.from_user.id, "0")
     await sticker_mssg.delete()
-    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu")]]
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu")]]
     await callback_query.message.edit_text(resp, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 ######################################################### EDIT EDIT EDIT ##############################################
@@ -605,7 +607,7 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
         buttons = [
             [InlineKeyboardButton(text="Нет, выбрать другую дату", callback_data="menu_dnevnik_edit_same")],
             [InlineKeyboardButton(text="Да, заносим", callback_data="menu_dnevnik_add_edit")],
-            [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
+            [InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data=f"day_{date}")]
         ]
         await callback_query.message.edit_text("У тебя нету занесенного приема пищи за эту дату, заносим?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         return
@@ -616,7 +618,7 @@ async def meal_selected(callback_query: types.CallbackQuery, state: FSMContext):
             [InlineKeyboardButton(text="Да", callback_data=f"yesChange_{meal_id}")],
             [InlineKeyboardButton(text="Удалить", callback_data=f"deletemeal_{meal_id}")],
             [InlineKeyboardButton(text="Выбрать другой день", callback_data="menu_dnevnik_edit_same")],
-            [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data=f"day_{date}")]
+            [InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data=f"day_{date}")]
         ]
         await callback_query.message.edit_text(f"{pretty}", reply_markup=None)
         await callback_query.message.answer("Меняем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
@@ -628,7 +630,7 @@ async def delete_meal_selected(callback_query: types.CallbackQuery, state: FSMCo
     Iserror, response = await delete_meal(id, meal_id)
     print(f"{Iserror}, {response}")
     buttons = [
-        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik_edit")]
+        [InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_dnevnik_edit")]
     ]
     if Iserror : 
         await callback_query.message.edit_text("Что-то пошло не так", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
