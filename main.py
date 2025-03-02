@@ -796,7 +796,7 @@ async def main_change_user_info(callback_query: CallbackQuery, state: FSMContext
         await change_user_kkal(callback_query, state, kkal)
     elif callback_query.data == "menu_settings_profile_re-anket":
         await state.set_state(Questionnaire.first)
-        await process_first(callback_query.message, state)
+        await process_name(callback_query.message, state)
     elif callback_query.data == "menu_settings_profile_notif":
         await change_user_notifs(callback_query, state)
 
