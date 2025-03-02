@@ -796,7 +796,7 @@ async def main_change_user_info(callback_query: CallbackQuery, state: FSMContext
         await change_user_kkal(callback_query, state, kkal)
     elif callback_query.data == "menu_settings_profile_re-anket":
         await state.set_state(Questionnaire.first)
-        await process_first(callback_query, state)
+        await process_first(callback_query.message, state)
     elif callback_query.data == "menu_settings_profile_notif":
         await change_user_notifs(callback_query, state)
 
@@ -1813,7 +1813,7 @@ async def main_process_goal(callback_query: types.CallbackQuery, state: FSMConte
 
     if goal in ["+", "-"]:
         await process_goal(callback_query.message, state, goal)
-        await state.set_state(Questionnaire.w_loss_amount)
+        await state.set_state(Questionnaire.w_loss)
     elif goal == "=":
         await process_w_loss_amount(callback_query.message, state, goal)
         await state.update_data(w_loss_amount="0")
@@ -1825,7 +1825,7 @@ async def main_process_goal(callback_query: types.CallbackQuery, state: FSMConte
 async def main_process_w_loss(callback_query: types.CallbackQuery, state: FSMContext):
     user_data = await state.get_data()
     goal = user_data["goal"]
-    await process_w_loss(callback_query.message, state, goal)
+    await process_w_loss(callback_query, state, goal)
     await state.set_state(Questionnaire.w_loss_amount)
 
 @router.message(StateFilter(Questionnaire.w_loss_amount))

@@ -87,6 +87,25 @@ async def calculate(state):
             goal = "+"
     await state.update_data(goal=goal)
 
+async def calculate_w_loss_amount(state, goal):
+    state_data = await state.get_data()
+    ideal_w_l = state_data["ideal_weight_low"]
+    ideal_w_h = state_data["ideal_weight_high"]
+    user_w = state_data["weight"]
+    
+    if goal == "+":
+        user_weight_diff = int(ideal_w_l)-int(user_w)
+        amount = int(user_w/10)
+        if user_weight_diff<= amount:
+            amount = user_weight_diff
+        return f"Советую тебе набрать {amount} кг"
+    elif goal == "-":
+        user_weight_diff = int(user_w)-int(ideal_w_h)
+        amount = int(user_w/10)
+        if user_weight_diff <= amount:
+            amount = user_weight_diff
+        return f"Советую тебе сбросить {amount} кг"
+
 
 async def gen_text(state):
     user_data = await state.get_data()
@@ -332,14 +351,9 @@ async def process_goal(message, state, goal):
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.edit_text(text, reply_markup=keyboard)
 
-async def process_w_loss(message, state, goal):
-    text_add = "Знаешь, сколько кг хочешь набрать?"
-    text_remove = "Знаешь, сколько кг хочешь скинуть?"
-    if goal == "+":
-        text = text_add
-    elif goal == "-":
-        text = text_remove
-    await message.answer(text)
+async def process_w_loss(callback_query, state, goal):
+    text = await calculate_w_loss_amount()
+    await callback_query.message.answer(text)
 
 async def process_w_loss_amount(message, state, goal):
     text11 = "Считаю комфортную скорость похудения, чтобы результат закрепился надолго, а процесс тебе понравился!"
