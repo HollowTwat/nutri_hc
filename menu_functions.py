@@ -474,9 +474,10 @@ async def change_user_kkal(callback_query, state, kkal):
     await callback_query.message.edit_text(f"Текущая норма калорий: {kkal} ккал\nВведи новое число ккал", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.set_state(UserState.kkal_change)
 
-async def restart_anket(callback_query, state):
-    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
-    await callback_query.message.edit_text(f"indev", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+# async def restart_anket(callback_query, state):
+#     buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
+#     await callback_query.message.edit_text(f"indev", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
 
 async def change_user_notifs(callback_query, state):
     buttons = [
