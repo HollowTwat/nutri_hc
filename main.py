@@ -1938,10 +1938,6 @@ async def handle_image_upload(message: types.Message, state: FSMContext):
 
     await state.clear()
 
-@router.message(ImageUploadState.waiting_for_image)
-async def handle_invalid_content(message: types.Message):
-    await message.answer("Please send an image to get its file_id.")
-
 
 
 
