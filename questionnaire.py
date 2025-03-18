@@ -87,6 +87,25 @@ async def calculate(state):
             goal = "+"
     await state.update_data(goal=goal)
 
+async def calculate_w_loss_amount(state, goal):
+    state_data = await state.get_data()
+    ideal_w_l = state_data["ideal_weight_low"]
+    ideal_w_h = state_data["ideal_weight_high"]
+    user_w = state_data["weight"]
+    
+    if goal == "+":
+        user_weight_diff = int(ideal_w_l)-int(user_w)
+        amount = int(user_w/10)
+        if user_weight_diff<= amount:
+            amount = user_weight_diff
+        return f"Советую тебе набрать {amount} кг"
+    elif goal == "-":
+        user_weight_diff = int(user_w)-int(ideal_w_h)
+        amount = int(user_w/10)
+        if user_weight_diff <= amount:
+            amount = user_weight_diff
+        return f"Советую тебе сбросить {amount} кг"
+
 
 async def gen_text(state):
     user_data = await state.get_data()
@@ -163,7 +182,7 @@ async def process_mail(message, state):
 
 async def process_name(message, state):
     link = "https://www.nhlbi.nih.gov/health/educational/lose_wt/BMI/bmicalc.htm"
-    text1 = f"<b>Часть 1/3\n4 вопроса о тебе</b>\n{message.text}, при составлении твоего плана питания я буду ориентироваться на КБЖУ: твою норму калорий, белков, жиров и углеводов.\n\nЧтобы рассчитать её, <a href=\'{link}\'>мне нужно узнать</a>твой пол, возраст, вес и рост: если для роста 155 см вес в 50 кг — норма, то для роста 180 см это уже очень мало."
+    text1 = f"<b>Часть 1/3\n4 вопроса о тебе</b>\n{message.text}, при составлении твоего плана питания я буду ориентироваться на КБЖУ: твою норму калорий, белков, жиров и углеводов.\n\nЧтобы рассчитать её, <a href=\'{link}\'>мне нужно узнать</a> твой пол, возраст, вес и рост: если для роста 155 см вес в 50 кг — норма, то для роста 180 см это уже очень мало."
     text = "🟢⚪️⚪️⚪️ \nТвой пол"
     buttons = [
         [InlineKeyboardButton(text="Женский", callback_data="female")],
@@ -332,14 +351,9 @@ async def process_goal(message, state, goal):
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.edit_text(text, reply_markup=keyboard)
 
-async def process_w_loss(message, state, goal):
-    text_add = "Знаешь, сколько кг хочешь набрать?"
-    text_remove = "Знаешь, сколько кг хочешь скинуть?"
-    if goal == "+":
-        text = text_add
-    elif goal == "-":
-        text = text_remove
-    await message.answer(text)
+async def process_w_loss(callback_query, state, goal):
+    text = await calculate_w_loss_amount()
+    await callback_query.message.answer(text)
 
 async def process_w_loss_amount(message, state, goal):
     text11 = "Считаю комфортную скорость похудения, чтобы результат закрепился надолго, а процесс тебе понравился!"

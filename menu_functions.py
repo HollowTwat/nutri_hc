@@ -27,6 +27,9 @@ from functions import *
 from functions2 import *
 from all_states import *
 
+arrow_back = "⬅️"
+arrow_menu = "⏏️"  #🆕
+
 COU_LESS_IMG_1 = "AgACAgIAAxkBAAIFq2esppgH39WhLjmdYQGn7CnH2VbyAAIe7jEbb-RpSZ-LMYskHd_tAQADAgADeQADNgQ"
 COU_LESS_IMG_2 = "AgACAgIAAxkBAAIFr2espqUpBX8QZwXBahHhcR3-YadwAAIg7jEbb-RpSfx5HS7svr5LAQADAgADeQADNgQ"
 COU_LESS_IMG_3 = "AgACAgIAAxkBAAIFs2esprGR_uTd7csprwsrrmbt7TzLAAKB7jEbLgppSZacNITqSzTvAQADAgADeQADNgQ"
@@ -94,13 +97,13 @@ async def process_menu_course(message, state, id):
     if last_lesson == 21:
         current_lesson = 21
     else:
-        current_lesson = int(last_lesson)+1
+        current_lesson = last_lesson+1
 
     await state.update_data(current_lesson=current_lesson)
     buttons = [
         [InlineKeyboardButton(text=f"📖Начать Урок {current_lesson}", callback_data=f"d{current_lesson}")],
         [InlineKeyboardButton(text="✏️ Программа курса", callback_data="menu_course_info")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
+        [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "📚 Курс:"
@@ -116,7 +119,7 @@ async def process_menu_dnevnik(message, state):
         [InlineKeyboardButton(text="🔄Редактировать", callback_data="menu_dnevnik_edit")],
         [InlineKeyboardButton(text="📊 Аналитика", callback_data="menu_dnevnik_analysis")],
         [InlineKeyboardButton(text="📸 Инструкция", callback_data="menu_dnevnik_instruction")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
+        [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "🍽 Дневник питания:"
@@ -131,7 +134,7 @@ async def process_menu_nutri(message, state):
         [InlineKeyboardButton(text="🌿 Спросить Нутри", callback_data="menu_nutri_yapp")],
         [InlineKeyboardButton(text="👩‍🍳 Рецепт", callback_data="menu_nutri_reciepie")],
         [InlineKeyboardButton(text="🔍 Анализ этикетки", callback_data="menu_nutri_etiketka")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
+        [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "💬  Нутри:"
@@ -146,7 +149,7 @@ async def process_menu_settings(message, state):
         [InlineKeyboardButton(text="📌 Ваш профиль", callback_data="menu_settings_profile")],
         [InlineKeyboardButton(text="🆘 Помощь", callback_data="menu_settings_help")],
         [InlineKeyboardButton(text="💰 Условия подписки", callback_data="menu_settings_sub")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
+        [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "⚙️Дополнительное:"
@@ -188,8 +191,8 @@ async def process_menu_course_info(callback_query, state):
     step2txt = f"{current_lesson-1} уроков из 21 дня пройдено 💪  Осталось {22-current_lesson} уроков"
     buttons = [
         [InlineKeyboardButton(text="Посмотреть пройденные уроки", callback_data=f"menu_course_info_lessons_week_{lesson_week+1}")],
-        [InlineKeyboardButton(text="◀️", callback_data="menu_course"), 
-         InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
+        [InlineKeyboardButton(text=arrow_back, callback_data="menu_course"), 
+         InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
 
@@ -251,11 +254,11 @@ async def process_menu_dnevnik_edit(callback_query, state):
 
 async def process_menu_dnevnik_analysis(callback_query, state):
     buttons = [
-        [InlineKeyboardButton(text="Показать график за неделю", callback_data="menu_dnevnik_analysis_graph")],
-        [InlineKeyboardButton(text="Получить анализ пищи за неделю", callback_data="menu_dnevnik_analysis_rate-week")],
-        [InlineKeyboardButton(text="Получить аналитику за сегодня", callback_data="menu_dnevnik_analysis_rate-day")],
-        [InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik"), 
-         InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
+        [InlineKeyboardButton(text="Аналитика за сегодня", callback_data="menu_dnevnik_analysis_rate-day")],
+        [InlineKeyboardButton(text="Аналитика за неделю", callback_data="menu_dnevnik_analysis_rate-week")],
+        [InlineKeyboardButton(text="График за неделю", callback_data="menu_dnevnik_analysis_graph")],
+        [InlineKeyboardButton(text=arrow_back, callback_data="menu_dnevnik"), 
+         InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     iserror, total_kkal = await get_total_kkal(callback_query.from_user.id, "0")
@@ -283,7 +286,7 @@ async def process_menu_dnevnik_instruction_3(callback_query, state):
         InputMediaPhoto(media=INSTRUCTION_PIC_4)
     ]
     text = "💡 Внимательно изучи примеры, как правильно заносить приемы пищи в «Дневник питания»"
-    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik")]]
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_dnevnik")]]
     await callback_query.message.answer_media_group(media=media_files)
     await callback_query.message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
@@ -419,8 +422,8 @@ async def process_menu_settings_profile(callback_query, state):
         [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_settings_profile_kkal")],
         [InlineKeyboardButton(text="Заполнить анкету заново", callback_data="menu_settings_profile_re-anket")],
         [InlineKeyboardButton(text="Настроить уведомления", callback_data="menu_settings_profile_notif")],
-        [InlineKeyboardButton(text="◀️", callback_data="menu_settings"), 
-         InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
+        [InlineKeyboardButton(text=arrow_back, callback_data="menu_settings"), 
+         InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
@@ -429,8 +432,8 @@ async def process_menu_settings_profile(callback_query, state):
 async def process_menu_settings_help(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="Задать вопрос", callback_data="menu_settings_help_question")],
-        [InlineKeyboardButton(text="◀️", callback_data="menu_settings"), 
-         InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
+        [InlineKeyboardButton(text=arrow_back, callback_data="menu_settings"), 
+         InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = "Расскажи, с чем есть проблемы? \nПостараюсь помочь как можно быстрее"
@@ -440,9 +443,9 @@ async def process_menu_settings_sub(callback_query, state):
     subtype, repayment_time = await get_user_sub_info(callback_query.from_user.id)
     buttons = [
         [InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")],
-        [InlineKeyboardButton(text="Хочу отменить продление", url="https://my.cloudpayments.ru/")],
-        [InlineKeyboardButton(text="◀️", callback_data="menu_settings"), 
-         InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
+        [InlineKeyboardButton(text="Хочу отменить продление", url="https://my.cloudpayments.ru/", callback_data="menu")],   
+        [InlineKeyboardButton(text=arrow_back, callback_data="menu_settings"), 
+         InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = f"Твой текущий тариф:   \n\n☑️ Подписка на сервис Нутри {subtype} \n☑️ Дата автоматического продления: {repayment_time}"
@@ -462,24 +465,25 @@ async def process_menu_settings_sub(callback_query, state):
     await callback_query.message.edit_text(message, reply_markup=keyboard)
 
 async def change_user_name(callback_query, state, name):
-    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
     await callback_query.message.edit_text(f"Твоё имя у меня сейчас {name}, пиши то, на которое поменять", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.set_state(UserState.name_change)
 
 async def change_user_kkal(callback_query, state, kkal):
-    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
     await callback_query.message.edit_text(f"Текущая норма калорий: {kkal} ккал\nВведи новое число ккал", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.set_state(UserState.kkal_change)
 
-async def restart_anket(callback_query, state):
-    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
-    await callback_query.message.edit_text(f"indev", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+# async def restart_anket(callback_query, state):
+#     buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
+#     await callback_query.message.edit_text(f"indev", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
 
 async def change_user_notifs(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="Изменить время", callback_data="user_change_notif_time")],
         [InlineKeyboardButton(text="Отключить все уведомления", callback_data="user_notif_toggle")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]
+        [InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]
     ]
     await callback_query.message.edit_text("Меню уведомлений", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.set_state(UserState.menu)
@@ -487,7 +491,7 @@ async def change_user_notifs(callback_query, state):
 async def process_menu_settings_notif_toggle(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="Вкл", callback_data="True"), InlineKeyboardButton(text="Выкл", callback_data="False")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]
+        [InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]
     ]
     text_mapping = {"True": "Уведомления включены", "False": "Уведомления отключены", "user_notif_toggle": "Выбирай что хочешь сделать с уведомлениями"}
     text = text_mapping.get(callback_query.data)
@@ -502,7 +506,7 @@ async def process_menu_settings_notif_toggle(callback_query, state):
         await state.set_state(UserState.notif_toggle)
 
 async def ping_change_start(callback_query, state):
-    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
     text = "В какое время тебе удобно получать от меня утренний план на день?\n\nИдеально, если это будет перед едой: так ты сможешь делать все мои задания вовремя.\n\nУкажи время в формате ЧЧ:ММ Например 10:00"
     await callback_query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.set_state(UserState.morning_ping_change)
@@ -528,7 +532,7 @@ async def change_evening_ping(message, state):
         }
     }
     text = "Я обновила твои данные ✅"
-    buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
     iserror, answer = await add_or_update_usr_info(json.dumps(data))
     if not iserror:
         await message.answer(text)
@@ -544,7 +548,7 @@ async def process_change_kkal(message, state):
     }
     iserror, answer = await add_or_update_usr_info(json.dumps(data))
     if not iserror:
-        buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+        buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
         await message.answer("Я обновила твои данные ✅", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def process_change_name(message, state):
@@ -557,7 +561,7 @@ async def process_change_name(message, state):
     }
     iserror, answer = await add_or_update_usr_info(json.dumps(data))
     if not iserror:
-        buttons = [[InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_settings_profile")]]
+        buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
         await message.answer("Я обновила твои данные ✅", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
