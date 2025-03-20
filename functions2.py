@@ -11,6 +11,7 @@ import asyncio
 import aiohttp
 import shelve
 import random
+import sqlite3
 from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, html, Router, BaseMiddleware, types
 from aiogram.enums import ParseMode
@@ -23,6 +24,10 @@ RATE_WEEK_ASS_ID = os.getenv('RATE_WEEK_ASS_ID')
 RATE_TWONE_ASS_ID = os.getenv('RATE_TWONE_ASS_ID')
 RATE_DAY_ASS_ID = os.getenv("DAY_RATE")
 RECIPE_ASS_ID = os.getenv("RECIPE_ASS_ID")
+
+import logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 STICKER_ID = os.getenv("STICKER_ID")
@@ -314,10 +319,12 @@ async def process_img_rec(message, state, text, buttons):
     if Iserror:
         await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
+        await log_bot_response(pretty, message.from_user.id)
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
+        await log_bot_response(pretty, message.from_user.id)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 
@@ -334,10 +341,12 @@ async def process_audio_rec(message, state, text, buttons):
     if Iserror:
         await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
+        await log_bot_response(pretty, message.from_user.id)
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
+        await log_bot_response(pretty, message.from_user.id)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         
 
@@ -353,10 +362,12 @@ async def process_txt_rec(message, state, text, buttons):
     if Iserror:
         await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
+        await log_bot_response(pretty, message.from_user.id)
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
+        await log_bot_response(pretty, message.from_user.id)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         
 
@@ -372,10 +383,12 @@ async def edit_txt_rec(message, state, text, buttons):
     if Iserror:
         await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
+        await log_bot_response(pretty, message.from_user.id)
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
+        await log_bot_response(pretty, message.from_user.id)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def edit_audio_rec(message, state, text, buttons):
@@ -391,10 +404,12 @@ async def edit_audio_rec(message, state, text, buttons):
     if Iserror:
         await sticker_mssg.delete()
         await message.answer(f"офибка!!! \n{pretty}")
+        await log_bot_response(pretty, message.from_user.id)
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
+        await log_bot_response(pretty, message.from_user.id)
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 
@@ -546,7 +561,12 @@ async def saving_edit(callback_query, state):
             async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
                 data = await response.text()
                 print(data)
-                await callback_query.message.answer(f"{data}")
+                # await callback_query.message.answer(f"{data}")
+                await callback_query.answer()
+                if data != 0:
+                    await callback_query.message.answer("Успешно сохранено")
+                else:
+                    await callback_query.message.answer("Ошибка при сохранении")
         except aiohttp.ClientError as e:
             print(f"Поймали ошибку{e}")
 
@@ -605,18 +625,46 @@ async def get_user_sub_info(id):
         except aiohttp.ClientError as e:
             return False, e
 
-async def get_existing_topics():
-    topics = await bot.get_forum_topics(CHAT_ID)
-    return {topic.name: topic.message_thread_id for topic in topics.topics}
+DATABASE_FILE = "topics.db"
+    
+def init_db():
+    with sqlite3.connect(DATABASE_FILE) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS topics (
+                user_id INTEGER PRIMARY KEY,
+                thread_id INTEGER
+            )
+        """)
+        conn.commit()
 
+def get_thread_id(user_id: int) -> int:
+    with sqlite3.connect(DATABASE_FILE) as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT thread_id FROM topics WHERE user_id = ?", (user_id,))
+        result = cursor.fetchone()
+        return result[0] if result else None
+
+def save_thread_id(user_id: int, thread_id: int):
+    """Save the thread ID for a user in the database."""
+    with sqlite3.connect(DATABASE_FILE) as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT OR REPLACE INTO topics (user_id, thread_id)
+            VALUES (?, ?)
+        """, (user_id, thread_id))
+        conn.commit()
+    
 async def log_user_message(message):
 
-    existing_topics = await get_existing_topics()
     user_id = message.from_user.id
 
-    if str(user_id) not in existing_topics:
+    thread_id = get_thread_id(user_id)
+    if not thread_id:
         topic = await bot.create_forum_topic(CHAT_ID, name=str(user_id))
-        existing_topics[str(user_id)] = topic.message_thread_id
+        thread_id = topic.message_thread_id
+        save_thread_id(user_id, thread_id)
+        logger.info(f"Created new topic for user {user_id} with thread ID {thread_id}")
 
     if message.text:
         content = message.text
@@ -637,33 +685,40 @@ async def log_user_message(message):
     await bot.send_message(
         chat_id=CHAT_ID,
         text=f"User {user_id} sent:\n{content}",
-        message_thread_id=existing_topics[str(user_id)]
+        message_thread_id=thread_id
     )
 
 async def log_user_callback(callback_query):
 
-    existing_topics = await get_existing_topics()
     user_id = callback_query.from_user.id
 
-    if str(user_id) not in existing_topics:
+    thread_id = get_thread_id(user_id)
+    if not thread_id:
         topic = await bot.create_forum_topic(CHAT_ID, name=str(user_id))
-        existing_topics[str(user_id)] = topic.message_thread_id
+        thread_id = topic.message_thread_id
+        save_thread_id(user_id, thread_id)
+        logger.info(f"Created new topic for user {user_id} with thread ID {thread_id}")
 
     await bot.send_message(
         chat_id=CHAT_ID,
         text=f"callback:{callback_query.data}",
-        message_thread_id=existing_topics[str(user_id)]
+        message_thread_id=thread_id
     )
 
 async def log_bot_response(text, user_id):
-    existing_topics = await get_existing_topics()
 
-    if str(user_id) not in existing_topics:
+    thread_id = get_thread_id(user_id)
+    if not thread_id:
+        # Create a new topic with the user's ID as the topic name
         topic = await bot.create_forum_topic(CHAT_ID, name=str(user_id))
-        existing_topics[str(user_id)] = topic.message_thread_id
+        thread_id = topic.message_thread_id
+        save_thread_id(user_id, thread_id)
+        logger.info(f"Created new topic for user {user_id} with thread ID {thread_id}")
 
+    # Send the bot's response to the corresponding topic
     await bot.send_message(
         chat_id=CHAT_ID,
         text=text,
-        message_thread_id=existing_topics[str(user_id)]
+        message_thread_id=thread_id
     )
+    logger.info(f"Logged bot response for user {user_id} in topic {thread_id}")

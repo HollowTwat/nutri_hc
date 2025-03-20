@@ -431,8 +431,9 @@ async def process_menu_settings_profile(callback_query, state):
 
 async def process_menu_settings_help(callback_query, state):
     buttons = [
-        [InlineKeyboardButton(text="Задать вопрос", callback_data="menu_settings_help_question")],
-        [InlineKeyboardButton(text=arrow_back, callback_data="menu_settings"), 
+        # [InlineKeyboardButton(text="Задать вопрос", callback_data="menu_settings_help_question")],
+        [InlineKeyboardButton(text="Задать вопрос", url="t.me/nutri_care")],
+        [InlineKeyboardButton(text=arrow_back, callback_data="menu_settings"),
          InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
