@@ -1977,24 +1977,53 @@ async def default_handler(message: Message, state: FSMContext) -> None:
         [InlineKeyboardButton(text="Меню", callback_data="menu")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    if not current_state:
-        if message.sticker:
-            sticker_id = message.sticker.file_id
-            await message.answer(f"{sticker_id}")
-        else: 
-            if message.photo:
-                await state.set_state(UserState.recognition)
-                await dnevnik_functional(message, state)
-            elif message.voice:
-                await state.set_state(UserState.perehvat)
-                await perehvat(message, state)
-            elif message.text:
-                await state.set_state(UserState.perehvat)
-                await perehvat(message, state)
-            else:
-                await message.answer("Будут перехватчики", reply_markup=keyboard)
-    else:
-        await message.answer(f"Текущее состояние: {current_state}")
+    # if not current_state:
+    if message.sticker:
+        sticker_id = message.sticker.file_id
+        await message.answer(f"{sticker_id}")
+    else: 
+        if message.photo:
+            await state.set_state(UserState.recognition)
+            await dnevnik_functional(message, state)
+        elif message.voice:
+            await state.set_state(UserState.perehvat)
+            await perehvat(message, state)
+        elif message.text:
+            await state.set_state(UserState.perehvat)
+            await perehvat(message, state)
+    #         else:
+    #             await message.answer("Будут перехватчики", reply_markup=keyboard)
+    # else:
+    #     await message.answer(f"Текущее состояние: {current_state}", reply_markup=keyboard)
+
+
+# @router.message()
+# async def default_handler(message: Message, state: FSMContext) -> None:
+#     current_state = await state.get_state()
+#     # await state.update_data(full_sequence=False)
+#     buttons = [
+#         [InlineKeyboardButton(text="Меню", callback_data="menu")],
+#         ]
+#     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+#     no_perehvat_states = [UserState.change_user_info, UserState.name_change, UserState.kkal_change, UserState.morning_ping_change, UserState.evening_ping_change, UserState.info_coll, UserState.recognition, LayoverState.recognition, LayoverState.redact]
+#     if current_state not in no_perehvat_states:
+#         if message.sticker:
+#             sticker_id = message.sticker.file_id
+#             await message.answer(f"{sticker_id}")
+#         else: 
+#             if message.photo:
+#                 await state.set_state(UserState.recognition)
+#                 await dnevnik_functional(message, state)
+#             elif message.voice:
+#                 await state.set_state(UserState.perehvat)
+#                 await perehvat(message, state)
+#             elif message.text:
+#                 await state.set_state(UserState.perehvat)
+#                 await perehvat(message, state)
+#             else:
+#                 await message.answer("Будут перехватчики", reply_markup=keyboard)
+#     else:
+#         await message.answer(f"Текущее состояние: {current_state}", reply_markup=keyboard)
 
 
 # async def on_startup(dp):
