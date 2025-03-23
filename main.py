@@ -2015,7 +2015,7 @@ async def get_users_command(message: types.Message):
     pool = dp["db_pool"]
     try:
         async with pool.acquire() as connection:
-            rows = await connection.fetch("SELECT * FROM railway."public".user WHERE "IsActive"=TRUE")
+            rows = await connection.fetch("SELECT * FROM railway.'public'.user WHERE 'IsActive'=TRUE")
             print(rows)
             
             response = "Users:\n"
