@@ -2097,16 +2097,6 @@ async def default_handler(message: Message, state: FSMContext) -> None:
 #     else:
 #         await message.answer(f"Текущее состояние: {current_state}", reply_markup=keyboard)
 
-
-# async def on_startup(dp):
-#     conn = sqlite3.connect('user_states.db')
-#     cursor = conn.cursor()
-#     cursor.execute('SELECT user_id, state, data FROM user_states')
-#     for user_id, state, data in cursor.fetchall():
-#         await dp.storage.set_state(user=user_id, state=state)
-#         await dp.storage.set_data(user=user_id, data=eval(data))
-#     conn.close()
-
 async def create_db_pool():
     return await asyncpg.create_pool(DATABASE_URL)
 
