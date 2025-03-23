@@ -1991,8 +1991,9 @@ async def handle_image_upload(message: types.Message, state: FSMContext):
     await state.clear()
 
 
-@router.message(Command('get_users'))
+@router.message(Command("get_users"))
 async def get_users_command(message: types.Message):
+    print("GET_USERS")
     pool = message.bot.get("db_pool")
     try:
         async with pool.acquire() as connection:
