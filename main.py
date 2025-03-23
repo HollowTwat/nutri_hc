@@ -1997,17 +1997,14 @@ async def get_users_command(message: types.Message):
     pool = dp["db_pool"]
     try:
         async with pool.acquire() as connection:
-            # Fetch all rows from the 'user' table
-            rows = await connection.fetch("SELECT * FROM user")
+            rows = await connection.fetch("SELECT * FROM user WHERE IsActive = true")
             print(rows)
             
-            # Format the data into a message
             response = "Users:\n"
             for row in rows[:15]:
                 response += f"ID: {row['id']}, Username: {row['username']}\n"
                 # response += f"{row}\n"
             
-            # Send the response to the user
             await message.answer(response)
     except Exception as e:
         await message.answer(f"An error occurred: {e}")
