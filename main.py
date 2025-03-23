@@ -1992,7 +1992,7 @@ async def handle_image_upload(message: types.Message, state: FSMContext):
 
 
 @router.message(Command("get_meal"))
-async def get_users_command(message: types.Message):
+async def get_meals_command(message: types.Message):
     print("GET_USERS")
     pool = dp["db_pool"]
     try:
@@ -2015,7 +2015,7 @@ async def get_users_command(message: types.Message):
     pool = dp["db_pool"]
     try:
         async with pool.acquire() as connection:
-            rows = await connection.fetch("SELECT * FROM user WHERE IsActive = true")
+            rows = await connection.fetch("SELECT * FROM railway."public".user WHERE "IsActive"=TRUE")
             print(rows)
             
             response = "Users:\n"
