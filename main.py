@@ -83,9 +83,9 @@ arrow_menu = "⏏️" #🆕
 
 bot = Bot(token=TOKEN, default=DefaultBotProperties(
     parse_mode=ParseMode.HTML))
-storage = MemoryStorage()
+# storage = MemoryStorage()
 router = Router()
-dp = Dispatcher(storage=storage)
+# dp = Dispatcher(storage=storage)
 
 errorbuttons = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
 errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
@@ -1999,7 +1999,7 @@ async def get_meals_command(message: types.Message):
     try:
         async with pool.acquire() as connection:
             rows = await connection.fetch("SELECT id FROM meal WHERE type =0")
-            print(rows)
+            # print(rows)
             
             response = "Users:\n"
             for row in rows[:15]:
@@ -2016,7 +2016,7 @@ async def get_users_command(message: types.Message):
     try:
         async with pool.acquire() as connection:
             rows = await connection.fetch('SELECT id, username FROM railway."public".user WHERE "IsActive" = TRUE')
-            print(rows)
+            # print(rows)
             
             response = "Users:\n"
             for row in rows[:15]:
@@ -2109,6 +2109,61 @@ async def default_handler(message: Message, state: FSMContext) -> None:
 async def create_db_pool():
     return await asyncpg.create_pool(DATABASE_URL)
 
+# async def on_shutdown(dp: Dispatcher):
+#     logging.info("Shutting down...")
+    
+#     pool = dp.get("db_pool")
+#     if pool:
+#         await pool.close()
+#         logging.info("Database connection pool closed.")
+    
+#     bot = dp.bot
+#     await bot.send_message(chat_id=464682207, text="Bot is shutting down. Goodbye!")
+    
+    
+#     logging.info("Shutdown complete.")
+
+
+# async def main() -> None:
+#     init_db()
+#     pool = await create_db_pool()
+#     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+#     dp.include_router(router)
+#     dp.message.middleware(StateMiddleware())
+#     bot = Bot(token=TOKEN, default=DefaultBotProperties(
+#         parse_mode=ParseMode.HTML))
+#     dp["db_pool"] = pool
+#     # loop = asyncio.get_event_loop()
+#     # for sig in (signal.SIGTERM, signal.SIGINT):  # Handle SIGTERM and SIGINT
+#     #     loop.add_signal_handler(sig, lambda: asyncio.create_task(on_shutdown(dp)))
+
+#     await dp.start_polling(bot)
+
+# async def shutdown(signal, loop, dp: Dispatcher):
+#     logging.info(f"Received {signal.name}. Shutting down...")
+#     await on_shutdown(dp)
+#     loop.stop()
+
+# if __name__ == "__main__":
+#     loop = asyncio.get_event_loop()
+#     dp = Dispatcher()
+
+#     for sig in (signal.SIGTERM, signal.SIGINT):
+#         loop.add_signal_handler(
+#             sig,
+#             lambda sig=sig: asyncio.create_task(shutdown(sig, loop, dp))
+#         )
+#     try:
+#         loop.run_until_complete(main())
+#     except Exception as e:
+#         logging.error(f"Unexpected error: {e}")
+#     finally:
+#         loop.close()
+#         logging.info("Application stopped.")
+
+# if __name__ == "__main__":
+#     asyncio.run(main())
+
 async def on_shutdown(dp: Dispatcher):
     logging.info("Shutting down...")
     
@@ -2118,48 +2173,35 @@ async def on_shutdown(dp: Dispatcher):
         logging.info("Database connection pool closed.")
     
     bot = dp.bot
-    await bot.send_message(chat_id=464682207, text="Bot is shutting down. Goodbye!")
-    
-    
+    try:
+        await bot.send_message(chat_id=464682207, text="Bot is shutting down. Goodbye!")
+        logging.info("Shutdown notification sent to users.")
+    except Exception as e:
+        logging.error(f"Failed to send shutdown notification: {e}")
     logging.info("Shutdown complete.")
 
-
 async def main() -> None:
-    init_db()
-    pool = await create_db_pool()
+    storage = MemoryStorage()
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    pool = await create_db_pool()
+    dp = Dispatcher(close_loop_on_shutdown=False, storage=storage)
+    dp["db_pool"] = pool
     dp.include_router(router)
     dp.message.middleware(StateMiddleware())
-    bot = Bot(token=TOKEN, default=DefaultBotProperties(
-        parse_mode=ParseMode.HTML))
-    dp["db_pool"] = pool
-    # loop = asyncio.get_event_loop()
-    # for sig in (signal.SIGTERM, signal.SIGINT):  # Handle SIGTERM and SIGINT
-    #     loop.add_signal_handler(sig, lambda: asyncio.create_task(on_shutdown(dp)))
-
+    
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    
+    loop = asyncio.get_event_loop()
+    for sig in (signal.SIGTERM, signal.SIGINT):
+        loop.add_signal_handler( sig,lambda sig=sig: asyncio.create_task(on_shutdown(dp)))
+    
+    logging.info("Starting bot...")
     await dp.start_polling(bot)
 
-async def shutdown(signal, loop, dp: Dispatcher):
-    logging.info(f"Received {signal.name}. Shutting down...")
-    await on_shutdown(dp)
-    loop.stop()
-
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    dp = Dispatcher()
-
-    for sig in (signal.SIGTERM, signal.SIGINT):
-        loop.add_signal_handler(
-            sig,
-            lambda sig=sig: asyncio.create_task(shutdown(sig, loop, dp))
-        )
     try:
-        loop.run_until_complete(main())
+        asyncio.run(main())
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
     finally:
-        loop.close()
         logging.info("Application stopped.")
-
-# if __name__ == "__main__":
-#     asyncio.run(main())
