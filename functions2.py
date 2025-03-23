@@ -25,6 +25,9 @@ RATE_TWONE_ASS_ID = os.getenv('RATE_TWONE_ASS_ID')
 RATE_DAY_ASS_ID = os.getenv("DAY_RATE")
 RECIPE_ASS_ID = os.getenv("RECIPE_ASS_ID")
 
+arrow_back = "⬅️"
+arrow_menu = "⏏️"  #🆕
+
 import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -317,14 +320,15 @@ async def process_img_rec(message, state, text, buttons):
     print(vision)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
         await sticker_mssg.delete()
-        await message.answer(f"офибка!!! \n{pretty}")
-        await log_bot_response(pretty, message.from_user.id)
+        await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
-        await log_bot_response(pretty, message.from_user.id)
+        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 
@@ -339,14 +343,15 @@ async def process_audio_rec(message, state, text, buttons):
     vision = await generate_response(transcription, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
         await sticker_mssg.delete()
-        await message.answer(f"офибка!!! \n{pretty}")
-        await log_bot_response(pretty, message.from_user.id)
+        await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
-        await log_bot_response(pretty, message.from_user.id)
+        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         
 
@@ -360,14 +365,15 @@ async def process_txt_rec(message, state, text, buttons):
     vision = await generate_response(message.text, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
         await sticker_mssg.delete()
-        await message.answer(f"офибка!!! \n{pretty}")
-        await log_bot_response(pretty, message.from_user.id)
+        await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
-        await log_bot_response(pretty, message.from_user.id)
+        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
         
 
@@ -381,14 +387,15 @@ async def edit_txt_rec(message, state, text, buttons):
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
         await sticker_mssg.delete()
-        await message.answer(f"офибка!!! \n{pretty}")
-        await log_bot_response(pretty, message.from_user.id)
+        await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
-        await log_bot_response(pretty, message.from_user.id)
+        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def edit_audio_rec(message, state, text, buttons):
@@ -402,14 +409,15 @@ async def edit_audio_rec(message, state, text, buttons):
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
         await sticker_mssg.delete()
-        await message.answer(f"офибка!!! \n{pretty}")
-        await log_bot_response(pretty, message.from_user.id)
+        await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
         await message.answer(pretty)
-        await log_bot_response(pretty, message.from_user.id)
+        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 
