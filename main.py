@@ -2028,6 +2028,24 @@ async def get_users_command(message: types.Message):
     except Exception as e:
         await message.answer(f"An error occurred: {e}")
 
+@router.message(Command("check_active"))
+async def get_users_command(message: types.Message):
+    print("GET_USERS")
+    pool = dp["db_pool"]
+    try:
+        async with pool.acquire() as connection:
+            rows = await connection.fetch(f'SELECT IsActive FROM railway."public".user WHERE "id" = {message.from_user.id}')
+            # print(rows)
+            
+            response = "Users:\n"
+            for row in rows[:15]:
+                response += f"ID: {row['id']}, Username: {row['username']}\n"
+                # response += f"{row}\n"
+            
+            await message.answer(response)
+    except Exception as e:
+        await message.answer(f"An error occurred: {e}")
+
 
 
 
