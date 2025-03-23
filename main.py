@@ -2035,12 +2035,12 @@ async def get_users_command(message: types.Message):
     try:
         async with pool.acquire() as connection:
             rows = await connection.fetch(f'SELECT IsActive FROM railway."public".user WHERE "id" = {message.from_user.id}')
-            # print(rows)
+            print(rows)
             
-            response = "Users:\n"
-            for row in rows[:15]:
-                response += f"ID: {row['id']}, Username: {row['username']}\n"
-                # response += f"{row}\n"
+            response = str(rows)
+            # for row in rows[:15]:
+            #     response += f"ID: {row['id']}, Username: {row['username']}\n"
+            #     # response += f"{row}\n"
             
             await message.answer(response)
     except Exception as e:
