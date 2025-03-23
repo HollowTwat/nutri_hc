@@ -2003,7 +2003,7 @@ async def get_meals_command(message: types.Message):
             
             response = "Users:\n"
             for row in rows[:15]:
-                response += f"{row}\n"
+                response += f"{row['id']}\n"
             
             await message.answer(response)
     except Exception as e:
