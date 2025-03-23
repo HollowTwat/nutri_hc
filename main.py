@@ -80,6 +80,8 @@ storage = MemoryStorage()
 router = Router()
 dp = Dispatcher(storage=storage)
 
+errorbuttons = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
+errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
 
 
 class StateMiddleware(BaseMiddleware):
@@ -348,8 +350,7 @@ async def main_process_menu_nutri_etiketka(callback_query: CallbackQuery, state:
 
 @router.message(StateFilter(UserState.etiketka))
 async def main_process_etiketka_input(message: Message, state: FSMContext):
-    errorbuttons = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
-    errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
+     
     asyncio.create_task(log_user_message(message))
     if message.photo:
         sticker_mssg = await message.answer_sticker(STICKER_ID)
@@ -383,8 +384,7 @@ async def main_process_menu_nutri_rec_mealtype(callback_query: CallbackQuery, st
 
 @router.callback_query(lambda c: c.data.startswith("reciIt_"))
 async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, state: FSMContext):
-    errorbuttons = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
-    errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
+     
     asyncio.create_task(log_user_callback(callback_query))
     input_type = callback_query.data.split("_")[1]
     await state.update_data(input_rec_type=input_type)
@@ -497,8 +497,7 @@ async def perehvat_actual(callback_query: CallbackQuery, state: FSMContext):
 
 @router.message(StateFilter(UserState.yapp_new, UserState.yapp))
 async def yapp_functional(message: Message, state: FSMContext):
-    errorbuttons = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
-    errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
+     
     asyncio.create_task(log_user_message(message))
     if await state.get_state() == UserState.yapp_new:
         new_thread = True
@@ -618,8 +617,8 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == 'meal_rate')
 async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
-    errorbuttons = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
-    errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
+    # errorbuttons = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
+    # errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
     asyncio.create_task(log_user_callback(callback_query))
     sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
     state_data = await state.get_data()
@@ -662,8 +661,7 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_analysis_rate-day')
 async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
-    errorbuttons = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
-    errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
+     
     asyncio.create_task(log_user_callback(callback_query))
     try:
         sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
