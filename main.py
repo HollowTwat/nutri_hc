@@ -21,6 +21,7 @@ from aiogram.types import Message, FSInputFile, InlineKeyboardButton, InlineKeyb
 from openai import AsyncOpenAI, OpenAI
 import shelve
 import json
+import asyncpg
 
 from functions import *
 from functions2 import *
@@ -70,6 +71,11 @@ RATE_TRIAL_ASS_ID = os.getenv('RATE_TRIAL_ASS_ID')
 VISION_ASS_ID_2 = os.getenv("VISION_ASS_ID_2")        ##ACTUALISED
 
 TOKEN = BOT_TOKEN
+
+DATABASE_URL = (
+    f"postgresql://{os.getenv('PGUSER')}:{os.getenv('PGPASSWORD')}"
+    f"@{os.getenv('PGHOST')}:{os.getenv('PGPORT')}/{os.getenv('PGDATABASE')}"
+)
 # CHAT_ID = os.getenv('LOGS_CHAT_ID')
 arrow_back = "⬅️"
 arrow_menu = "⏏️" #🆕
@@ -617,8 +623,6 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == 'meal_rate')
 async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
-    # errorbuttons = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
-    # errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
     asyncio.create_task(log_user_callback(callback_query))
     sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
     state_data = await state.get_data()
@@ -1987,8 +1991,23 @@ async def handle_image_upload(message: types.Message, state: FSMContext):
     await state.clear()
 
 
-
-
+@router.message(Command('get_users'))
+async def get_users_command(message: types.Message):
+    pool = message.bot.get("db_pool")
+    try:
+        async with pool.acquire() as connection:
+            # Fetch all rows from the 'user' table
+            rows = await connection.fetch("SELECT * FROM user")
+            
+            # Format the data into a message
+            response = "Users:\n"
+            for row in rows[:15]:
+                response += f"ID: {row['id']}, Username: {row['username']}, Email: {row['email']}\n"
+            
+            # Send the response to the user
+            await message.answer(response)
+    except Exception as e:
+        await message.answer(f"An error occurred: {e}")
 
 
 
@@ -2069,14 +2088,19 @@ async def default_handler(message: Message, state: FSMContext) -> None:
 #         await dp.storage.set_data(user=user_id, data=eval(data))
 #     conn.close()
 
+async def create_db_pool():
+    return await asyncpg.create_pool(DATABASE_URL)
+
 
 async def main() -> None:
     init_db()
+    pool = await create_db_pool()
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     dp.include_router(router)
     dp.message.middleware(StateMiddleware())
     bot = Bot(token=TOKEN, default=DefaultBotProperties(
         parse_mode=ParseMode.HTML))
+    bot["db_pool"] = pool
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
