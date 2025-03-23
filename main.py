@@ -2101,7 +2101,7 @@ async def main() -> None:
     dp.message.middleware(StateMiddleware())
     bot = Bot(token=TOKEN, default=DefaultBotProperties(
         parse_mode=ParseMode.HTML))
-    bot["db_pool"] = pool
+    dp["db_pool"] = pool
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
