@@ -22,6 +22,7 @@ from openai import AsyncOpenAI, OpenAI
 import shelve
 import json
 import asyncpg
+import signal
 
 from functions import *
 from functions2 import *
@@ -2002,7 +2003,6 @@ async def get_meals_command(message: types.Message):
             
             response = "Users:\n"
             for row in rows[:15]:
-                # response += f"ID: {row['id']}, Username: {row['username']}\n"
                 response += f"{row}\n"
             
             await message.answer(response)
@@ -2015,7 +2015,7 @@ async def get_users_command(message: types.Message):
     pool = dp["db_pool"]
     try:
         async with pool.acquire() as connection:
-            rows = await connection.fetch("SELECT * FROM railway.'public'.user WHERE 'IsActive'=TRUE")
+            rows = await connection.fetch('SELECT * FROM railway."public".user WHERE "IsActive" = TRUE')
             print(rows)
             
             response = "Users:\n"
@@ -2109,6 +2109,17 @@ async def default_handler(message: Message, state: FSMContext) -> None:
 async def create_db_pool():
     return await asyncpg.create_pool(DATABASE_URL)
 
+async def on_shutdown(dp: Dispatcher):
+    logging.info("Shutting down...")
+    
+    pool = dp.get("db_pool")
+    if pool:
+        await pool.close()
+        logging.info("Database connection pool closed.")
+    
+    
+    logging.info("Shutdown complete.")
+
 
 async def main() -> None:
     init_db()
@@ -2119,6 +2130,10 @@ async def main() -> None:
     bot = Bot(token=TOKEN, default=DefaultBotProperties(
         parse_mode=ParseMode.HTML))
     dp["db_pool"] = pool
+    loop = asyncio.get_event_loop()
+    for sig in (signal.SIGTERM, signal.SIGINT):  # Handle SIGTERM and SIGINT
+        loop.add_signal_handler(sig, lambda: asyncio.create_task(on_shutdown(dp)))
+
     await dp.start_polling(bot)
 
 if __name__ == "__main__":
