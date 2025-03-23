@@ -1994,7 +1994,7 @@ async def handle_image_upload(message: types.Message, state: FSMContext):
 @router.message(Command("get_users"))
 async def get_users_command(message: types.Message):
     print("GET_USERS")
-    pool = message.bot.get("db_pool")
+    pool = dp["db_pool"]
     try:
         async with pool.acquire() as connection:
             # Fetch all rows from the 'user' table
