@@ -77,6 +77,7 @@ DATABASE_URL = (
     f"postgresql://{os.getenv('PGUSER')}:{os.getenv('PGPASSWORD')}"
     f"@{os.getenv('PGHOST')}:{os.getenv('PGPORT')}/{os.getenv('PGDATABASE')}"
 )
+
 # CHAT_ID = os.getenv('LOGS_CHAT_ID')
 arrow_back = "⬅️"
 arrow_menu = "⏏️" #🆕
