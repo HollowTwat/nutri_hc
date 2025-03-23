@@ -2003,7 +2003,8 @@ async def get_users_command(message: types.Message):
             # Format the data into a message
             response = "Users:\n"
             for row in rows[:15]:
-                response += f"ID: {row['id']}, Username: {row['username']}, Email: {row['email']}\n"
+                # response += f"ID: {row['id']}, Username: {row['username']}, Email: {row['email']}\n"
+                response += f"{row}\n"
             
             # Send the response to the user
             await message.answer(response)
