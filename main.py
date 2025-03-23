@@ -1999,12 +1999,13 @@ async def get_users_command(message: types.Message):
         async with pool.acquire() as connection:
             # Fetch all rows from the 'user' table
             rows = await connection.fetch("SELECT * FROM user")
+            print(rows)
             
             # Format the data into a message
             response = "Users:\n"
             for row in rows[:15]:
-                # response += f"ID: {row['id']}, Username: {row['username']}, Email: {row['email']}\n"
-                response += f"{row}\n"
+                response += f"ID: {row['id']}, Username: {row['username']}\n"
+                # response += f"{row}\n"
             
             # Send the response to the user
             await message.answer(response)
