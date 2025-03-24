@@ -2030,11 +2030,10 @@ async def get_users_command(message: types.Message):
 
 @router.message(Command("check_active"))
 async def user_active_command(message: types.Message):
-    print("GET_USERS")
     pool = dp["db_pool"]
     try:
         async with pool.acquire() as connection:
-            rows = await connection.fetch(f'SELECT IsActive FROM railway."public".user WHERE "id" = {message.from_user.id}')
+            rows = await connection.fetch(f'SELECT user.IsActive FROM railway."public".user WHERE "id" = {message.from_user.id}')
             print(rows)
             
             response = str(rows)
