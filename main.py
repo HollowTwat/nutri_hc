@@ -515,7 +515,7 @@ async def yapp_functional(message: Message, state: FSMContext):
     elif await state.get_state() == UserState.yapp:
         new_thread = False
     id = str(message.from_user.id)
-    buttons = [[InlineKeyboardButton(text='Меню', callback_data='menu')]]
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data='menu_back')]]
     errormessage = "Гпт вернул ошибку"
     if message.text:
         try:

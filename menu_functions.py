@@ -429,8 +429,7 @@ async def process_menu_settings_profile(callback_query, state):
         [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_settings_profile_kkal")],
         [InlineKeyboardButton(text="Заполнить анкету заново", callback_data="menu_settings_profile_re-anket")],
         [InlineKeyboardButton(text="Настроить уведомления", callback_data="menu_settings_profile_notif")],
-        [InlineKeyboardButton(text=arrow_back, callback_data="menu_settings"), 
-         InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
+        [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
@@ -543,8 +542,8 @@ async def change_evening_ping(message, state):
     buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
     iserror, answer = await add_or_update_usr_info(json.dumps(data))
     if not iserror:
-        await message.answer(text)
-        await state.set_state(UserState.menu, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await state.set_state(UserState.menu)
 
 async def process_change_kkal(message, state):
     await state.update_data(target_calories=message.text)
@@ -558,6 +557,7 @@ async def process_change_kkal(message, state):
     if not iserror:
         buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
         await message.answer("Я обновила твои данные ✅", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await state.set_state(UserState.menu)
 
 async def process_change_name(message, state):
     await state.update_data(name=message.text)
@@ -571,6 +571,7 @@ async def process_change_name(message, state):
     if not iserror:
         buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
         await message.answer("Я обновила твои данные ✅", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await state.set_state(UserState.menu)
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
 

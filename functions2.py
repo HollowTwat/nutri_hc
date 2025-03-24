@@ -32,8 +32,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
-STICKER_ID = os.getenv("STICKER_ID")
+from stickerlist import STICKER_IDS
+# STICKER_ID = os.getenv("STICKER_ID")
 CHAT_ID = os.getenv('LOGS_CHAT_ID')
 
 
@@ -337,7 +337,7 @@ async def yapp(id, question, new_thread):
         return True, "Ошибка обработки запроса"
     
 async def process_img_rec(message, state, text, buttons):
-    sticker_mssg = await message.answer_sticker(STICKER_ID)
+    sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
     id = str(message.from_user.id)
     url = await get_url(message.photo[-1].file_id)
     vision = await process_url(url, id, VISION_ASS_ID_2)
@@ -357,7 +357,7 @@ async def process_img_rec(message, state, text, buttons):
 
 
 async def process_audio_rec(message, state, text, buttons):
-    sticker_mssg = await message.answer_sticker(STICKER_ID)
+    sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
     id = str(message.from_user.id)
     transcription = await audio_file(message.voice.file_id)
     if await state.get_state() == UserState.recognition:
@@ -380,7 +380,7 @@ async def process_audio_rec(message, state, text, buttons):
         
 
 async def process_txt_rec(message, state, text, buttons):
-    sticker_mssg = await message.answer_sticker(STICKER_ID)
+    sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
     id = str(message.from_user.id)
     if await state.get_state() == UserState.recognition:
         await remove_thread(id)
@@ -402,7 +402,7 @@ async def process_txt_rec(message, state, text, buttons):
         
 
 async def edit_txt_rec(message, state, text, buttons):
-    sticker_mssg = await message.answer_sticker(STICKER_ID)
+    sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
     id = str(message.from_user.id)
     state_data = await state.get_data()
     old = state_data["old_food"]
@@ -423,7 +423,7 @@ async def edit_txt_rec(message, state, text, buttons):
         await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def edit_audio_rec(message, state, text, buttons):
-    sticker_mssg = await message.answer_sticker(STICKER_ID)
+    sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
     id = str(message.from_user.id)
     transcription = await audio_file(message.voice.file_id)
     await remove_thread(id)
@@ -456,7 +456,7 @@ def generate_day_buttons(data):
         text = f"{emote} {display_day} - {day['TotalKkal']} ккал"
         callback_data = f"day_{day['DisplayDay']}"
         buttons.insert(0,[InlineKeyboardButton(text=text, callback_data=callback_data)])
-    buttons.append([InlineKeyboardButton(text="⏏️", callback_data="menu"), InlineKeyboardButton(text="◀️", callback_data="menu_dnevnik")])
+    buttons.append([InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_dnevnik")])
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     return keyboard
 
