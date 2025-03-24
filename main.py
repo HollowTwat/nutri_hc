@@ -88,7 +88,7 @@ storage = MemoryStorage()
 router = Router()
 dp = Dispatcher(storage=storage)
 
-errorbuttons = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
+errorbuttons = [[InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
 errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
 
 
@@ -561,7 +561,8 @@ async def dnevnik_functional(message: Message, state: FSMContext):
     id = str(message.from_user.id)
     isActive = await check_is_active_state(id, state)
     if not isActive:
-        message.answer("Ваша подписка не активна")
+        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
+        message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", message.from_user.id))
         return
     confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
@@ -635,7 +636,8 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     id = callback_query.from_user.id
     isActive = await check_is_active_state(id, state)
     if not isActive:
-        callback_query.message.answer("Ваша подписка не активна")
+        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
+        callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
         return
     asyncio.create_task(log_user_callback(callback_query))
@@ -668,7 +670,8 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     id = callback_query.from_user.id
     isActive = await check_is_active_state(id, state)
     if not isActive:
-        callback_query.message.answer("Ваша подписка не активна")
+        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
+        callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
         return
     asyncio.create_task(log_user_callback(callback_query))
@@ -691,7 +694,8 @@ async def main_meal_rate_day(callback_query: CallbackQuery, state: FSMContext):
         id = callback_query.from_user.id
         isActive = await check_is_active_state(id, state)
         if not isActive:
-            callback_query.message.answer("Ваша подписка не активна")
+            bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
+            callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
             asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
             return
         sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
@@ -2060,7 +2064,7 @@ async def user_active_command(message: types.Message):
             rows = await connection.fetch(f'SELECT "IsActive" FROM "user" WHERE "tgId"={message.from_user.id}')
             print(rows)
             
-            response = str(rows)
+            response = f"{rows['IsActive']}"
             # for row in rows[:15]:
             #     response += f"ID: {row['id']}, Username: {row['username']}\n"
             #     # response += f"{row}\n"
