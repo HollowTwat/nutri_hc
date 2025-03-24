@@ -103,13 +103,13 @@ async def request_yapp_meals(id):
         try:
             async with session.post(url=url, headers=default_headers) as response:
                 user_data = await response.text()
-                print(f".text={user_data}")
-                try:
-                    user_jsoned = await response.json()
-                    print(f"ras_jsoned={user_jsoned}")
-                    print(f"jsoned= {user_jsoned['Meals']}")
-                except Exception as e:
-                    print(f"error:{e}")
+                # print(f".text={user_data}")
+                # try:
+                #     user_jsoned = await response.json()
+                #     print(f"ras_jsoned={user_jsoned}")
+                #     print(f"jsoned= {user_jsoned['Meals']}")
+                # except Exception as e:
+                #     print(f"error:{e}")
                 return False, user_data
         except aiohttp.ClientError as e:
             return True, ""

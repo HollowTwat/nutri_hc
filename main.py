@@ -50,11 +50,12 @@ from day20 import *
 from day21 import *
 from questionnaire import *
 from all_states import *
+from stickerlist import STICKER_IDS
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")                    ##ACTUALISED
 OPENAI_KEY = os.getenv("OPENAI_KEY")                  ##ACTUALISED
 
-STICKER_ID = os.getenv("STICKER_ID")
+# STICKER_ID = os.getenv("STICKER_ID")
 
 #ASSISTANTS FFS HOW MANY CAN THERE BE MAAAAAN
 VISION_ASSISTANT_ID = os.getenv('VISION_ASSISTANT_ID')
@@ -363,7 +364,7 @@ async def main_process_etiketka_input(message: Message, state: FSMContext):
      
     asyncio.create_task(log_user_message(message))
     if message.photo:
-        sticker_mssg = await message.answer_sticker(STICKER_ID)
+        sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
         iserror, user_data = await get_user_info(message.from_user.id)
         user_info = json.loads(user_data)
         allergies = user_info.get("user_info_meals_ban")
@@ -414,7 +415,7 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         await menu_nutri_rec_input_2(callback_query, state)
         return
     elif input_type == "3":
-        sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
+        sticker_mssg = await callback_query.message.answer_sticker(random.choice(STICKER_IDS))
         buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
         await state.set_state(UserState.reci)
         iserror1, user_data = await get_user_info(callback_query.from_user.id)
@@ -428,7 +429,7 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         elif iserror:
             await callback_query.message.answer("Упс, поймали ошибку", reply_markup=errorkeys)
     elif input_type == "retry":
-        sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
+        sticker_mssg = await callback_query.message.answer_sticker(random.choice(STICKER_IDS))
         buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
         question = f"Придумай другой рецепт"
         iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
@@ -443,7 +444,7 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
 @router.message(StateFilter(UserState.reci))
 async def main_process_reci_input(message: Message, state: FSMContext):
     asyncio.create_task(log_user_message(message))
-    sticker_mssg = await message.answer_sticker(STICKER_ID)
+    sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
     meal_type_mapping = {"0": "Завтрака", "2": "Обеда", "4": "Ужина", "5":"Перекуса"}
     state_data = await state.get_data()
     input_type = state_data["input_rec_type"]
@@ -518,7 +519,7 @@ async def yapp_functional(message: Message, state: FSMContext):
     errormessage = "Гпт вернул ошибку"
     if message.text:
         try:
-            sticker_mssg = await message.answer_sticker(STICKER_ID)
+            sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
             flag, response = await yapp(id, message.text, new_thread)
             if flag:
                 await sticker_mssg.delete()
@@ -534,7 +535,7 @@ async def yapp_functional(message: Message, state: FSMContext):
         
     elif message.voice:
         try:
-            sticker_mssg = await message.answer_sticker(STICKER_ID)
+            sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
             transcription = await audio_file(message.voice.file_id)
             flag, response = await yapp(id, transcription, new_thread)
             if flag:
@@ -641,7 +642,7 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
         return
     asyncio.create_task(log_user_callback(callback_query))
-    sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
+    sticker_mssg = await callback_query.message.answer_sticker(random.choice(STICKER_IDS))
     state_data = await state.get_data()
     food = state_data["latest_food"]
     Iserror, user_data = await get_user_info(callback_query.from_user.id)
@@ -675,7 +676,7 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
         return
     asyncio.create_task(log_user_callback(callback_query))
-    sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
+    sticker_mssg = await callback_query.message.answer_sticker(sticker=random.choice(STICKER_IDS))
     iserror, resp = await long_rate(callback_query.from_user.id, "3")
     await sticker_mssg.delete()
     buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu")]]
@@ -698,7 +699,7 @@ async def main_meal_rate_day(callback_query: CallbackQuery, state: FSMContext):
             callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
             asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
             return
-        sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
+        sticker_mssg = await callback_query.message.answer_sticker(sticker=random.choice(STICKER_IDS))
         iserror, resp = await long_rate(callback_query.from_user.id, "0")
         await sticker_mssg.delete()
         if iserror:
