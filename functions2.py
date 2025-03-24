@@ -344,10 +344,11 @@ async def process_img_rec(message, state, text, buttons):
     print(vision)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
-        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
         await sticker_mssg.delete()
-        await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
-        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
+        # await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        await message.answer(f"Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        asyncio.create_task(log_bot_response(f"ошибка в распознании {pretty}", message.from_user.id))
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
@@ -367,10 +368,11 @@ async def process_audio_rec(message, state, text, buttons):
     vision = await generate_response(transcription, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
-        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
         await sticker_mssg.delete()
-        await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
-        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
+        # await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        await message.answer(f"Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        asyncio.create_task(log_bot_response(f"ошибка в распознании {pretty}", message.from_user.id))
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
@@ -389,10 +391,11 @@ async def process_txt_rec(message, state, text, buttons):
     vision = await generate_response(message.text, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
-        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
         await sticker_mssg.delete()
-        await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
-        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
+        # await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        await message.answer(f"Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        asyncio.create_task(log_bot_response(f"ошибка в распознании {pretty}", message.from_user.id))
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
@@ -411,10 +414,11 @@ async def edit_txt_rec(message, state, text, buttons):
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
-        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
         await sticker_mssg.delete()
-        await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
-        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
+        # await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        await message.answer(f"Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        asyncio.create_task(log_bot_response(f"ошибка в распознании {pretty}", message.from_user.id))
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
@@ -433,10 +437,11 @@ async def edit_audio_rec(message, state, text, buttons):
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
-        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]]
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
         await sticker_mssg.delete()
-        await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
-        asyncio.create_task(log_bot_response(pretty, message.from_user.id))
+        # await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        await message.answer(f"Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        asyncio.create_task(log_bot_response(f"ошибка в распознании {pretty}", message.from_user.id))
     else: 
         await sticker_mssg.delete()
         await state.update_data(latest_food = food)
@@ -698,27 +703,75 @@ async def log_user_message(message):
         save_thread_id(user_id, thread_id)
         logger.info(f"Created new topic for user {user_id} with thread ID {thread_id}")
 
+    # if message.text:
+    #     content = message.text
+    # elif message.photo:
+    #     photo = message.photo[-1]
+    #     content = f"📷 Photo: {photo.file_id}"
+    # elif message.voice:
+    #     content = f"🎤 Voice: {message.voice.file_id}"
+    # elif message.document:
+    #     content = f"📄 Document: {message.document.file_id}"
+    # elif message.video:
+    #     content = f"🎥 Video: {message.video.file_id}"
+    # elif message.audio:
+    #     content = f"🎵 Audio: {message.audio.file_id}"
+    # else:
+    #     content = "Unsupported message type"
+
+    # await bot.send_message(
+    #     chat_id=CHAT_ID,
+    #     text=f"User {user_id} sent:\n{content}",
+    #     message_thread_id=thread_id
+    # )
     if message.text:
-        content = message.text
+        await bot.send_message(
+            chat_id=CHAT_ID,
+            text=f"User {user_id} sent:\n{message.text}",
+            message_thread_id=thread_id
+        )
     elif message.photo:
         photo = message.photo[-1]
-        content = f"📷 Photo: {photo.file_id}"
+        await bot.send_photo(
+            chat_id=CHAT_ID,
+            photo=photo.file_id,
+            caption=f"User {user_id} sent a photo.",
+            message_thread_id=thread_id
+        )
     elif message.voice:
-        content = f"🎤 Voice: {message.voice.file_id}"
+        await bot.send_voice(
+            chat_id=CHAT_ID,
+            voice=message.voice.file_id,
+            caption=f"User {user_id} sent a voice message.",
+            message_thread_id=thread_id
+        )
     elif message.document:
-        content = f"📄 Document: {message.document.file_id}"
+        await bot.send_document(
+            chat_id=CHAT_ID,
+            document=message.document.file_id,
+            caption=f"User {user_id} sent a document.",
+            message_thread_id=thread_id
+        )
     elif message.video:
-        content = f"🎥 Video: {message.video.file_id}"
+        await bot.send_video(
+            chat_id=CHAT_ID,
+            video=message.video.file_id,
+            caption=f"User {user_id} sent a video.",
+            message_thread_id=thread_id
+        )
     elif message.audio:
-        content = f"🎵 Audio: {message.audio.file_id}"
+        await bot.send_audio(
+            chat_id=CHAT_ID,
+            audio=message.audio.file_id,
+            caption=f"User {user_id} sent an audio file.",
+            message_thread_id=thread_id
+        )
     else:
-        content = "Unsupported message type"
-
-    await bot.send_message(
-        chat_id=CHAT_ID,
-        text=f"User {user_id} sent:\n{content}",
-        message_thread_id=thread_id
-    )
+        await bot.send_message(
+            chat_id=CHAT_ID,
+            text=f"User {user_id} sent an unsupported message type.",
+            message_thread_id=thread_id
+        )
 
 async def log_user_callback(callback_query):
 
