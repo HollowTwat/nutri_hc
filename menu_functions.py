@@ -352,10 +352,7 @@ async def menu_nutri_rec_input_2(callback_query, state):
 
 ################## SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU SETTINGS_MENU ##################
 async def check_user_variable(state: FSMContext, var_name: str):
-    """Check if a specific variable is set in the state."""
     user_data = await state.get_data()
-    
-    # Check if variable exists and is not empty
     if var_name in user_data and user_data[var_name]:
         return True
     return False

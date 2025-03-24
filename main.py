@@ -126,6 +126,8 @@ async def main_menu_handler(message: Message, state: FSMContext) -> None:
     await menu_handler(message, state)
 
 
+
+
 @router.callback_query(lambda c: c.data == 'menu')
 async def main_menu_cb_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     asyncio.create_task(log_user_callback(callback_query))
@@ -557,6 +559,11 @@ async def yapp_functional(message: Message, state: FSMContext):
 async def dnevnik_functional(message: Message, state: FSMContext):
     asyncio.create_task(log_user_message(message))
     id = str(message.from_user.id)
+    isActive = await check_is_active_state(id, state)
+    if not isActive:
+        message.answer("Ваша подписка не активна")
+        asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", message.from_user.id))
+        return
     confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
     # confirm_text = "Все верно?"
     buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
@@ -625,6 +632,12 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == 'meal_rate')
 async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
+    id = callback_query.from_user.id
+    isActive = await check_is_active_state(id, state)
+    if not isActive:
+        callback_query.message.answer("Ваша подписка не активна")
+        asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
+        return
     asyncio.create_task(log_user_callback(callback_query))
     sticker_mssg = await callback_query.message.answer_sticker(STICKER_ID)
     state_data = await state.get_data()
@@ -652,6 +665,12 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_analysis_rate-week')
 async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
+    id = callback_query.from_user.id
+    isActive = await check_is_active_state(id, state)
+    if not isActive:
+        callback_query.message.answer("Ваша подписка не активна")
+        asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
+        return
     asyncio.create_task(log_user_callback(callback_query))
     sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
     iserror, resp = await long_rate(callback_query.from_user.id, "3")
@@ -666,10 +685,15 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
         asyncio.create_task(log_bot_response(resp, callback_query.from_user.id))
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik_analysis_rate-day')
-async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
-     
+async def main_meal_rate_day(callback_query: CallbackQuery, state: FSMContext):
     asyncio.create_task(log_user_callback(callback_query))
     try:
+        id = callback_query.from_user.id
+        isActive = await check_is_active_state(id, state)
+        if not isActive:
+            callback_query.message.answer("Ваша подписка не активна")
+            asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
+            return
         sticker_mssg = await callback_query.message.answer_sticker(sticker=STICKER_ID)
         iserror, resp = await long_rate(callback_query.from_user.id, "0")
         await sticker_mssg.delete()
@@ -2033,7 +2057,7 @@ async def user_active_command(message: types.Message):
     pool = dp["db_pool"]
     try:
         async with pool.acquire() as connection:
-            rows = await connection.fetch(f'SELECT "user.IsActive" FROM railway."public".user WHERE "id" = {message.from_user.id}')
+            rows = await connection.fetch(f'SELECT "IsActive" FROM "user" WHERE "tgId"={message.from_user.id}')
             print(rows)
             
             response = str(rows)
