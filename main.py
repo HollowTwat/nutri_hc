@@ -2147,6 +2147,7 @@ async def create_db_pool():
 
 async def on_shutdown(dp: Dispatcher):
     logging.info("Shutting down...")
+    print("on_shutdown")
     
     pool = dp.get("db_pool")
     if pool:

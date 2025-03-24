@@ -90,6 +90,31 @@ async def request_longrate_question(id, period):
             return True, ""
     return
 
+async def request_yapp_meals(id):
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserMealsForAnal?userTgId={id}"
+    default_headers = {
+        "Content-Type": "application/json"
+    }
+    # data = {"userTgId": id, "period": period}
+    async with aiohttp.ClientSession() as session:
+        default_headers = {
+            "Content-Type": "application/json"
+        }
+        try:
+            async with session.post(url=url, headers=default_headers) as response:
+                user_data = await response.text()
+                print(f".text={user_data}")
+                try:
+                    user_jsoned = await response.json()
+                    print(f"ras_jsoned={user_jsoned}")
+                    print(f"jsoned= {user_jsoned['Meals']}")
+                except Exception as e:
+                    print(f"error:{e}")
+                return False, user_data
+        except aiohttp.ClientError as e:
+            return True, ""
+    return
+
 def make_lesson_week_buttons(dict, week):
     emote_mapping = {True: "✅", False: "⭕️"}
     weekdays = 7*(week-1)
@@ -284,12 +309,11 @@ def create_day_rate_question(user_info, food):
 
 async def yapp(id, question, new_thread):
     
-    print('day1_yapp triggered')
-    
     if new_thread:
         await remove_yapp_thread(id)
-        iserror, user_data = await get_user_info(id)
-        await create_thread_with_extra_info(f"{str(user_data)}", id, YAPP_SESH_ASSISTANT_ID)
+        iserror1, user_data = await get_user_info(id)
+        iserror2, week_data = await request_yapp_meals(id)
+        await create_thread_with_extra_info(f"user_data: {str(user_data)} user_meals:{str(week_data)}", id, YAPP_SESH_ASSISTANT_ID)
     
     try:
         response = await yapp_assistant(question, id, YAPP_SESH_ASSISTANT_ID)
