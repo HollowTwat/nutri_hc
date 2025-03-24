@@ -27,9 +27,9 @@ from functions2 import *
 
 from all_states import *
 
-IMG1 = "AgACAgIAAxkBAAILRme1EJkAAZGV3-UpIkYoDmMwOmDFAAT2MRvY0KlJw4krSXq24EYBAAMCAAN5AAM2BA"
+# IMG1 = "AgACAgIAAxkBAAILRme1EJkAAZGV3-UpIkYoDmMwOmDFAAT2MRvY0KlJw4krSXq24EYBAAMCAAN5AAM2BA"
 
-# IMG1 = "AgACAgIAAxkBAAEEXDBn2e7-uUpt_7cNI66tRliNwwY_mQACu_AxG2W90Eq6cdJV8UGnwwEAAwIAA3kAAzYE"
+IMG1 = "AgACAgIAAxkBAAEEXDBn2e7-uUpt_7cNI66tRliNwwY_mQACu_AxG2W90Eq6cdJV8UGnwwEAAwIAA3kAAzYE"
 
 async def process_l20_step_1(callback_query, state):
     iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
