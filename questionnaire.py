@@ -196,6 +196,10 @@ async def process_mail(message, state):
         ]
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
         await message.answer(text, reply_markup=keyboard)
+
+async def process_reanket(callback_query, state):
+    text = "<b>Как тебя зовут?</b>"
+    await callback_query.message.edit_text(text)
     
 
 async def process_name(message, state):
