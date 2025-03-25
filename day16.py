@@ -82,6 +82,11 @@ async def process_l16_step_2(callback_query, state):
         InputMediaPhoto(media=IMG10)
     ]
     await callback_query.message.answer_media_group(media=media_files)
+    try:
+        issuccess = await add_user_lesson(callback_query.from_user.id, "16")
+        asyncio.create_task(log_bot_response(f"lesson 16 saved status{issuccess} "), callback_query.from_user.id)
+    except Exception as e:
+        print(e)
     
 
 async def process_l16_step_2_2(callback_query, state):
@@ -107,6 +112,7 @@ async def process_l16_step_12(callback_query, state):
         )
     await callback_query.answer()
 
+
 async def process_l16_step_12_2(callback_query, state):
     await state.set_state(LessonStates16.step_12)
     await callback_query.message.answer(
@@ -114,5 +120,6 @@ async def process_l16_step_12_2(callback_query, state):
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Анализ этикетки", callback_data="menu_nutri_etiketka")]])
         )
     await callback_query.answer()
+    
 
 

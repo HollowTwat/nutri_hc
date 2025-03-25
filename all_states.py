@@ -36,6 +36,9 @@ class LayoverState(StatesGroup):
     saving_confirmation = State()
     saving = State()
 
+class PostStates(StatesGroup):
+    waiting_for_post = State()
+
 class LessonStates(StatesGroup):
     step_1 = State()
     step_2 = State()

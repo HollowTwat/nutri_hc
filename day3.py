@@ -184,6 +184,11 @@ async def process_l3_step_5_3(callback_query, state):
     await callback_query.message.answer("Значит, действительно пора поесть! \n\nНе забывай: делай это не спеша, чтобы вовремя почувствовать насыщение. Старайся оценить его уровень по 10-баллльной шкале. \n\nСытость на 6–7 баллов — то, к чему мы стремимся. \n\nИ обязательно заноси приём пищи в дневник питания.", 
     reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]]))
     await callback_query.answer()
+    try:
+        issuccess = await add_user_lesson(callback_query.from_user.id, "3")
+        asyncio.create_task(log_bot_response(f"lesson 3 saved status{issuccess} "), callback_query.from_user.id)
+    except Exception as e:
+        print(e)
 
     ############ EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING #############
 

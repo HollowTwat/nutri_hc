@@ -49,3 +49,8 @@ async def process_l19_step_1(callback_query, state):
         "Это очень прочный фундамент для того, чтобы начать новую жизнь! Чтобы точно превратить осознанное питание в привычку, продолжай пользоваться дневником и другими функциями Нутри. \n\nЗавтра будем звонить в колокольчик последнего звонка и отправлять тебя в самостоятельную жизнь! Но с поддержкой Нутри, конечно!",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]])
     )
+    try:
+        issuccess = await add_user_lesson(callback_query.from_user.id, "19")
+        asyncio.create_task(log_bot_response(f"lesson 19 saved status{issuccess} "), callback_query.from_user.id)
+    except Exception as e:
+        print(e)

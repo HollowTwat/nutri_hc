@@ -109,6 +109,11 @@ async def process_l7_step_7(poll_answer, state):
     await bot.send_photo(chat_id=poll_answer.user.id,
                          photo=IMG1
         )
+    try:
+        issuccess = await add_user_lesson(poll_answer.user.id, "7")
+        asyncio.create_task(log_bot_response(f"lesson 7 saved status{issuccess} "), poll_answer.user.id)
+    except Exception as e:
+        print(e)
     
     iserror, week_resp = await long_rate(poll_answer.user.id, "3")
     if not iserror:

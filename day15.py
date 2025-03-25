@@ -89,6 +89,11 @@ async def process_l15_step_2(callback_query, state):
         ])
     )
     await callback_query.answer()
+    try:
+        issuccess = await add_user_lesson(callback_query.from_user.id, "15")
+        asyncio.create_task(log_bot_response(f"lesson 15 saved status{issuccess} "), callback_query.from_user.id)
+    except Exception as e:
+        print(e)
 
 async def process_l15_step_2_2(callback_query, state):
     await state.clear()
@@ -112,6 +117,11 @@ async def process_l15_step_12(callback_query, state):
         "Отлично! \nЕсли ты уже сделал(а) закупки, то уже скоро присмотримся к ним повнимательнее, а если нет — завтра вместе отправимся в магазин и будем учиться читать этикетки, чтобы выбрать в магазине лучшие продукты для твоего недельного меню.",
         )
     await callback_query.answer()
+    try:
+        issuccess = await add_user_lesson(callback_query.user.id, "15")
+        asyncio.create_task(log_bot_response(f"lesson 15 saved status{issuccess} "), callback_query.user.id)
+    except Exception as e:
+        print(e)
 
 async def process_l15_step_12_2(callback_query, state):
     await callback_query.message.answer(

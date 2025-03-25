@@ -210,6 +210,7 @@ async def dnevnik_layover(message, state, callback_mssg):
     prev_state = await state.get_state()
 
     await state.set_state(LayoverState.recognition)
+    await state.update_data(extra_plate=False)
 
     await state.update_data(prev_state=prev_state)
     await state.update_data(callback_mssg=callback_mssg)
@@ -306,6 +307,7 @@ async def layover_saving(callback_query: CallbackQuery, state: FSMContext):
 async def main_process_menu_dnevnik_input(callback_query: CallbackQuery, state: FSMContext):
     asyncio.create_task(log_user_callback(callback_query))
     await state.set_state(UserState.recognition)
+    await state.update_data(extra_plate=False)
     await process_menu_dnevnik_input(callback_query, state)
 
 @router.callback_query(lambda c: c.data.startswith("menu_dnevnik_edit"))
@@ -499,6 +501,7 @@ async def perehvat_actual(callback_query: CallbackQuery, state: FSMContext):
         await yapp_functional(perehvat_mssg, state)
     elif callback_query.data == "perehvat_dnevnik":
         await state.set_state(UserState.recognition)
+        await state.update_data(extra_plate=False)
         await dnevnik_functional(perehvat_mssg, state)
 
 
@@ -559,6 +562,8 @@ async def yapp_functional(message: Message, state: FSMContext):
 @router.message(StateFilter(UserState.recognition))
 async def dnevnik_functional(message: Message, state: FSMContext):
     asyncio.create_task(log_user_message(message))
+    state_data = await state.get_data()
+    extra_plate = state_data.get('extra_plate', False)
     id = str(message.from_user.id)
     isActive = await check_is_active_state(id, state)
     if not isActive:
@@ -566,24 +571,37 @@ async def dnevnik_functional(message: Message, state: FSMContext):
         message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", message.from_user.id))
         return
-    confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
-    # confirm_text = "Все верно?"
+    if not extra_plate:
+        confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
+    elif extra_plate:
+        confirm_text = "Все верно?"
     buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
-               [InlineKeyboardButton(text="Все хорошо", callback_data="save")]]
+            [InlineKeyboardButton(text="Все хорошо", callback_data="save")]]
     if message.photo:
         await process_img_rec(message, state, confirm_text, buttons)
-        await state.set_state(UserState.saving_confirmation)
+        if not extra_plate:
+            await state.set_state(UserState.saving_confirmation)
+        elif extra_plate:
+            await state.set_state(UserState.saving)
     elif message.voice:
         await process_audio_rec(message, state, confirm_text, buttons)
-        await state.set_state(UserState.saving_confirmation)
+        if not extra_plate:
+            await state.set_state(UserState.saving_confirmation)
+        elif extra_plate:
+            await state.set_state(UserState.saving)
     elif message.text:
         await process_txt_rec(message, state, confirm_text, buttons)
-        await state.set_state(UserState.saving_confirmation)
+        if not extra_plate:
+            await state.set_state(UserState.saving_confirmation)
+        elif extra_plate:
+            await state.set_state(UserState.saving)
     else: message.answer("0_o")
 
 @router.message(StateFilter(UserState.redact))
 async def dnevnik_functional_edit(message: Message, state: FSMContext):
     asyncio.create_task(log_user_message(message))
+    state_data = await state.get_data()
+    extra_plate = state_data.get('extra_plate', False)
     edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
     # confirm_text = "Все верно?\n\n💡Кстати не забывай пить воду, чтобы избежать обезвоживания"
     confirm_text = "Все верно?"
@@ -593,10 +611,16 @@ async def dnevnik_functional_edit(message: Message, state: FSMContext):
         await message.answer(edit_text)
     elif message.voice:
         await process_audio_rec(message, state, confirm_text, buttons)
-        await state.set_state(UserState.saving_confirmation)
+        if not extra_plate:
+            await state.set_state(UserState.saving_confirmation)
+        elif extra_plate:
+            await state.set_state(UserState.saving)
     elif message.text:
         await process_txt_rec(message, state, confirm_text, buttons)
-        await state.set_state(UserState.saving_confirmation)
+        if not extra_plate:
+            await state.set_state(UserState.saving_confirmation)
+        elif extra_plate:
+            await state.set_state(UserState.saving)
     else: message.answer("0_o")
 
 @router.callback_query(StateFilter(UserState.saving_confirmation))
@@ -620,17 +644,53 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
     asyncio.create_task(log_user_callback(callback_query))
     state_data = await state.get_data()
     food = state_data["latest_food"]
-    Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
-    buttons = [
-        [InlineKeyboardButton(text="Получить оценку", callback_data="meal_rate")],
-        [InlineKeyboardButton(text=arrow_menu, callback_data="menu")]
-    ]
+    extra_plate = state_data.get('extra_plate', False)
+    meal_id = state_data["meal_id"]
+    if not extra_plate:
+        Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
+    elif extra_plate:
+        Iserror, answer = await save_meal_plate(callback_query.from_user.id, food, meal_id)
+    if not extra_plate:
+        buttons = [
+            [InlineKeyboardButton(text="Да, добавить", callback_data="add_extra_plate")],
+            [InlineKeyboardButton(text="Получить оценку", callback_data="meal_rate")],
+            [InlineKeyboardButton(text=arrow_menu, callback_data="menu")]
+        ]
+    elif extra_plate:
+        buttons = [
+            [InlineKeyboardButton(text="Да, добавить", callback_data="add_extra_plate")],
+            [InlineKeyboardButton(text="Хватит, все что хотел добавил", callback_data="extra_plate_done")],
+            [InlineKeyboardButton(text=arrow_menu, callback_data="menu")]
+        ]
     if Iserror:
         await callback_query.message.edit_text("Ошибка при сохранении {answer}")
     else:
         if answer != 0:
-            await callback_query.message.edit_text(f"Сохранение успешно", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+            await callback_query.message.edit_text("Сохранено в дневник ✅\nДобавить в твой прием пищи еще одно блюдо?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
             await state.set_state(UserState.rating_meal)
+
+@router.callback_query(lambda c: c.data == 'add_extra_plate')
+async def add_extra_plate(callback_query: CallbackQuery, state: FSMContext):
+    asyncio.create_task(log_user_callback(callback_query))
+    await state.set_state(UserState.recognition)
+    await state.update_data(extra_plate=True)
+    await process_menu_dnevnik_input(callback_query, state)
+
+@router.callback_query(lambda c: c.data == 'extra_plate_done')
+async def add_extra_plate(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.recognition)
+    await state.update_data(extra_plate=False)
+    state_data = await state.get_data()
+    meal_id = state_data["meal_id"]
+    buttons = [
+            [InlineKeyboardButton(text="Хочу оценку", callback_data="meal_rate")],
+            [InlineKeyboardButton(text=arrow_menu, callback_data="menu")]
+        ]
+    asyncio.create_task(log_user_callback(callback_query))
+    iserror, pretty = await get_user_meal_by_mealid(callback_query.from_user.id, meal_id)
+    if not iserror:
+        await state.set_state(UserState.menu)
+        await callback_query.message.edit_text(f"Принято, вот твой прием по итогу всех тарелок:\n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 @router.callback_query(lambda c: c.data == 'meal_rate')
 async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
@@ -1121,7 +1181,6 @@ async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContex
     elif callback_query.data == "d21":
         await state.set_state(LessonStates21.step_1)
         await process_l21_step_1(callback_query, state)
-    
     
     
     
@@ -1995,8 +2054,15 @@ async def main_process_evening_ping(message: Message, state: FSMContext):
                 "user_info_gender": state_data["gender"]
                 }
     }
-        iserror, response = await add_or_update_usr_info(json.dumps(data))
-        print(f"saving data for user {message.from_user.id} has returned {iserror}, {response}")
+        try:
+            iserror, response = await add_or_update_usr_info(json.dumps(data))
+            issuccess = await add_user_lesson(message.from_user.id, "99")
+            print(f"saving data for user {message.from_user.id} has returned {iserror}, {response}")
+            asyncio.create_task(log_bot_response(f"user {message.from_user.id} \nsaved_info_to_db {response}\nlesson_99_save={issuccess}"), message.from_user.id)
+        except Exception as e:
+            asyncio.create_task(log_bot_response(f"user {message.from_user.id} \nERROR_ON_INFO_SAVE {e}"), message.from_user.id)
+        
+
     else:
         await message.answer("Не поняла, попробуй, пожалуйста, ещё раз")
 
@@ -2075,7 +2141,68 @@ async def user_active_command(message: types.Message):
         await message.answer(f"An error occurred: {e}")
 
 
+@router.message(Command("rassilka_test"))
+async def start_test(message: types.Message, state: FSMContext):
+    await message.answer("📝 Send me a post (image + text), and I'll copy it back!")
+    await state.set_state(PostStates.waiting_for_post)
 
+@router.message(StateFilter(PostStates.waiting_for_post))
+async def handle_post_with_photo(message: types.Message, state: FSMContext):
+    if message.photo:
+        photo = message.photo[-1]
+        caption = message.caption if message.caption else ""
+        
+        await state.update_data(photo_id=photo.file_id, caption=caption)
+        await state.set_state(PostStates.post_received)
+        
+        await bot.send_photo(
+            chat_id=message.chat.id,
+            photo=photo.file_id,
+            caption=f"{caption}",
+            parse_mode="HTML"
+        )
+    elif message.text:
+        await state.update_data(text=message.text)
+        await state.set_state(PostStates.post_received)
+        
+        await message.answer(
+            f"{message.text}",
+            parse_mode="HTML"
+        )
+
+@router.callback_query(StateFilter(PostStates.post_received))
+async def handle_buttons(callback_query: types.CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    
+    if callback_query.data == "reset_post":
+        await callback_query.message.edit_reply_markup()
+        await callback_query.answer("Post reset! Send a new one.")
+        await state.set_state(PostStates.waiting_for_post)
+    
+    elif callback_query.data == "send_to_users":
+        caption = data.get("caption", data.get("text", ""))
+        photo_id = data.get("photo_id")
+        user_list = await get_user_list(callback_query.from_user.id)
+
+        for user_id in user_list:
+            try:
+                if photo_id:
+                    await bot.send_photo(
+                        chat_id=user_id,
+                        photo=photo_id,
+                        caption=f"{caption}",
+                        parse_mode="HTML"
+                    )
+                else:
+                    await bot.send_message(
+                        chat_id=user_id,
+                        text=f"{caption}",
+                        parse_mode="HTML"
+                    )
+            except Exception as e:
+                print(f"Failed to send to {user_id}: {e}")
+        print((f"Post sent to {len(user_list)} users!"))
+        await callback_query.answer(f"Post sent to {len(user_list)} users!")
 
 
 
@@ -2102,6 +2229,7 @@ async def default_handler(message: Message, state: FSMContext) -> None:
     else: 
         if message.photo:
             await state.set_state(UserState.recognition)
+            await state.update_data(extra_plate=False)
             await dnevnik_functional(message, state)
         elif message.voice:
             await state.set_state(UserState.perehvat)

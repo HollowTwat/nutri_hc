@@ -113,6 +113,11 @@ async def process_l4_step_3(callback_query, state):
             [InlineKeyboardButton(text="📖  Дневник питания", callback_data="menu_dnevnik")]
         ])
     )
+    try:
+        issuccess = await add_user_lesson(callback_query.from_user.id, "4")
+        asyncio.create_task(log_bot_response(f"lesson 4 saved status{issuccess} "), callback_query.from_user.id)
+    except Exception as e:
+        print(e)
 
 ############ EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING #############
 

@@ -87,6 +87,11 @@ async def process_l13_step_2(callback_query, state):
         ])
     )
     await callback_query.answer()
+    try:
+        issuccess = await add_user_lesson(callback_query.from_user.id, "13")
+        asyncio.create_task(log_bot_response(f"lesson 13 saved status{issuccess} "), callback_query.from_user.id)
+    except Exception as e:
+        print(e)
 
 async def process_l13_step_2_2(callback_query, state):
     await state.clear()

@@ -149,6 +149,11 @@ async def process_l2_step_4(callback_query, state):
     await callback_query.message.answer(text, disable_web_page_preview=True, 
     reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
     await callback_query.answer()
+    try:
+        issuccess = await add_user_lesson(callback_query.from_user.id, "2")
+        asyncio.create_task(log_bot_response(f"lesson 2 saved status{issuccess} "), callback_query.from_user.id)
+    except Exception as e:
+        print(e)
 
     ############ EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING #############
 

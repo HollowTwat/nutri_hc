@@ -178,6 +178,18 @@ async def add_user_lesson(id, lesson):
                 else: return False
         except aiohttp.ClientError as e:
             return False
+        
+async def get_user_list(id):
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUsersIds?userTgId={id}&onlyActive=true"
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url) as response:
+                data = await response.text()
+                if data == "true":
+                    return True
+                else: return False
+        except aiohttp.ClientError as e:
+            return False
 
 async def long_rate(id, period):
     iserror, longrate_data = await request_longrate_question(id, period)
@@ -523,6 +535,28 @@ async def save_meal(id, food, type):
         except aiohttp.ClientError as e:
             return True, e
         
+async def save_meal_plate(id, food, meal_id):
+    url = "https://nutridb-production.up.railway.app/api/TypesCRUD/CreateMeal"
+    req_headers = {
+        "Content-Type": "application/json"
+    }
+    meal_data ={
+            "mealid": meal_id,
+            "userTgId": id,
+            "meal": {
+                "description": "string",
+                "totalWeight": 0,
+                "food": food
+            },
+    }
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.post(url=url, data=json.dumps(meal_data), headers=req_headers) as response:
+                data = await response.text()
+                return False, data
+        except aiohttp.ClientError as e:
+            return True, e
+        
 async def save_meal_old_date(id, food, type, date):
     url = "https://nutridb-production.up.railway.app/api/TypesCRUD/CreateMeal"
     req_headers = {
@@ -661,6 +695,18 @@ async def get_user_sub_info(id):
                 return type_value, formatted_date_update
         except aiohttp.ClientError as e:
             return False, e
+        
+async def get_user_meal_by_mealid(id, meal_id):
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserMealById?userTgId={id}&mealId={meal_id}"
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.get(url=url) as response:
+                data = await response.text()
+                data1 = json.loads(data)
+                pretty = data1.get('pretty')
+                return False, pretty
+        except aiohttp.ClientError as e:
+            return True, e
 
 DATABASE_FILE = "topics.db"
     
