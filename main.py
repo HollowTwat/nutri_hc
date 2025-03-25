@@ -645,10 +645,10 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
     state_data = await state.get_data()
     food = state_data["latest_food"]
     extra_plate = state_data.get('extra_plate', False)
-    meal_id = state_data["meal_id"]
     if not extra_plate:
         Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
     elif extra_plate:
+        meal_id = state_data["meal_id"]
         Iserror, answer = await save_meal_plate(callback_query.from_user.id, food, meal_id)
     if not extra_plate:
         buttons = [
@@ -1079,6 +1079,7 @@ async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContex
     asyncio.create_task(log_user_callback(callback_query))
     if callback_query.data == "d1":
         await state.set_state(LessonStates.step_1)
+        await process_step_1(callback_query, state)
     elif callback_query.data == "d2":
         await state.set_state(LessonStates2.step_1)
         await process_l2_step_1(callback_query, state)
