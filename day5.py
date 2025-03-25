@@ -152,7 +152,7 @@ async def process_l5_step_9(poll_answer, state):
     )
     try:
         issuccess = await add_user_lesson(poll_answer.user.id, "5")
-        asyncio.create_task(log_bot_response(f"lesson 5 saved status{issuccess} "), poll_answer.user.id)
+        asyncio.create_task(log_bot_response(f"lesson 5 saved status{issuccess} ", poll_answer.user.id))
     except Exception as e:
         print(e)
 

@@ -84,7 +84,7 @@ async def process_l16_step_2(callback_query, state):
     await callback_query.message.answer_media_group(media=media_files)
     try:
         issuccess = await add_user_lesson(callback_query.from_user.id, "16")
-        asyncio.create_task(log_bot_response(f"lesson 16 saved status{issuccess} "), callback_query.from_user.id)
+        asyncio.create_task(log_bot_response(f"lesson 16 saved status{issuccess} ", callback_query.from_user.id))
     except Exception as e:
         print(e)
     

@@ -938,7 +938,7 @@ async def main_change_user_info(callback_query: CallbackQuery, state: FSMContext
     elif callback_query.data == "menu_settings_profile_kkal":
         await change_user_kkal(callback_query, state, kkal)
     elif callback_query.data == "menu_settings_profile_re-anket":
-        await state.set_state(Questionnaire.first)
+        await state.set_state(Questionnaire.name)
         await process_name(callback_query.message, state)
     elif callback_query.data == "menu_settings_profile_notif":
         await change_user_notifs(callback_query, state)
@@ -2053,14 +2053,14 @@ async def main_process_evening_ping(message: Message, state: FSMContext):
                 "user_info_pregnancy": state_data["pregnancy"],
                 "user_info_gender": state_data["gender"]
                 }
-    }
+    }   
         try:
             iserror, response = await add_or_update_usr_info(json.dumps(data))
             issuccess = await add_user_lesson(message.from_user.id, "99")
             print(f"saving data for user {message.from_user.id} has returned {iserror}, {response}")
-            asyncio.create_task(log_bot_response(f"user {message.from_user.id} \nsaved_info_to_db {response}\nlesson_99_save={issuccess}"), message.from_user.id)
+            asyncio.create_task(log_bot_response(f"user {message.from_user.id} \nsaved_info_to_db {response}\nlesson_99_save={issuccess}", message.from_user.id))
         except Exception as e:
-            asyncio.create_task(log_bot_response(f"user {message.from_user.id} \nERROR_ON_INFO_SAVE {e}"), message.from_user.id)
+            asyncio.create_task(log_bot_response(f"user {message.from_user.id} \nERROR_ON_INFO_SAVE {e}", message.from_user.id))
         
 
     else:

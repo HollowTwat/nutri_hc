@@ -106,6 +106,8 @@ async def process_menu_course(message, state, id):
     iserror, last_lesson = await get_last_user_lesson(id)
     if last_lesson == 21:
         current_lesson = 21
+    elif last_lesson == 99:
+        current_lesson = 1
     else:
         current_lesson = last_lesson+1
 
