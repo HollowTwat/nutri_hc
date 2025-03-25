@@ -364,14 +364,19 @@ async def process_goal(message, state, goal):
         text = text_remove
     buttons = [
         [InlineKeyboardButton(text="Да", callback_data="yes")],
-        [InlineKeyboardButton(text="Нет, Нутри, посчитай за менй", callback_data="no")],
+        [InlineKeyboardButton(text="Нет, Нутри, посчитай за меня", callback_data="no")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.edit_text(text, reply_markup=keyboard)
 
 async def process_w_loss(callback_query, state, goal):
-    text = await calculate_w_loss_amount()
-    await callback_query.message.answer(text)
+    if callback_query.data == "yes":
+        await callback_query.message.answer("Это уже высокий уровень осознанности в отношениях с едой! Напиши число в чат.\nНапример, «3» или «4,5».")
+        await state.set_state(Questionnaire.w_loss_amount)
+        return
+    elif callback_query.data == "no":
+        text = await calculate_w_loss_amount(state, goal)
+        await callback_query.message.answer(text)
 
 async def process_w_loss_amount(message, state, goal):
     text11 = "Считаю комфортную скорость похудения, чтобы результат закрепился надолго, а процесс тебе понравился!"
