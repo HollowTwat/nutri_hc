@@ -38,6 +38,7 @@ class LayoverState(StatesGroup):
 
 class PostStates(StatesGroup):
     waiting_for_post = State()
+    post_received = State()
 
 class LessonStates(StatesGroup):
     step_1 = State()
