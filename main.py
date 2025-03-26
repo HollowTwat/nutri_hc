@@ -647,9 +647,11 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
     extra_plate = state_data.get('extra_plate', False)
     if not extra_plate:
         Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
+        await state.update_data(meal_id=answer)
     elif extra_plate:
         meal_id = state_data["meal_id"]
         Iserror, answer = await save_meal_plate(callback_query.from_user.id, food, meal_id)
+        await state.update_data(meal_id=answer)
     if not extra_plate:
         buttons = [
             [InlineKeyboardButton(text="Да, добавить", callback_data="add_extra_plate")],
@@ -2149,6 +2151,7 @@ async def start_test(message: types.Message, state: FSMContext):
 
 @router.message(StateFilter(PostStates.waiting_for_post))
 async def handle_post_with_photo(message: types.Message, state: FSMContext):
+    buttons = [[InlineKeyboardButton(text="reset_post", callback_data="reset_post"), InlineKeyboardButton(text="send_to_users", callback_data="send_to_users")]]
     if message.photo:
         photo = message.photo[-1]
         caption = message.caption if message.caption else ""
@@ -2159,17 +2162,13 @@ async def handle_post_with_photo(message: types.Message, state: FSMContext):
         await bot.send_photo(
             chat_id=message.chat.id,
             photo=photo.file_id,
-            caption=f"{caption}",
-            parse_mode="HTML"
+            caption=f"{caption}"
         )
     elif message.text:
         await state.update_data(text=message.text)
         await state.set_state(PostStates.post_received)
-        
-        await message.answer(
-            f"{message.text}",
-            parse_mode="HTML"
-        )
+        await message.answer(f"{message.text}")
+    await message.answer("Что делаем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 @router.callback_query(StateFilter(PostStates.post_received))
 async def handle_buttons(callback_query: types.CallbackQuery, state: FSMContext):
