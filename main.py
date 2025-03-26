@@ -2090,7 +2090,8 @@ async def start_state_setting(message: Message, state: FSMContext):
 async def apply_user_state(message: Message, state: FSMContext):
     try:
         user_id_str, state_str = message.text.strip().split(maxsplit=1)
-        print(f"user_id_str:{user_id_str} state_str:{state_str}")
+        group_name, state_name = state_str.split(".")
+        print(f"user_id_str:{user_id_str} state_str:{group_name}.{state_name}")
         user_id = int(user_id_str)
 
         # Controlled eval environment
@@ -2101,7 +2102,9 @@ async def apply_user_state(message: Message, state: FSMContext):
             if isinstance(cls, type)
         }
         print(f"{safe_globals}")
-        state_obj = eval(state_str, safe_globals)
+        # state_obj = eval(state_str, safe_globals)
+        group_class = safe_globals[group_name]
+        state_obj = getattr(group_class, state_name)
 
         # Set state for target user (assuming private chat)
         key = StorageKey(bot.id, user_id, user_id)
