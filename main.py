@@ -2056,7 +2056,7 @@ async def main_process_evening_ping(message: Message, state: FSMContext):
     else:
         await message.answer("Не поняла, попробуй, пожалуйста, ещё раз")
 
-@router.callback_query(StateFilter(Questionnaire.community_invite), lambda c: True)
+@router.callback_query(StateFilter(Questionnaire.community_invite), lambda c: True)А
 async def main_process_community_invite(callback_query: types.CallbackQuery, state: FSMContext):
     await process_community_invite(callback_query.message, state)
 
@@ -2069,9 +2069,10 @@ async def set_user_state(message: types.Message):
     # ctx = FSMContext(storage=dp.storage, user_id=464682207, chat_id=464682207)
     # await ctx.set_state(UserState.recognition)
     storage_key = StorageKey(bot.id, 464682207, 464682207)
-    fsm_context = FSMContext(storage=dp.storage, key=storage_key)
+    storage_key1 = StorageKey(bot.id, 389054202, 389054202)
+    fsm_context = FSMContext(storage=dp.storage, key=storage_key1)
     await fsm_context.set_state(UserState.recognition)
-    await message.answer("set user 464682207 to recogni")
+    await message.answer("set user 389054202 and 464682207 to recogni")
 
 @router.message(Command("upload_image"))
 async def upload_image_command(message: types.Message, state: FSMContext):
