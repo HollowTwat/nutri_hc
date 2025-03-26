@@ -2065,8 +2065,10 @@ async def main_process_community_invite(callback_query: types.CallbackQuery, sta
 @router.message(Command("set_state_recogni"))
 async def set_user_state(message: types.Message):
     # Initialize FSMContext for the target user
-    ctx = FSMContext(storage=dp.storage, user_id=464682207, chat_id=464682207)
-    await ctx.set_state(UserState.recognition)
+    # ctx = FSMContext(storage=dp.storage, user_id=464682207, chat_id=464682207)
+    # await ctx.set_state(UserState.recognition)
+    await dp.current_state(user=464682207, chat=464682207).set_state(UserState.recognition)
+    await message.answer("set user 464682207 to recogni")
 
 @router.message(Command("upload_image"))
 async def upload_image_command(message: types.Message, state: FSMContext):
