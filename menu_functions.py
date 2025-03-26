@@ -389,8 +389,8 @@ async def new_request_for_settings(id, state):
         current_weight = Decimal(0)
     
     goal_weight = (
-        current_weight + weight_change if data.get("user_info_goal") == "+"
-        else current_weight - weight_change if data.get("user_info_goal") == "-"
+        current_weight + abs(weight_change) if data.get("user_info_goal") == "+"
+        else current_weight - abs(weight_change) if data.get("user_info_goal") == "-"
         else current_weight
     )
     
