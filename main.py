@@ -2090,7 +2090,7 @@ async def start_state_setting(message: Message, state: FSMContext):
 async def apply_user_state(message: Message, state: FSMContext):
     try:
         user_id_str, state_str = message.text.strip().split(maxsplit=1)
-        print(f"user_id_str:{user_id_str}\nstate_str:{state_str}")
+        print(f"user_id_str:{user_id_str} state_str:{state_str}")
         user_id = int(user_id_str)
 
         # Controlled eval environment
