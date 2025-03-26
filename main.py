@@ -2089,7 +2089,7 @@ async def start_state_setting(message: Message, state: FSMContext):
     await message.answer("Send: user_id StateGroup.State\n\nExample:\n464682207 UserState.recognition")
 
 @router.message(AdminState.waiting_for_state_input)
-async def apply_user_state(message: Message, state: FSMContext, inbot: Bot):
+async def apply_user_state(message: Message, state: FSMContext, bot: Bot):
     try:
         user_id_str, state_str = message.text.strip().split(maxsplit=1)
         group_name, state_name = state_str.split(".")
@@ -2113,8 +2113,6 @@ async def apply_user_state(message: Message, state: FSMContext, inbot: Bot):
 
         # Set state for target user (assuming private chat)
         key = StorageKey(inbot.id, user_id, user_id)
-        print(f"Global bot ID: {bot.id}")
-        print(f"Injected bot ID: {inbot.id}")
         print(f"[DYNAMIC KEY] {key}")
         target_fsm = FSMContext(storage=state.storage, key=key)
         await target_fsm.set_state(state_obj)
