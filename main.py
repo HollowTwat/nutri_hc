@@ -2094,7 +2094,13 @@ async def apply_user_state(message: Message, state: FSMContext):
         user_id = int(user_id_str)
 
         # Controlled eval environment
-        safe_globals = vars(all_states)
+        # safe_globals = vars(all_states)
+        safe_globals = {
+            name: cls
+            for name, cls in vars(all_states).items()
+            if isinstance(cls, type)
+        }
+        print(f"{safe_globals}")
         state_obj = eval(state_str, safe_globals)
 
         # Set state for target user (assuming private chat)
