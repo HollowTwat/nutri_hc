@@ -2073,6 +2073,8 @@ async def set_user_state(message: types.Message):
     storage_key = StorageKey(bot.id, 464682207, 464682207)
     storage_key1 = StorageKey(bot.id, 389054202, 389054202)
     fsm_context = FSMContext(storage=dp.storage, key=storage_key)
+    print(f"[GOOD KEY] {StorageKey(bot.id, 464682207, 464682207)}")
+    print(f"[SETSTATE_RECOGNI_KEY] {storage_key}")
     fsm_context1 = FSMContext(storage=dp.storage, key=storage_key1)
     await fsm_context.set_state(UserState.recognition)
     await fsm_context1.set_state(UserState.recognition)
@@ -2087,7 +2089,7 @@ async def start_state_setting(message: Message, state: FSMContext):
     await message.answer("Send: user_id StateGroup.State\n\nExample:\n464682207 UserState.recognition")
 
 @router.message(AdminState.waiting_for_state_input)
-async def apply_user_state(message: Message, state: FSMContext):
+async def apply_user_state(message: Message, state: FSMContext, inbot: Bot):
     try:
         user_id_str, state_str = message.text.strip().split(maxsplit=1)
         group_name, state_name = state_str.split(".")
@@ -2106,16 +2108,21 @@ async def apply_user_state(message: Message, state: FSMContext):
         group_class = safe_globals[group_name]
         state_obj = getattr(group_class, state_name)
         if not isinstance(state_obj, State):
+            print("value_error")
             raise ValueError(f"{state_str} is not a valid State.")
 
         # Set state for target user (assuming private chat)
-        key = StorageKey(bot.id, user_id, user_id)
-        target_fsm = FSMContext(storage=dp.storage, key=key)
+        key = StorageKey(inbot.id, user_id, user_id)
+        print(f"Global bot ID: {bot.id}")
+        print(f"Injected bot ID: {inbot.id}")
+        print(f"[DYNAMIC KEY] {key}")
+        target_fsm = FSMContext(storage=state.storage, key=key)
         await target_fsm.set_state(state_obj)
+        current = await target_fsm.get_state()
+        print(f"[DEBUG] FSM state for {user_id}: {current}")
 
         await message.answer(f"✅ Set user {user_id} to state `{state_str}`.")
         await state.clear()
-
     except Exception as e:
         await message.answer(f"⚠️ Failed to set state: {e}")
 
