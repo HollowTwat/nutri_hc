@@ -2065,18 +2065,19 @@ async def main_process_community_invite(callback_query: types.CallbackQuery, sta
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
-# @router.message(Command("set_state_recogni"))
-# async def set_user_state(message: types.Message):
-#     # Initialize FSMContext for the target user
-#     # ctx = FSMContext(storage=dp.storage, user_id=464682207, chat_id=464682207)
-#     # await ctx.set_state(UserState.recognition)
-#     storage_key = StorageKey(bot.id, 464682207, 464682207)
-#     storage_key1 = StorageKey(bot.id, 389054202, 389054202)
-#     fsm_context = FSMContext(storage=dp.storage, key=storage_key)
-#     fsm_context1 = FSMContext(storage=dp.storage, key=storage_key1)
-#     await fsm_context.set_state(UserState.recognition)
-#     await fsm_context1.set_state(UserState.recognition)
-#     await message.answer("set user 389054202 and 464682207 to recogni")
+@router.message(Command("set_state_recogni"))
+async def set_user_state(message: types.Message):
+    # Initialize FSMContext for the target user
+    # ctx = FSMContext(storage=dp.storage, user_id=464682207, chat_id=464682207)
+    # await ctx.set_state(UserState.recognition)
+    storage_key = StorageKey(bot.id, 464682207, 464682207)
+    storage_key1 = StorageKey(bot.id, 389054202, 389054202)
+    fsm_context = FSMContext(storage=dp.storage, key=storage_key)
+    fsm_context1 = FSMContext(storage=dp.storage, key=storage_key1)
+    await fsm_context.set_state(UserState.recognition)
+    await fsm_context1.set_state(UserState.recognition)
+    await message.answer("set user 389054202 and 464682207 to recogni")
+
 @router.message(Command("setstate"))
 async def start_state_setting(message: Message, state: FSMContext):
     if message.from_user.id not in ADMIN_IDS:
@@ -2089,6 +2090,7 @@ async def start_state_setting(message: Message, state: FSMContext):
 async def apply_user_state(message: Message, state: FSMContext):
     try:
         user_id_str, state_str = message.text.strip().split(maxsplit=1)
+        print(f"user_id_str:{user_id_str}\nstate_str:{state_str}")
         user_id = int(user_id_str)
 
         # Controlled eval environment
