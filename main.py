@@ -2097,7 +2097,7 @@ async def apply_user_state(message: Message, state: FSMContext):
 
         # Set state for target user (assuming private chat)
         key = StorageKey(bot.id, user_id, user_id)
-        target_fsm = FSMContext(storage=state.storage, key=key)
+        target_fsm = FSMContext(storage=dp.storage, key=key)
         await target_fsm.set_state(state_obj)
 
         await message.answer(f"✅ Set user {user_id} to state `{state_str}`.")
