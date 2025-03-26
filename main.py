@@ -2080,12 +2080,13 @@ async def main_process_community_invite(callback_query: types.CallbackQuery, sta
 @router.message(Command("setstate"))
 async def start_state_setting(message: Message, state: FSMContext):
     if message.from_user.id not in ADMIN_IDS:
-        return await message.answer("❌ You are not authorized to use this command.")
+        await message.answer("❌ You are not authorized to use this command.")
+        return 
     await state.set_state(AdminState.waiting_for_state_input)
-    await message.answer("Send: `<user_id> <StateGroup.State>`\n\nExample:\n`464682207 UserState.recognition`")
+    await message.answer("Send: user_id StateGroup.State\n\nExample:\n464682207 UserState.recognition")
 
 @router.message(AdminState.waiting_for_state_input)
-async def apply_user_state(message: Message, state: FSMContext, bot: Bot):
+async def apply_user_state(message: Message, state: FSMContext):
     try:
         user_id_str, state_str = message.text.strip().split(maxsplit=1)
         user_id = int(user_id_str)
