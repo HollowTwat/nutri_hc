@@ -114,14 +114,14 @@ async def calculate_w_loss_amount(state, goal):
     if goal == "+":
         user_weight_diff = int(ideal_w_l)-int(user_w)
         amount = int(user_w/10)
-        if int(user_weight_diff)<= amount:
-            amount = int(user_weight_diff)
+        if abs(user_weight_diff)<= amount:
+            amount = abs(user_weight_diff)
         return f"Советую тебе набрать {amount} кг\n Но финальное решение все равно за тобой, сколько хочешь набрать?"
     elif goal == "-":
         user_weight_diff = int(user_w)-int(ideal_w_h)
         amount = int(user_w/10)
-        if int(user_weight_diff) <= amount:
-            amount = int(user_weight_diff)
+        if abs(user_weight_diff) <= amount:
+            amount = abs(user_weight_diff)
         return f"Советую тебе сбросить {amount} кг \n Но финальное решение все равно за тобой, сколько хочешь скинуть?"
 
 
