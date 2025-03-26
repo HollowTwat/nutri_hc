@@ -2105,6 +2105,8 @@ async def apply_user_state(message: Message, state: FSMContext):
         # state_obj = eval(state_str, safe_globals)
         group_class = safe_globals[group_name]
         state_obj = getattr(group_class, state_name)
+        if not isinstance(state_obj, State):
+            raise ValueError(f"{state_str} is not a valid State.")
 
         # Set state for target user (assuming private chat)
         key = StorageKey(bot.id, user_id, user_id)
