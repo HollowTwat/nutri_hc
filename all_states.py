@@ -30,6 +30,9 @@ class UserState(StatesGroup):
     instruction = State()
     graph = State()
 
+class AdminState(StatesGroup):
+    waiting_for_state_input = State()
+
 class LayoverState(StatesGroup):
     recognition = State()
     redact = State()

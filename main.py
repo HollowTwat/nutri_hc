@@ -50,9 +50,11 @@ from day19 import *
 from day20 import *
 from day21 import *
 from questionnaire import *
+import all_states
 from all_states import *
 from stickerlist import STICKER_IDS
 
+ADMIN_IDS = [389054202, 464682207]
 BOT_TOKEN = os.getenv("BOT_TOKEN")                    ##ACTUALISED
 OPENAI_KEY = os.getenv("OPENAI_KEY")                  ##ACTUALISED
 
@@ -2063,18 +2065,45 @@ async def main_process_community_invite(callback_query: types.CallbackQuery, sta
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
-@router.message(Command("set_state_recogni"))
-async def set_user_state(message: types.Message):
-    # Initialize FSMContext for the target user
-    # ctx = FSMContext(storage=dp.storage, user_id=464682207, chat_id=464682207)
-    # await ctx.set_state(UserState.recognition)
-    storage_key = StorageKey(bot.id, 464682207, 464682207)
-    storage_key1 = StorageKey(bot.id, 389054202, 389054202)
-    fsm_context = FSMContext(storage=dp.storage, key=storage_key)
-    fsm_context1 = FSMContext(storage=dp.storage, key=storage_key1)
-    await fsm_context.set_state(UserState.recognition)
-    await fsm_context1.set_state(UserState.recognition)
-    await message.answer("set user 389054202 and 464682207 to recogni")
+# @router.message(Command("set_state_recogni"))
+# async def set_user_state(message: types.Message):
+#     # Initialize FSMContext for the target user
+#     # ctx = FSMContext(storage=dp.storage, user_id=464682207, chat_id=464682207)
+#     # await ctx.set_state(UserState.recognition)
+#     storage_key = StorageKey(bot.id, 464682207, 464682207)
+#     storage_key1 = StorageKey(bot.id, 389054202, 389054202)
+#     fsm_context = FSMContext(storage=dp.storage, key=storage_key)
+#     fsm_context1 = FSMContext(storage=dp.storage, key=storage_key1)
+#     await fsm_context.set_state(UserState.recognition)
+#     await fsm_context1.set_state(UserState.recognition)
+#     await message.answer("set user 389054202 and 464682207 to recogni")
+@router.message(Command("setstate"))
+async def start_state_setting(message: Message, state: FSMContext):
+    if message.from_user.id not in ADMIN_IDS:
+        return await message.answer("❌ You are not authorized to use this command.")
+    await state.set_state(AdminState.waiting_for_state_input)
+    await message.answer("Send: `<user_id> <StateGroup.State>`\n\nExample:\n`464682207 UserState.recognition`")
+
+@router.message(AdminState.waiting_for_state_input)
+async def apply_user_state(message: Message, state: FSMContext, bot: Bot):
+    try:
+        user_id_str, state_str = message.text.strip().split(maxsplit=1)
+        user_id = int(user_id_str)
+
+        # Controlled eval environment
+        safe_globals = vars(all_states)
+        state_obj = eval(state_str, safe_globals)
+
+        # Set state for target user (assuming private chat)
+        key = StorageKey(bot.id, user_id, user_id)
+        target_fsm = FSMContext(storage=state.storage, key=key)
+        await target_fsm.set_state(state_obj)
+
+        await message.answer(f"✅ Set user {user_id} to state `{state_str}`.")
+        await state.clear()
+
+    except Exception as e:
+        await message.answer(f"⚠️ Failed to set state: {e}")
 
 @router.message(Command("upload_image"))
 async def upload_image_command(message: types.Message, state: FSMContext):
