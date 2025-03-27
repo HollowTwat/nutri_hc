@@ -570,8 +570,11 @@ async def dnevnik_functional(message: Message, state: FSMContext):
     id = str(message.from_user.id)
     isActive = await check_is_active_state(id, state)
     if not isActive:
-        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
-        message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
+        bttns = [
+            [InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], 
+            [InlineKeyboardButton(text="🆘 Помощь", url="t.me/nutri_care")]
+            ]
+        await message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", message.from_user.id))
         return
     if not extra_plate:
@@ -703,7 +706,7 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     isActive = await check_is_active_state(id, state)
     if not isActive:
         bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
-        callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
+        await callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
         return
     asyncio.create_task(log_user_callback(callback_query))
@@ -737,7 +740,7 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     isActive = await check_is_active_state(id, state)
     if not isActive:
         bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
-        callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
+        await callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
         return
     asyncio.create_task(log_user_callback(callback_query))
@@ -761,7 +764,7 @@ async def main_meal_rate_day(callback_query: CallbackQuery, state: FSMContext):
         isActive = await check_is_active_state(id, state)
         if not isActive:
             bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
-            callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
+            await callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
             asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
             return
         sticker_mssg = await callback_query.message.answer_sticker(sticker=random.choice(STICKER_IDS))
