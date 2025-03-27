@@ -2111,7 +2111,6 @@ async def apply_user_state(message: Message, state: FSMContext, bot: Bot):
             print("value_error")
             raise ValueError(f"{state_str} is not a valid State.")
 
-        # Set state for target user (assuming private chat)
         key = StorageKey(bot.id, user_id, user_id)
         print(f"[DYNAMIC KEY] {key}")
         target_fsm = FSMContext(storage=state.storage, key=key)
@@ -2120,7 +2119,8 @@ async def apply_user_state(message: Message, state: FSMContext, bot: Bot):
         print(f"[DEBUG] FSM state for {user_id}: {current}")
 
         await message.answer(f"✅ Set user {user_id} to state `{state_str}`.")
-        await state.clear()
+        if user_id != message.from_user.id:
+            await state.clear()
     except Exception as e:
         await message.answer(f"⚠️ Failed to set state: {e}")
 
