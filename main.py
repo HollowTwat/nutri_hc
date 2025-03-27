@@ -169,21 +169,25 @@ async def main_process_menu_settings(callback_query: CallbackQuery, state: FSMCo
 
 @router.message(Command("1"))
 async def menu_main_process_menu_course(message: Message, state: FSMContext) -> None:
+    await state.set_state(UserState.menu)
     asyncio.create_task(log_user_message(message))
     await process_menu_course(message, state, message.from_user.id)
 
 @router.message(Command("2"))
 async def menu_main_process_menu_dnevnik(message: Message, state: FSMContext) -> None:
+    await state.set_state(UserState.menu)
     asyncio.create_task(log_user_message(message))
     await process_menu_dnevnik(message, state)
 
 @router.message(Command("3"))
 async def menu_main_process_menu_nutri(message: Message, state: FSMContext) -> None:
+    await state.set_state(UserState.menu)
     asyncio.create_task(log_user_message(message))
     await process_menu_nutri(message, state)
 
 @router.message(Command("4"))
 async def menu_main_process_menu_settings(message: Message, state: FSMContext) -> None:
+    await state.set_state(UserState.menu)
     asyncio.create_task(log_user_message(message))
     await process_menu_settings(message, state)
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
@@ -279,7 +283,7 @@ async def layover_saving(callback_query: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     callback_mssg = data["callback_mssg"]
     prev_state = data["prev_state"]
-    food = state_data["latest_food"]
+    food = data["latest_food"]
     id = str(callback_query.from_user.id)
     buttons = [[InlineKeyboardButton(text="Ок", callback_data=callback_mssg)],]
     if callback_mssg == "saving_edit":
