@@ -279,16 +279,16 @@ async def layover_saving(callback_query: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     callback_mssg = data["callback_mssg"]
     prev_state = data["prev_state"]
-    str_food = str(data["latest_food"])
+    food = state_data["latest_food"]
     id = str(callback_query.from_user.id)
     buttons = [[InlineKeyboardButton(text="Ок", callback_data=callback_mssg)],]
     if callback_mssg == "saving_edit":
         await state.set_state(prev_state)
         state_data = state.get_data()
         old_date = state_data["date"]
-        Iserror, answer = await save_meal_old_date(callback_query.from_user.id, str_food, callback_query.data, old_date)
+        Iserror, answer = await save_meal_old_date(callback_query.from_user.id, food, callback_query.data, old_date)
     else:
-        Iserror, answer = await save_meal(callback_query.from_user.id, str_food, callback_query.data)
+        Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
     if Iserror:
         await callback_query.message.edit_text(f"Ошибка при сохранении {answer}")
         asyncio.create_task(log_bot_response(f"Ошибка при сохранении {answer}", callback_query.from_user.id))
