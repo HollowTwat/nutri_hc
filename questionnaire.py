@@ -452,7 +452,7 @@ async def plan_info_dump(callback_query, state):
     buttons = [[InlineKeyboardButton(text="Все понятно!", callback_data="next")]]
     link = "https://telegra.ph/8-principov-osoznannogo-pitaniya-istochniki-informacii-07-16"
     text2 = f"<b>8 принципов осознанного питания: чему мы будем учиться</b>\n\nНа картинках — главные принципы осознанного питания, на основе которых я даю рекомендации.\n\nОни довольно простые, но вот сделать их привычкой — настоящий челлендж. Но мы будем выполнять его вместе — и так победим ❤️ \n\nИсточники — <a href=\'{link}\'>по ссылке</a>."
-    await callback_query.message.answer(text2, InlineKeyboardMarkup(inline_keyboard=buttons))
+    await callback_query.message.answer(text2, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def process_city(message, state):
     user_data = await state.get_data()
