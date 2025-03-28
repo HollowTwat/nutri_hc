@@ -2057,6 +2057,8 @@ async def main_process_evening_ping(message: Message, state: FSMContext):
             iserror, response = await add_or_update_usr_info(json.dumps(data))
             issuccess = await add_user_lesson(message.from_user.id, "99")
             print(f"saving data for user {message.from_user.id} has returned {iserror}, {response}")
+            if response != "true":
+                await message.answer("Произошла ошибка при сохранении информации")
             asyncio.create_task(log_bot_response(f"user {message.from_user.id} \nsaved_info_to_db {response}\nlesson_99_save={issuccess}", message.from_user.id))
         except Exception as e:
             asyncio.create_task(log_bot_response(f"user {message.from_user.id} \nERROR_ON_INFO_SAVE {e}", message.from_user.id))
@@ -2067,8 +2069,12 @@ async def main_process_evening_ping(message: Message, state: FSMContext):
 
 @router.callback_query(StateFilter(Questionnaire.community_invite), lambda c: True)
 async def main_process_community_invite(callback_query: types.CallbackQuery, state: FSMContext):
-    await process_community_invite(callback_query.message, state)
+    await plan_info_dump(callback_query, state)
+    await state.set_state(Questionnaire.community_invite_2)
 
+@router.callback_query(StateFilter(Questionnaire.community_invite_2), lambda c: True)
+async def main_process_community_invite(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_community_invite(callback_query.message, state)
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
