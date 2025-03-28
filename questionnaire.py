@@ -63,6 +63,22 @@ IMG14 = "AgACAgIAAxkBAAEEcFhn2v6uwfmHwA7qva0KXR0hyGAtHgAC4PUxG1ap2UpvoQ_GgRf3iAE
 IMG15 = "AgACAgIAAxkBAAEEcFxn2v63_G2AcZsAAYYfxxgfyPfbZqAAAuH1MRtWqdlKniihs_5WwgUBAAMCAAN5AAM2BA"
 IMG16 = "AgACAgIAAxkBAAEEcGBn2v7Ah5q9wQFLnMMUaHfOMg748wAC4vUxG1ap2UobmMFSob7mOAEAAwIAA3kAAzYE"
 
+def calculate_pal(hours_light, hours_heavy):
+    effective_hours = hours_light + 1.5 * hours_heavy
+
+    if effective_hours < 1:
+        pal = 1.4
+    elif effective_hours < 3:
+        pal = 1.5
+    elif effective_hours < 5:
+        pal = 1.6
+    elif effective_hours < 7:
+        pal = 1.75
+    else:
+        pal = 1.9
+
+    return pal
+
 async def calculate(state):
     user_data = await state.get_data()
     goal = user_data['goal']
@@ -71,7 +87,11 @@ async def calculate(state):
     age = int(user_data['age'])
     gender = user_data['gender']
     pregnancy = user_data['pregnancy']
-
+    activity_l = int(user_data["jogging"])
+    activity_h = int(user_data["lifting"])
+    pal = calculate_pal(activity_l, activity_h)
+    
+    bonus = weight*0.5*activity_h
     bmr1 = round(10*weight + 6.25*height - 5*age)
 
     if gender == "male":
@@ -81,7 +101,8 @@ async def calculate(state):
 
     await state.update_data(bmr=bmr)
 
-    tdee1 = round(bmr*1.55)
+    # tdee1 = round(bmr*1.55)
+    tdee1 = round(bmr * pal + bonus)
     if pregnancy == "true":
         tdee = tdee1+500
     else:

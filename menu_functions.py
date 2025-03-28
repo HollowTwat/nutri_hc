@@ -367,7 +367,7 @@ async def parse_state_for_settings(state):
     response_str = f"<b>{user_info.get('name')}, вот твои данные и цель, к которой ты идёшь:</b>   \n\n"
     response_str += f"Пол: {gender_str} \nВозраст: {user_info['age']} лет \nВес: {user_info['weight']} кг \nРост: {user_info['height']} см     \n\n"
     response_str += f"Цель: {user_info['goal']} \nЦелевой вес: {user_info['goal_weight']} кг   \n\n"
-    response_str += f"Текущая норма калорий: {user_info['target_calories']} ккал \nУровень еженедельной активности: {user_info['gym_hours']}+{user_info['exercise_hours']} часов"
+    response_str += f"Текущая норма калорий: {user_info['target_calories']} ккал \nУровень еженедельной активности: {user_info['exercise_hours']}ч легкой активности+{user_info['gym_hours']}ч тяжелой активности"
     
     return response_str
 
