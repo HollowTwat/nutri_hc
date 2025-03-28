@@ -375,6 +375,7 @@ class Questionnaire(StatesGroup):
     morning_ping = State()
     evening_ping = State()
     community_invite = State()
+    community_invite_2 = State()
 
 class ImageUploadState(StatesGroup):
     waiting_for_image = State()
