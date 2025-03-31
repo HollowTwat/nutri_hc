@@ -125,6 +125,10 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
 @router.message(Command("menu"))
 async def main_menu_handler(message: Message, state: FSMContext) -> None:
+    try:
+        await state.update_data(extra_plate=False)
+    except Exception as e:
+        print(f"error{e}")
     asyncio.create_task(log_user_message(message))
     await state.clear()
     await menu_handler(message, state)
@@ -134,6 +138,10 @@ async def main_menu_handler(message: Message, state: FSMContext) -> None:
 
 @router.callback_query(lambda c: c.data == 'menu')
 async def main_menu_cb_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
+    try:
+        await state.update_data(extra_plate=False)
+    except Exception as e:
+        print(f"error{e}")
     asyncio.create_task(log_user_callback(callback_query))
     await state.clear()
     await menu_cb_handler(callback_query, state)
@@ -170,24 +178,28 @@ async def main_process_menu_settings(callback_query: CallbackQuery, state: FSMCo
 @router.message(Command("1"))
 async def menu_main_process_menu_course(message: Message, state: FSMContext) -> None:
     await state.set_state(UserState.menu)
+    await state.update_data(extra_plate=False)
     asyncio.create_task(log_user_message(message))
     await process_menu_course(message, state, message.from_user.id)
 
 @router.message(Command("2"))
 async def menu_main_process_menu_dnevnik(message: Message, state: FSMContext) -> None:
     await state.set_state(UserState.menu)
+    await state.update_data(extra_plate=False)
     asyncio.create_task(log_user_message(message))
     await process_menu_dnevnik(message, state)
 
 @router.message(Command("3"))
 async def menu_main_process_menu_nutri(message: Message, state: FSMContext) -> None:
     await state.set_state(UserState.menu)
+    await state.update_data(extra_plate=False)
     asyncio.create_task(log_user_message(message))
     await process_menu_nutri(message, state)
 
 @router.message(Command("4"))
 async def menu_main_process_menu_settings(message: Message, state: FSMContext) -> None:
     await state.set_state(UserState.menu)
+    await state.update_data(extra_plate=False)
     asyncio.create_task(log_user_message(message))
     await process_menu_settings(message, state)
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
@@ -560,7 +572,7 @@ async def yapp_functional(message: Message, state: FSMContext):
             await message.answer("Упс, поймали ошибку", reply_markup=errorkeys)
             
     else:
-        message.answer("Я читаю только текст/аудио")
+        await message.answer("Я читаю только текст/аудио в свободном диалоге", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 ################## YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP ##################
 
@@ -659,6 +671,11 @@ async def saving(callback_query: CallbackQuery, state: FSMContext):
         Iserror, answer = await save_meal(callback_query.from_user.id, food, callback_query.data)
         await state.update_data(meal_id=answer)
     elif extra_plate:
+        if callback_query.data == "redact":
+            edit_text = "Напиши <b>текстом</b> или продиктуй <b>голосовым сообщением</b>, что добавить или изменить в составе.\nНапример, <i>«Добавь 2 чайные ложки сахара в состав» или «Это не курица, это индейка»</i>."
+            await state.set_state(UserState.redact)
+            await callback_query.message.edit_text(edit_text, reply_markup=None)
+            return
         meal_id = state_data["meal_id"]
         Iserror, answer = await save_meal_plate(callback_query.from_user.id, food, meal_id)
         await state.update_data(meal_id=answer)
@@ -691,21 +708,23 @@ async def add_extra_plate(callback_query: CallbackQuery, state: FSMContext):
 @router.callback_query(lambda c: c.data == 'extra_plate_done')
 async def add_extra_plate(callback_query: CallbackQuery, state: FSMContext):
     await state.set_state(UserState.recognition)
-    await state.update_data(extra_plate=False)
     state_data = await state.get_data()
     meal_id = state_data["meal_id"]
+    await state.update_data(extra_plate=False)
     buttons = [
-            [InlineKeyboardButton(text="Хочу оценку", callback_data="meal_rate")],
+            [InlineKeyboardButton(text="Хочу оценку", callback_data="meal_rate_extra")],
             [InlineKeyboardButton(text=arrow_menu, callback_data="menu")]
         ]
     asyncio.create_task(log_user_callback(callback_query))
-    iserror, pretty = await get_user_meal_by_mealid(callback_query.from_user.id, meal_id)
+    iserror, pretty, meals  = await get_user_meal_by_mealid(callback_query.from_user.id, meal_id)
     if not iserror:
         await state.set_state(UserState.menu)
+        await state.update_data(extra_plate_meal=meals)
         await callback_query.message.edit_text(f"Принято, вот твой прием по итогу всех тарелок:\n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
-@router.callback_query(lambda c: c.data == 'meal_rate')
+@router.callback_query(lambda c: c.data.startswith("meal_rate"))
 async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
+    
     id = callback_query.from_user.id
     isActive = await check_is_active_state(id, state)
     if not isActive:
@@ -716,7 +735,10 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     asyncio.create_task(log_user_callback(callback_query))
     sticker_mssg = await callback_query.message.answer_sticker(random.choice(STICKER_IDS))
     state_data = await state.get_data()
-    food = state_data["latest_food"]
+    if callback_query.data == "meal_rate":
+        food = state_data["latest_food"]
+    elif callback_query.data == "meal_rate_extra":
+        food = state_data["extra_plate_meal"]
     Iserror, user_data = await get_user_info(callback_query.from_user.id)
     if Iserror:
         await sticker_mssg.delete()
@@ -1031,6 +1053,10 @@ async def main_process_step_5(callback_query: types.CallbackQuery, state: FSMCon
 
 @router.callback_query(StateFilter(LessonStates.step_6), lambda c: True)
 async def main_process_step_6(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "process_step_5":
+        await callback_query.message.answer("Лучше ловить мотивацию, пока она есть!\nПоэтому жду тебя завтра с новыми силами и первым уроком! Хорошего дня 😉")
+        await state.set_state(Questionnaire.menu)
+        return
     await process_step_6(callback_query, state)
 
 @router.callback_query(StateFilter(LessonStates.step_7), lambda c: True)
@@ -1947,6 +1973,7 @@ async def main_process_sleep(callback_query: types.CallbackQuery, state: FSMCont
 async def main_process_goal(callback_query: types.CallbackQuery, state: FSMContext):
     goal1 = callback_query.data
     await state.update_data(goal=goal1)
+    asyncio.create_task(log_bot_response(f"goal:{goal1}", callback_query.from_user.id))
 
     await calculate(state)
     user_data = await state.get_data()
@@ -1991,6 +2018,7 @@ async def main_process_w_loss_amount(message: Message, state: FSMContext):
             elif goal == "-": 
                 goal_txt = "сбросить вес"
                 await state.update_data(w_loss_amount=f"-{message.text}")
+            asyncio.create_task(log_bot_response(f"w_loss_amount:{message.text}", message.from_user.id))
             text1 = f"Чтобы помочь тебе в достижении твоей цели {goal_txt}, я рассчитала, сколько калорий тебе нужно есть в день. Я использую формулу Mifflin-St Jeor, так как она считается одной из самых точных.\n\n\nТвои результаты следующие:\nБазовый уровень метаболизма (BMR): примерно <b>{bmr}</b> ккал/день.\nОбщая суточная потребность в энергии (TDEE) при умеренной активности: примерно <b>{tdee}</b> ккал/день."
             await message.answer(text1)
             await give_plan(message, state, input_text)
@@ -2074,6 +2102,7 @@ async def main_process_community_invite(callback_query: types.CallbackQuery, sta
 
 @router.callback_query(StateFilter(Questionnaire.community_invite_2), lambda c: True)
 async def main_process_community_invite(callback_query: types.CallbackQuery, state: FSMContext):
+    await callback_query.answer()
     await process_community_invite(callback_query.message, state)
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
