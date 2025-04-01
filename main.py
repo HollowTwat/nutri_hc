@@ -549,7 +549,16 @@ async def yapp_functional(message: Message, state: FSMContext):
                 # await message.answer(errormessage)
             else: 
                 await sticker_mssg.delete()
-                await message.answer(f"{response}\n\nТы можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+                if len(response) <= 4050:
+                    await message.answer(f"{response}\n\nТы можешь продолжить общаться со мной или нажать кнопку", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+                else:
+                    chunks = [response[i:i + 4050] for i in range(0, len(response), 4050)]
+                    for i, chunk in enumerate(chunks):
+                        if i == len(chunks) - 1:
+                            chunk += "\n\nТы можешь продолжить общаться со мной или нажать кнопку"
+                            await message.answer(chunk, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+                        else:
+                            await message.answer(chunk)
                 asyncio.create_task(log_bot_response(response, message.from_user.id))
                 await state.set_state(UserState.yapp)
         except Exception as e:
