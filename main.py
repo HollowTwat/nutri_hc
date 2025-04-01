@@ -1055,7 +1055,8 @@ async def main_process_step_5(callback_query: types.CallbackQuery, state: FSMCon
 async def main_process_step_6(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "quitout":
         await callback_query.message.answer("Лучше ловить мотивацию, пока она есть!\nПоэтому жду тебя завтра с новыми силами и первым уроком! Хорошего дня 😉")
-        await state.set_state(Questionnaire.menu)
+        await state.set_state(UserState.menu)
+        await callback_query.answer()
         return
     await process_step_6(callback_query, state)
 
