@@ -323,7 +323,6 @@ async def process_meals_extra(message, state):
         [InlineKeyboardButton(text="Ем всё!", callback_data="None")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    asyncio.create_task(log_bot_response("🟠🟠🟠🟠🟠", message.from_user.id))
     try:
         await message.edit_text(text, reply_markup=keyboard)
     except Exception as e:
@@ -369,7 +368,6 @@ async def process_stress(message, state):
         [InlineKeyboardButton(text="8 и больше часов", callback_data=">8"), InlineKeyboardButton(text="Нет режима сна", callback_data="random")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-    asyncio.create_task(log_bot_response("🔵🔵🔵🔵", message.from_user.id))
     await message.edit_text(text, reply_markup=keyboard)
 
 async def process_sleep(message, state):

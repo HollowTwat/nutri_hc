@@ -572,7 +572,7 @@ async def yapp_functional(message: Message, state: FSMContext):
             await message.answer("Упс, поймали ошибку", reply_markup=errorkeys)
             
     else:
-        await message.answer("Я читаю только текст/аудио в свободном диалоге", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await message.answer("Для распознания фото зайди в раздел дневник", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 ################## YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP ##################
 
@@ -719,7 +719,7 @@ async def add_extra_plate(callback_query: CallbackQuery, state: FSMContext):
     iserror, pretty, meals  = await get_user_meal_by_mealid(callback_query.from_user.id, meal_id)
     if not iserror:
         await state.set_state(UserState.menu)
-        await state.update_data(extra_plate_meal=meals)
+        await state.update_data(extra_plate_meal=str(meals))
         await callback_query.message.edit_text(f"Принято, вот твой прием по итогу всех тарелок:\n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 @router.callback_query(lambda c: c.data.startswith("meal_rate"))
@@ -1053,7 +1053,7 @@ async def main_process_step_5(callback_query: types.CallbackQuery, state: FSMCon
 
 @router.callback_query(StateFilter(LessonStates.step_6), lambda c: True)
 async def main_process_step_6(callback_query: types.CallbackQuery, state: FSMContext):
-    if callback_query.data == "process_step_5":
+    if callback_query.data == "quitout":
         await callback_query.message.answer("Лучше ловить мотивацию, пока она есть!\nПоэтому жду тебя завтра с новыми силами и первым уроком! Хорошего дня 😉")
         await state.set_state(Questionnaire.menu)
         return
@@ -1913,6 +1913,7 @@ async def main_process_meals(callback_query: types.CallbackQuery, state: FSMCont
 @router.message(StateFilter(Questionnaire.meals_extra))
 @router.callback_query(StateFilter(Questionnaire.meals_extra))
 async def main_process_meals_extra(message_or_callback: types.Message | types.CallbackQuery, state: FSMContext):
+    asyncio.create_task(log_bot_response("🟠🟠🟠🟠🟠", message_or_callback.from_user.id))
     if isinstance(message_or_callback, types.Message):
         await state.update_data(meals_extra=message_or_callback.text)
         await process_meals_extra(message_or_callback, state)
@@ -1959,6 +1960,7 @@ async def main_process_lifting(message: Message, state: FSMContext):
 
 @router.callback_query(StateFilter(Questionnaire.stress), lambda c: True)
 async def main_process_stress(callback_query: types.CallbackQuery, state: FSMContext):
+    asyncio.create_task(log_bot_response("🔵🔵🔵🔵", callback_query.from_user.id))
     await state.update_data(stress=callback_query.data)
     await process_stress(callback_query.message, state)
     await state.set_state(Questionnaire.sleep)

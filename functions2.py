@@ -704,7 +704,7 @@ async def get_user_meal_by_mealid(id, meal_id):
                 data = await response.text()
                 data1 = json.loads(data)
                 pretty = data1.get('pretty')
-                meals = data1.get('meal')
+                meals = data1.get('Meals')
                 return False, pretty, meals
         except aiohttp.ClientError as e:
             return True, e
