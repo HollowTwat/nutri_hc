@@ -1952,7 +1952,8 @@ async def main_process_part3(callback_query: types.CallbackQuery, state: FSMCont
 async def main_process_jogging(message: Message, state: FSMContext):
     pattern = r'^[0-9.,]+$'
     if re.match(pattern, message.text):
-        await state.update_data(jogging=message.text)
+
+        await state.update_data(jogging=message.text.replace(",", "."))
         await process_jogging(message, state)
         await state.set_state(Questionnaire.lifting)
     else: 
@@ -1961,7 +1962,7 @@ async def main_process_jogging(message: Message, state: FSMContext):
 @router.message(StateFilter(Questionnaire.lifting))
 async def main_process_lifting(message: Message, state: FSMContext):
     pattern = r'^[0-9.,]+$'
-    if re.match(pattern, message.text):
+    if re.match(pattern, message.text.replace(",", ".")):
         await state.update_data(lifting=message.text)
         await process_lifting(message, state)
         await state.set_state(Questionnaire.stress)
