@@ -87,8 +87,8 @@ async def calculate(state):
     age = int(user_data['age'])
     gender = user_data['gender']
     pregnancy = user_data['pregnancy']
-    activity_l = int(user_data["jogging"])
-    activity_h = int(user_data["lifting"])
+    activity_l = round(int(user_data["jogging"]))
+    activity_h = round(int(user_data["lifting"]))
     pal = calculate_pal(activity_l, activity_h)
     
     bonus = weight*0.5*activity_h
