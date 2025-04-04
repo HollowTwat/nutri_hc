@@ -82,13 +82,13 @@ def calculate_pal(hours_light, hours_heavy):
 async def calculate(state):
     user_data = await state.get_data()
     goal = user_data['goal']
-    weight = int(user_data['weight'])
-    height = int(user_data['height'])
-    age = int(user_data['age'])
+    weight = round(float(user_data['weight']))
+    height = round(float(user_data['height']))
+    age = round(float(user_data['age']))
     gender = user_data['gender']
     pregnancy = user_data['pregnancy']
     activity_l = round(float(user_data["jogging"].replace(",", ".")))
-    activity_h = round(float(user_data["jogging"].replace(",", ".")))
+    activity_h = round(float(user_data["lifting"].replace(",", ".")))
     pal = calculate_pal(activity_l, activity_h)
     
     bonus = weight*0.5*activity_h
