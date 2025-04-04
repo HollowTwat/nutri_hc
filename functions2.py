@@ -195,6 +195,10 @@ async def long_rate(id, period):
     iserror, longrate_data = await request_longrate_question(id, period)
     assistant_mapping = {"3": RATE_WEEK_ASS_ID, "4": RATE_TWONE_ASS_ID, "0": RATE_DAY_ASS_ID}
     assistant = assistant_mapping.get(period)
+    data = json.loads(longrate_data)
+    isempty = data.get("isempty", False)
+    if isempty == "true":
+        return True, "Ваша анкета не заполнена"
     if not iserror:
         gpt_resp1 = await no_thread_ass(str(longrate_data), assistant)
         gpt_resp = await remove_reference(gpt_resp1)

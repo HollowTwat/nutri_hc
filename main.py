@@ -391,6 +391,7 @@ async def main_process_etiketka_input(message: Message, state: FSMContext):
         user_info = json.loads(user_data)
         isempty = user_info.get("isempty", False)
         if isempty == "true":
+            await sticker_mssg.delete()
             await message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
             return
         allergies = user_info.get("user_info_meals_ban")
@@ -448,6 +449,7 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         user_info = json.loads(user_data)
         isempty = user_info.get("isempty", False)
         if isempty == "true":
+            await sticker_mssg.delete()
             await callback_query.message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
             return
         question = f"Придумай полезный и вкусный рецепт {meal_type_mapping.get(meal_type)} для пользователя с информацией: {user_data}"
@@ -484,6 +486,7 @@ async def main_process_reci_input(message: Message, state: FSMContext):
     user_info = json.loads(user_data)
     isempty = user_info.get("isempty", False)
     if isempty == "true":
+        await sticker_mssg.delete()
         await message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
         return
     buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
@@ -559,10 +562,10 @@ async def yapp_functional(message: Message, state: FSMContext):
             sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
             flag, response = await yapp(id, message.text, new_thread)
             if flag:
+                await sticker_mssg.delete()
                 if response == "Ваша анкета не заполнена":
                     await message.answer(response, reply_markup=noankeys)    
                     return
-                await sticker_mssg.delete()
                 await message.answer("Упс, поймали ошибку", reply_markup=errorkeys)
                 # await message.answer(errormessage)
             else: 
@@ -835,6 +838,7 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     user_info = json.loads(user_data)
     isempty = user_info.get("isempty", False)
     if isempty == "true":
+        await sticker_mssg.delete()
         await callback_query.message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
         return
     if Iserror:
@@ -870,6 +874,11 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     sticker_mssg = await callback_query.message.answer_sticker(sticker=random.choice(STICKER_IDS))
     iserror, resp = await long_rate(callback_query.from_user.id, "3")
     await sticker_mssg.delete()
+    if iserror:
+        if resp == "Ваша анкета не заполнена":
+            await callback_query.message.answer(resp, reply_markup=noankeys)
+            return
+        await callback_query.message.answer("Ошибка в обработке оценки", reply_markup=errorkeys)
     buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu")]]
     buttons1 = [[InlineKeyboardButton(text="Показать график за неделю", callback_data="menu_dnevnik_analysis_graph")],[InlineKeyboardButton(text=arrow_menu, callback_data="menu")]]
     if await state.get_state() == UserState.graph:
@@ -894,6 +903,9 @@ async def main_meal_rate_day(callback_query: CallbackQuery, state: FSMContext):
         iserror, resp = await long_rate(callback_query.from_user.id, "0")
         await sticker_mssg.delete()
         if iserror:
+            if resp == "Ваша анкета не заполнена":
+                await callback_query.message.answer(resp, reply_markup=noankeys)
+                return
             print(f"user {callback_query.from_user.id} error {resp}")
             await callback_query.message.answer("Упс, поймали ошибку", reply_markup=errorkeys)
         buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu")]]
