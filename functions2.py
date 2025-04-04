@@ -326,7 +326,8 @@ async def yapp(id, question, new_thread):
         iserror1, user_data = await get_user_info(id)
         iserror2, week_data = await request_yapp_meals(id)
         await create_thread_with_extra_info(f"user_data: {str(user_data)} user_meals:{str(week_data)}", id, YAPP_SESH_ASSISTANT_ID)
-    isempty = user_data.get("isempty", False)
+    user_info = json.loads(user_data)
+    isempty = user_info.get("isempty", False)
     if isempty == "true":
         return True, "Ваша анкета не заполнена"
     try:
