@@ -196,7 +196,7 @@ async def long_rate(id, period):
     assistant_mapping = {"3": RATE_WEEK_ASS_ID, "4": RATE_TWONE_ASS_ID, "0": RATE_DAY_ASS_ID}
     assistant = assistant_mapping.get(period)
     data = json.loads(longrate_data)
-    isempty = data.get("isempty", False)
+    isempty = data.get("user_info", {}).get("isempty", False)
     if isempty == "true":
         return True, "Ваша анкета не заполнена"
     if not iserror:
