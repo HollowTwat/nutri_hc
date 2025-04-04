@@ -2088,9 +2088,9 @@ async def main_process_w_loss(callback_query: types.CallbackQuery, state: FSMCon
 
 @router.message(StateFilter(Questionnaire.w_loss_amount))
 async def main_process_w_loss_amount(message: Message, state: FSMContext):
-    pattern = r'^\d+$'
+    pattern = r'^[0-9.]+$'
     if not re.match(pattern, message.text):
-        await message.answer("Пожалуйста введи целое число")
+        await message.answer("Напиши число в чат.\nНапример, «3» или «4.5».")
         return
     user_data = await state.get_data()
     goal = user_data["goal"]
