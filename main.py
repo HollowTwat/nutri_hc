@@ -593,6 +593,7 @@ def get_lock_for_user(user_id: str) -> asyncio.Lock:
     return user_locks[user_id]
 
 async def process_media_group_after_delay(message: Message, media_group_id: str, user_id: str, state: FSMContext, confirm_text: str, buttons, delay: float = 3.0):
+    sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
     await asyncio.sleep(delay)
     lock = get_lock_for_user(user_id)
     async with lock:
@@ -614,12 +615,15 @@ async def process_media_group_after_delay(message: Message, media_group_id: str,
         print("Vision response:", vision)
         Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
         if Iserror:
+            await sticker_mssg.delete()
             errorkeyboard = [
                 [InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")],
                 [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]
             ]
             await message.answer("Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
         else:
+            await sticker_mssg.delete()
+            await state.update_data(latest_food = food)
             await message.answer(pretty)
             await message.answer(confirm_text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
