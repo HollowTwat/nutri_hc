@@ -1963,6 +1963,10 @@ async def main_process_weight(message: Message, state: FSMContext):
 
 @router.message(StateFilter(Questionnaire.age))
 async def main_process_age(message: Message, state: FSMContext):
+    pattern = r'^\d+$'
+    if not re.match(pattern, message.text):
+        await message.answer("Пожалуйста введи целое число")
+        return
     await state.update_data(age=message.text)
     await process_age(message, state)
     await state.set_state(Questionnaire.water)
@@ -2015,7 +2019,7 @@ async def main_process_part3(callback_query: types.CallbackQuery, state: FSMCont
 
 @router.message(StateFilter(Questionnaire.jogging))
 async def main_process_jogging(message: Message, state: FSMContext):
-    pattern = r'^[0-9.,]+$'
+    pattern = r'^[0-9.]+$'
     if re.match(pattern, message.text):
 
         await state.update_data(jogging=message.text)
@@ -2026,7 +2030,7 @@ async def main_process_jogging(message: Message, state: FSMContext):
 
 @router.message(StateFilter(Questionnaire.lifting))
 async def main_process_lifting(message: Message, state: FSMContext):
-    pattern = r'^[0-9.,]+$'
+    pattern = r'^[0-9.]+$'
     if re.match(pattern, message.text):
         await state.update_data(lifting=message.text)
         await process_lifting(message, state)
@@ -2079,6 +2083,7 @@ async def main_process_w_loss_amount(message: Message, state: FSMContext):
     pattern = r'^\d+$'
     if not re.match(pattern, message.text):
         await message.answer("Пожалуйста введи целое число")
+        return
     user_data = await state.get_data()
     goal = user_data["goal"]
     tdee = user_data['tdee']

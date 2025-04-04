@@ -130,7 +130,7 @@ async def calculate_w_loss_amount(state, goal):
     state_data = await state.get_data()
     ideal_w_l = state_data["ideal_weight_low"]
     ideal_w_h = state_data["ideal_weight_high"]
-    user_w = int(state_data["weight"])
+    user_w = weight = round(float(state_data['weight']))
     
     if goal == "+":
         user_weight_diff = int(ideal_w_l)-int(user_w)
