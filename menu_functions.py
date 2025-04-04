@@ -374,6 +374,9 @@ async def parse_state_for_settings(state):
 async def new_request_for_settings(id, state):
     iserror, input_data = await get_user_info(id)
     data = json.loads(input_data)
+    isempty = data.get("isempty", False)
+    if isempty == "true":
+        return "Ваша анкета не заполнена"
     
     goal_mapping = {"+": "Набрать", "-": "Похудеть", "=": "Сохранить"}
     gender_mapping = {"male": "Мужской", "female": "Женский"}
@@ -433,6 +436,9 @@ async def process_menu_settings_profile(callback_query, state):
         [InlineKeyboardButton(text="Настроить уведомления", callback_data="menu_settings_profile_notif")],
         [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings")],
         ]
+    if step0txt == "Ваша анкета не заполнена":
+        buttons = [[InlineKeyboardButton(text="Заполнить анкету", callback_data="menu_settings_profile_re-anket")],
+                   [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings")]]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await callback_query.message.edit_text(step0txt, reply_markup=keyboard)
     await state.set_state(UserState.change_user_info)

@@ -94,7 +94,8 @@ dp = Dispatcher(storage=storage)
 
 errorbuttons = [[InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
 errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
-
+noanketbuttons = [[InlineKeyboardButton(text="Заполнить анкету", callback_data="menu_settings_profile_re-anket")],[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings")]]
+noankeys = InlineKeyboardMarkup(inline_keyboard=noanketbuttons)
 
 class StateMiddleware(BaseMiddleware):
     async def __call__(self, handler, event: Message, data: dict):
@@ -388,6 +389,10 @@ async def main_process_etiketka_input(message: Message, state: FSMContext):
         sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
         iserror, user_data = await get_user_info(message.from_user.id)
         user_info = json.loads(user_data)
+        isempty = user_info.get("isempty", False)
+        if isempty == "true":
+            await message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
+            return
         allergies = user_info.get("user_info_meals_ban")
         url = await get_url(message.photo[-1].file_id)
         try:
@@ -440,6 +445,11 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
         await state.set_state(UserState.reci)
         iserror1, user_data = await get_user_info(callback_query.from_user.id)
+        user_info = json.loads(user_data)
+        isempty = user_info.get("isempty", False)
+        if isempty == "true":
+            await callback_query.message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
+            return
         question = f"Придумай полезный и вкусный рецепт {meal_type_mapping.get(meal_type)} для пользователя с информацией: {user_data}"
         iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
         if not iserror:
@@ -471,6 +481,11 @@ async def main_process_reci_input(message: Message, state: FSMContext):
     input_type = state_data["input_rec_type"]
     meal_type = state_data["meal_type_rec"]
     iserror1, user_data = await get_user_info(message.from_user.id)
+    user_info = json.loads(user_data)
+    isempty = user_info.get("isempty", False)
+    if isempty == "true":
+        await message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
+        return
     buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
     if message.text:
         user_input = message.text
@@ -544,6 +559,9 @@ async def yapp_functional(message: Message, state: FSMContext):
             sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
             flag, response = await yapp(id, message.text, new_thread)
             if flag:
+                if response == "Ваша анкета не заполнена":
+                    await message.answer(response, reply_markup=noankeys)    
+                    return
                 await sticker_mssg.delete()
                 await message.answer("Упс, поймали ошибку", reply_markup=errorkeys)
                 # await message.answer(errormessage)
@@ -814,6 +832,11 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     elif callback_query.data == "meal_rate_extra":
         food = state_data["extra_plate_meal"]
     Iserror, user_data = await get_user_info(callback_query.from_user.id)
+    user_info = json.loads(user_data)
+    isempty = user_info.get("isempty", False)
+    if isempty == "true":
+        await callback_query.message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
+        return
     if Iserror:
         await sticker_mssg.delete()
         await callback_query.message.edit_text("Ошибка при получении инфы пользователя из дб")
