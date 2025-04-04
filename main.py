@@ -1951,12 +1951,20 @@ async def main_process_f_breastfeed(callback_query: types.CallbackQuery, state: 
 
 @router.message(StateFilter(Questionnaire.height))
 async def main_process_geight(message: Message, state: FSMContext):
+    pattern = r'^[0-9.]+$'
+    if not re.match(pattern, message.text):
+        await message.answer("Пожалуйста, введи целое число или число в формате 170.5")
+        return
     await state.update_data(height=message.text)
     await process_height(message, state)
     await state.set_state(Questionnaire.weight)
 
 @router.message(StateFilter(Questionnaire.weight))
 async def main_process_weight(message: Message, state: FSMContext):
+    pattern = r'^[0-9.]+$'
+    if not re.match(pattern, message.text):
+        await message.answer("Пожалуйста, введи целое число или число в формате 70.5")
+        return
     await state.update_data(weight=message.text)
     await process_weight(message, state)
     await state.set_state(Questionnaire.age)
