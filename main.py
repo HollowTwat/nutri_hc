@@ -585,6 +585,46 @@ async def yapp_functional(message: Message, state: FSMContext):
 
 ################## YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP YAPP ##################
 
+user_locks = {}
+
+def get_lock_for_user(user_id: str) -> asyncio.Lock:
+    if user_id not in user_locks:
+        user_locks[user_id] = asyncio.Lock()
+    return user_locks[user_id]
+
+async def process_media_group_after_delay(message: Message, media_group_id: str, user_id: str, state: FSMContext, confirm_text: str, buttons, delay: float = 3.0):
+    await asyncio.sleep(delay)
+    lock = get_lock_for_user(user_id)
+    async with lock:
+        state_data = await state.get_data()
+        media_group = state_data.get("media_group", {})
+        group_entry = media_group.get(media_group_id)
+        if group_entry and group_entry.get("urls"):
+            urls = group_entry["urls"]
+            print(f"Processing media group {media_group_id} for user {user_id} with URLs: {urls}")
+        else:
+            urls = []
+        # Remove this group from state.
+        if "media_group" in state_data and media_group_id in state_data["media_group"]:
+            state_data["media_group"].pop(media_group_id, None)
+            await state.update_data(media_group=state_data["media_group"])
+    
+    if urls:
+        vision = await process_urls(urls, user_id, VISION_ASS_ID_2)
+        print("Vision response:", vision)
+        Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
+        if Iserror:
+            errorkeyboard = [
+                [InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")],
+                [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]
+            ]
+            await message.answer("Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
+        else:
+            await message.answer(pretty)
+            await message.answer(confirm_text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+
+
+
 ################## DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK DNEVNIK ##################
 
 @router.message(StateFilter(UserState.recognition))
@@ -609,7 +649,28 @@ async def dnevnik_functional(message: Message, state: FSMContext):
     buttons = [[InlineKeyboardButton(text="Редактировать", callback_data="redact")],
             [InlineKeyboardButton(text="Все хорошо", callback_data="save")]]
     if message.photo:
-        await process_img_rec(message, state, confirm_text, buttons)
+        if message.media_group_id:
+            url = await get_url(message.photo[-1].file_id)
+            lock = get_lock_for_user(id)
+            async with lock:
+                # Reload state data under the lock.
+                state_data = await state.get_data()
+                media_group = state_data.get("media_group", {})
+                if message.media_group_id not in media_group:
+                    media_group[message.media_group_id] = {"urls": [], "scheduled": False}
+                media_group[message.media_group_id]["urls"].append(url)
+                print(f"Appended URL {url} to media group {message.media_group_id} for user {id}. "
+                      f"Current URLs: {media_group[message.media_group_id]['urls']}")
+                if not media_group[message.media_group_id]["scheduled"]:
+                    media_group[message.media_group_id]["scheduled"] = True
+                    await state.update_data(media_group=media_group)
+                    asyncio.create_task(
+                        process_media_group_after_delay(message, message.media_group_id, id, state, confirm_text, buttons, delay=2.0)
+                    )
+                else:
+                    await state.update_data(media_group=media_group)
+        else:
+            await process_img_rec(message, state, confirm_text, buttons)
         if not extra_plate:
             await state.set_state(UserState.saving_confirmation)
         elif extra_plate:

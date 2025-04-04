@@ -132,6 +132,30 @@ async def process_url(url, usr_id, assistant):
     return new_message
 
 
+async def process_urls(urls, usr_id, assistant):
+    print(urls)
+    thread = await aclient.beta.threads.create(
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": url},
+                    }
+                    for url in urls
+                ]
+            },
+        ]
+    )
+    await store_thread(usr_id, thread.id)
+
+    # Run the assistant on the thread
+    new_message = await run_assistant(thread, assistant)
+
+    return new_message
+
+
 
 async def process_url_etik(url, allergies, assistant):
     thread = await aclient.beta.threads.create(
