@@ -94,7 +94,7 @@ dp = Dispatcher(storage=storage)
 
 errorbuttons = [[InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
 errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
-noanketbuttons = [[InlineKeyboardButton(text="Заполнить анкету", callback_data="menu_settings_profile_re-anket")],[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings")]]
+noanketbuttons = [[InlineKeyboardButton(text="Заполнить анкету", callback_data="menu_settings_profile_re-anket")],[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]
 noankeys = InlineKeyboardMarkup(inline_keyboard=noanketbuttons)
 
 class StateMiddleware(BaseMiddleware):
@@ -875,6 +875,7 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     iserror, resp = await long_rate(callback_query.from_user.id, "3")
     await sticker_mssg.delete()
     if iserror:
+        await callback_query.answer()
         if resp == "Ваша анкета не заполнена":
             await callback_query.message.answer(resp, reply_markup=noankeys)
             return
@@ -903,6 +904,7 @@ async def main_meal_rate_day(callback_query: CallbackQuery, state: FSMContext):
         iserror, resp = await long_rate(callback_query.from_user.id, "0")
         await sticker_mssg.delete()
         if iserror:
+            await callback_query.answer()
             if resp == "Ваша анкета не заполнена":
                 await callback_query.message.answer(resp, reply_markup=noankeys)
                 return
