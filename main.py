@@ -94,7 +94,7 @@ dp = Dispatcher(storage=storage)
 
 errorbuttons = [[InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
 errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
-noanketbuttons = [[InlineKeyboardButton(text="Заполнить анкету", callback_data="menu_settings_profile_re-anket")],[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]
+noanketbuttons = [[InlineKeyboardButton(text="Заполнить анкету", callback_data="menu_settings_profile_re-anket")],[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
 noankeys = InlineKeyboardMarkup(inline_keyboard=noanketbuttons)
 
 class StateMiddleware(BaseMiddleware):
