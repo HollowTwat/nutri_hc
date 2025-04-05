@@ -1,5 +1,5 @@
 import asyncio
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 import aiogram
 import random
 import os
@@ -385,9 +385,11 @@ async def new_request_for_settings(id, state):
     gender_str = gender_mapping.get(data.get("user_info_gender"), "Неизвестно")
 
     try:
-        weight_change = Decimal(data.get("user_info_weight_change", 0))
-        current_weight = Decimal(data.get("user_info_weight", 0))
-    except (ValueError, TypeError):
+        weight_change_str = str(data.get("user_info_weight_change", 0)).replace(",", ".")
+        weight_change = Decimal(weight_change_str)
+        current_weight_str = str(data.get("user_info_weight", 0)).replace(",", ".")
+        current_weight = Decimal(current_weight_str)
+    except (InvalidOperation, ValueError, TypeError, AttributeError):
         weight_change = Decimal(0)
         current_weight = Decimal(0)
     
