@@ -82,9 +82,9 @@ def calculate_pal(hours_light, hours_heavy):
 async def calculate(state):
     user_data = await state.get_data()
     goal = user_data['goal']
-    weight = round(float(user_data['weight']))
-    height = round(float(user_data['height']))
-    age = round(float(user_data['age']))
+    weight = round(float(user_data['weight'].replace(",", ".")))
+    height = round(float(user_data['height'].replace(",", ".")))
+    age = int(user_data['age'])
     gender = user_data['gender']
     pregnancy = user_data['pregnancy']
     activity_l = round(float(user_data["jogging"].replace(",", ".")))
@@ -130,7 +130,7 @@ async def calculate_w_loss_amount(state, goal):
     state_data = await state.get_data()
     ideal_w_l = state_data["ideal_weight_low"]
     ideal_w_h = state_data["ideal_weight_high"]
-    user_w = weight = round(float(state_data['weight']))
+    user_w = round(float(state_data['weight'].replace(",", ".")))
     
     if goal == "+":
         user_weight_diff = int(ideal_w_l)-int(user_w)
