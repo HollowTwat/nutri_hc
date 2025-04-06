@@ -1214,7 +1214,8 @@ async def lessons_manage_command(message: types.Message, state: FSMContext):
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer("pick a lesson", reply_markup=keyboard)
 
-
+# dayslist = ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2","d6","d6_2","d7","d8","d8_2","d9","d9_2","d10","d10_2","d11","d11_2","d12","d12_2","d13","d13_2","d14","d15","d15_2","d16","d16_2","d17","d17_2","d18","d19","d20","d21"]
+# @router.callback_query(lambda c: c.data in dayslist)
 @router.callback_query(lambda c: c.data in ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2","d6","d6_2","d7","d8","d8_2","d9","d9_2","d10","d10_2","d11","d11_2","d12","d12_2","d13","d13_2","d14","d15","d15_2","d16","d16_2","d17","d17_2","d18","d19","d20","d21"])
 async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContext):
     asyncio.create_task(log_user_callback(callback_query))
@@ -2446,6 +2447,9 @@ async def default_handler(message: Message, state: FSMContext) -> None:
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     # if not current_state:
+    if current_state and current_state.startswith("Questionnaire"):
+        await message.answer("Вы не закончили анкету")
+        return
     if message.sticker:
         sticker_id = message.sticker.file_id
         await message.answer(f"{sticker_id}")
