@@ -179,15 +179,14 @@ async def add_user_lesson(id, lesson):
         except aiohttp.ClientError as e:
             return False
         
-async def get_user_list(id):
-    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUsersIds?userTgId={id}&onlyActive=true"
+async def get_user_list(onlyus):
+    url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUsersIds?onlyUs={onlyus}&onlyActive=true"
     async with aiohttp.ClientSession() as session:
         try:
             async with session.post(url=url) as response:
                 data = await response.text()
-                if data == "true":
-                    return True
-                else: return False
+                user_list = json.loads(data)
+                return user_list
         except aiohttp.ClientError as e:
             return False
 

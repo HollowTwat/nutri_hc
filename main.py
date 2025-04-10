@@ -2375,7 +2375,7 @@ async def start_test(message: types.Message, state: FSMContext):
 
 @router.message(StateFilter(PostStates.waiting_for_post))
 async def handle_post_with_photo(message: types.Message, state: FSMContext):
-    buttons = [[InlineKeyboardButton(text="reset_post", callback_data="reset_post"), InlineKeyboardButton(text="send_to_users", callback_data="send_to_users")]]
+    buttons = [[InlineKeyboardButton(text="reset_post", callback_data="reset_post")], [InlineKeyboardButton(text="send_to_users", callback_data="send_to_users"), InlineKeyboardButton(text="send_to_us", callback_data="send_to_us")]]
     if message.photo:
         photo = message.photo[-1]
         caption = message.caption if message.caption else ""
@@ -2402,11 +2402,11 @@ async def handle_buttons(callback_query: types.CallbackQuery, state: FSMContext)
         await callback_query.message.edit_reply_markup()
         await callback_query.answer("Post reset! Send a new one.")
         await state.set_state(PostStates.waiting_for_post)
-    
-    elif callback_query.data == "send_to_users":
+
+    elif callback_query.data == "send_to_us":
         caption = data.get("caption", data.get("text", ""))
         photo_id = data.get("photo_id")
-        user_list = await get_user_list(callback_query.from_user.id)
+        user_list = await get_user_list(True)
 
         for user_id in user_list:
             try:
@@ -2423,10 +2423,48 @@ async def handle_buttons(callback_query: types.CallbackQuery, state: FSMContext)
                         text=f"{caption}",
                         parse_mode="HTML"
                     )
+                successful += 1
             except Exception as e:
                 print(f"Failed to send to {user_id}: {e}")
-        print((f"Post sent to {len(user_list)} users!"))
-        await callback_query.answer(f"Post sent to {len(user_list)} users!")
+                unsuccessful += 1
+        result_message = (
+        f"Post delivery results:\n"
+        f"✅ Successful: {successful}\n"
+        f"❌ Unsuccessful: {unsuccessful}\n"
+        f"📊 Total attempted: {len(user_list)}")
+        await callback_query.message.answer(result_message)
+    
+    elif callback_query.data == "send_to_users":
+        caption = data.get("caption", data.get("text", ""))
+        photo_id = data.get("photo_id")
+        user_list = await get_user_list(False)
+
+        for user_id in user_list:
+            try:
+                if photo_id:
+                    await bot.send_photo(
+                        chat_id=user_id,
+                        photo=photo_id,
+                        caption=f"{caption}",
+                        parse_mode="HTML"
+                    )
+                else:
+                    await bot.send_message(
+                        chat_id=user_id,
+                        text=f"{caption}",
+                        parse_mode="HTML"
+                    )
+                successful += 1
+            except Exception as e:
+                print(f"Failed to send to {user_id}: {e}")
+                unsuccessful += 1
+        # print((f"Post sent to {len(user_list)} users!"))
+        result_message = (
+        f"Post delivery results:\n"
+        f"✅ Successful: {successful}\n"
+        f"❌ Unsuccessful: {unsuccessful}\n"
+        f"📊 Total attempted: {len(user_list)}")
+        await callback_query.message.answer(result_message)
 
 
 
