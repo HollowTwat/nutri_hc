@@ -2397,6 +2397,8 @@ async def handle_post_with_photo(message: types.Message, state: FSMContext):
 @router.callback_query(StateFilter(PostStates.post_received))
 async def handle_buttons(callback_query: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
+    successful = 0
+    unsuccessful = 0
     
     if callback_query.data == "reset_post":
         await callback_query.message.edit_reply_markup()
