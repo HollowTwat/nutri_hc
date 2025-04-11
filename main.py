@@ -1078,10 +1078,16 @@ async def main_change_user_info(callback_query: CallbackQuery, state: FSMContext
     state_data = await state.get_data()
     name = state_data["name"]
     kkal = state_data["target_calories"]
+    allergies = state_data["allergies"]
+    timeslide = state_data["timeslide"]
     if callback_query.data == "menu_settings_profile_name":
         await change_user_name(callback_query, state, name)
     elif callback_query.data == "menu_settings_profile_kkal":
         await change_user_kkal(callback_query, state, kkal)
+    elif callback_query.data == "menu_settings_profile_allergies":
+        await change_user_allergies(callback_query, state, allergies)
+    elif callback_query.data == "menu_settings_profile_timeslide":
+        await change_user_timeslide(callback_query, state, timeslide)
     elif callback_query.data == "menu_settings_profile_re-anket":
         await process_reanket(callback_query, state)
         await state.set_state(Questionnaire.name)
@@ -1107,6 +1113,20 @@ async def main_change_kkal(message: types.Message, state:FSMContext):
         await process_change_kkal(message, state)
     else:
         await message.answer("Напиши число")
+
+@router.message(StateFilter(UserState.allergy_change))
+async def main_change_allergies(message: types.Message, state:FSMContext):
+    asyncio.create_task(log_user_message(message))
+    await process_change_allergies(message, state)
+
+@router.message(StateFilter(UserState.slide_change))
+async def main_change_slide(message: types.Message, state:FSMContext):
+    asyncio.create_task(log_user_message(message))
+    pattern = r'^(0|[+-]\d+)$'
+    if re.match(pattern, message.text):
+        await process_change_slide(message, state)
+    else:
+        await message.answer("Введи отклонение в формате: <i>+2 или 0 или -10</i>")
 
 @router.callback_query(lambda c: c.data == 'user_change_notif_time')
 async def main_process_menu_settings_notif(callback_query: CallbackQuery, state: FSMContext):

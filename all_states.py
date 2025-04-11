@@ -20,6 +20,8 @@ class UserState(StatesGroup):
     change_user_info = State()
     name_change = State()
     kkal_change = State()
+    allergy_change = State()
+    slide_change = State()
     morning_ping_change = State()
     evening_ping_change = State()
     notif_toggle = State()

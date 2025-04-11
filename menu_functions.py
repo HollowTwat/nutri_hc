@@ -412,7 +412,8 @@ async def new_request_for_settings(id, state):
         "goal_weight": str(goal_weight),
         "target_calories": data.get("target_calories"),
         "gym_hours": data.get("user_info_gym_hrs"),
-        "exercise_hours": data.get("user_info_excersise_hrs")
+        "exercise_hours": data.get("user_info_excersise_hrs"),
+        "timeslide": data.get("user_info_timeslide")
     }
     
     await state.update_data(**user_info)
@@ -434,6 +435,8 @@ async def process_menu_settings_profile(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="Изменить имя", callback_data="menu_settings_profile_name")],
         [InlineKeyboardButton(text="Изменить норму ККАЛ", callback_data="menu_settings_profile_kkal")],
+        [InlineKeyboardButton(text="Изменить отклонение времени", callback_data="menu_settings_profile_timeslide")],
+        [InlineKeyboardButton(text="Изменить аллергии", callback_data="menu_settings_profile_allergies")],
         [InlineKeyboardButton(text="Заполнить анкету заново", callback_data="menu_settings_profile_re-anket")],
         [InlineKeyboardButton(text="Настроить уведомления", callback_data="menu_settings_profile_notif")],
         [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings")],
@@ -490,6 +493,16 @@ async def change_user_kkal(callback_query, state, kkal):
     buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
     await callback_query.message.edit_text(f"Текущая норма калорий: {kkal} ккал\nВведи новое число ккал", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.set_state(UserState.kkal_change)
+
+async def change_user_allergies(callback_query, state, allergies):
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
+    await callback_query.message.edit_text(f"Текущие аллергии записаны как: {allergies}\nВведи новую ифнормацию", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.set_state(UserState.allergy_change)
+
+async def change_user_timeslide(callback_query, state, timeslide):
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
+    await callback_query.message.edit_text(f"Текущее отклонение от москвы: {timeslide}\nВведи новое отклонение в формате: <i>+2 или 0 или -10</i>", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await state.set_state(UserState.slide_change)
 
 # async def restart_anket(callback_query, state):
 #     buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
@@ -561,6 +574,34 @@ async def process_change_kkal(message, state):
         "userTgId": f"{message.from_user.id}",
         "info": {
             "target_calories" : f"{message.text}"
+        }
+    }
+    iserror, answer = await add_or_update_usr_info(json.dumps(data))
+    if not iserror:
+        buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
+        await message.answer("Я обновила твои данные ✅", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await state.set_state(UserState.menu)
+
+async def process_change_allergies(message, state):
+    await state.update_data(allergies=message.text)
+    data = {
+        "userTgId": f"{message.from_user.id}",
+        "info": {
+            "user_info_meals_ban" : f"{message.text}"
+        }
+    }
+    iserror, answer = await add_or_update_usr_info(json.dumps(data))
+    if not iserror:
+        buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
+        await message.answer("Я обновила твои данные ✅", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await state.set_state(UserState.menu)
+
+async def process_change_slide(message, state):
+    await state.update_data(timeslide=message.text)
+    data = {
+        "userTgId": f"{message.from_user.id}",
+        "info": {
+            "user_info_timeslide" : f"{message.text}"
         }
     }
     iserror, answer = await add_or_update_usr_info(json.dumps(data))
