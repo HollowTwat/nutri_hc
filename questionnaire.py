@@ -215,6 +215,7 @@ async def process_mail(message, state):
         [InlineKeyboardButton(text="Начать урок 1", callback_data="lesson_0_done")],
         [InlineKeyboardButton(text=arrow_menu, url="menu_back")],
         ]
+        keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
         await message.answer(text, reply_markup=keyboard)
         await state.set_state(UserState.menu)
     elif answer == "false":
