@@ -213,7 +213,7 @@ async def process_mail(message, state):
         text = "<b>Аккаунт активирован</b>"
         buttons = [
         [InlineKeyboardButton(text="Начать урок 1", callback_data="lesson_0_done")],
-        [InlineKeyboardButton(text=arrow_menu, url="menu_back")],
+        [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
         ]
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
         await message.answer(text, reply_markup=keyboard)

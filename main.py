@@ -1956,7 +1956,8 @@ async def main_questionaire_mail(message: Message, state: FSMContext):
 
 @router.callback_query(lambda c: c.data == 'retry_mail')
 async def main_rerty_mail(callback_query: CallbackQuery, state: FSMContext):
-    await process_first(callback_query.message, state)
+    # await process_first(callback_query.message, state)
+    await callback_query.message.answer("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно")
     await state.set_state(Questionnaire.mail)
 
 @router.message(StateFilter(Questionnaire.prefirst))
