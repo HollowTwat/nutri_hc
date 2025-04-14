@@ -216,8 +216,9 @@ async def process_mail(message, state):
         [InlineKeyboardButton(text=arrow_menu, url="menu_back")],
         ]
         await message.answer(text, reply_markup=keyboard)
+        await state.set_state(UserState.menu)
     elif answer == "false":
-        await state.clear()
+        # await state.clear()
         text = "К сожалению, я не нашла твою почту. Напиши пожалуйста в тех поддержку  @nutri_care"
         buttons = [
         [InlineKeyboardButton(text="Попробовать еще раз", callback_data="retry_mail")],
@@ -225,6 +226,7 @@ async def process_mail(message, state):
         ]
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
         await message.answer(text, reply_markup=keyboard)
+
 
 async def process_reanket(callback_query, state):
     text = "<b>Как тебя зовут?</b>"

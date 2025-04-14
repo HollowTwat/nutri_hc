@@ -2272,7 +2272,6 @@ async def main_process_mail(message: Message, state: FSMContext):
     pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
     if re.match(pattern, message.text):
         await process_mail(message, state)
-        await state.set_state(Questionnaire.name)
     else:
         await message.answer("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно")
 
