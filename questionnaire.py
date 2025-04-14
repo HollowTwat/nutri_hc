@@ -198,16 +198,24 @@ async def process_prefirst(message, state):
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer(text, reply_markup=keyboard)
 
+# async def process_first(message, state):
+#     text = f"Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно" 
+#     await message.answer(text, reply_markup=None)
+
 async def process_first(message, state):
-    text = f"Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно"
+    text = f"<b>Как тебя зовут?</b>"
     await message.answer(text, reply_markup=None)
 
 async def process_mail(message, state):
     answer = await check_mail(message.from_user.id, message.text)
     print(answer)
     if answer == "true":
-        text = "<b>Как тебя зовут?</b>"
-        await message.answer(text)
+        text = "<b>Аккаунт активирован</b>"
+        buttons = [
+        [InlineKeyboardButton(text="Начать урок 1", callback_data="lesson_0_done")],
+        [InlineKeyboardButton(text=arrow_menu, url="menu_back")],
+        ]
+        await message.answer(text, reply_markup=keyboard)
     elif answer == "false":
         await state.clear()
         text = "К сожалению, я не нашла твою почту. Напиши пожалуйста в тех поддержку  @nutri_care"
@@ -502,7 +510,7 @@ async def process_community_invite(message, state):
     ]
     await message.answer_media_group(media=media_files)
     buttons = [
-        [InlineKeyboardButton(text="Хочу начать путь к своей цели!", callback_data="lesson_0_done")],
+        [InlineKeyboardButton(text="Хочу начать путь к своей цели!", callback_data="comm_inv_2_done")],
         ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     await message.answer(text, reply_markup=keyboard)

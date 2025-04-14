@@ -1967,17 +1967,7 @@ async def main_process_prefirst(message: Message, state: FSMContext):
 @router.callback_query(StateFilter(Questionnaire.first), lambda c: True)
 async def main_process_first(callback_query: types.CallbackQuery, state: FSMContext):
     await process_first(callback_query.message, state)
-    await state.set_state(Questionnaire.mail)
-
-@router.message(StateFilter(Questionnaire.mail))
-async def main_process_mail(message: Message, state: FSMContext):
-    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
-    if re.match(pattern, message.text):
-        await process_mail(message, state)
-        await state.set_state(Questionnaire.name)
-    else:
-        await message.answer("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно")
-    
+    await state.set_state(Questionnaire.name)
 
 @router.message(StateFilter(Questionnaire.name))
 async def main_process_name(message: Message, state: FSMContext):
@@ -2258,6 +2248,33 @@ async def main_process_community_invite(callback_query: types.CallbackQuery, sta
 async def main_process_community_invite(callback_query: types.CallbackQuery, state: FSMContext):
     await callback_query.answer()
     await process_community_invite(callback_query.message, state)
+    await state.set_state(Questionnaire.premail)
+
+@router.message(Command("test_premail"))
+async def test_premail(message: types.Message, state: FSMContext):
+    await state.set_state(Questionnaire.premail)
+    await message.answer("Тык", reply_markup=(InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="тык", callback_data="tik")]])))
+
+@router.callback_query(StateFilter(Questionnaire.premail), lambda c: True)
+async def main_premail_ask_a_question(callback_query: types.CallbackQuery, state: FSMContext):
+    await callback_query.answer()
+    id = callback_query.from_user.id
+    isActive = await check_is_active_state(id, state)
+    if not isActive:
+        await callback_query.message.edit_text("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно")
+        await state.set_state(Questionnaire.mail)
+    else:
+        await state.set_state(LessonStates.step_1)
+        await process_step_1(callback_query, state)
+
+@router.message(StateFilter(Questionnaire.mail))
+async def main_process_mail(message: Message, state: FSMContext):
+    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if re.match(pattern, message.text):
+        await process_mail(message, state)
+        await state.set_state(Questionnaire.name)
+    else:
+        await message.answer("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно")
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 

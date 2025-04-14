@@ -352,6 +352,7 @@ class LessonStates21(StatesGroup):
 class Questionnaire(StatesGroup):
     prefirst = State()
     first = State()
+    premail = State()
     mail = State()
     name = State()
     gender = State()
