@@ -2439,7 +2439,7 @@ async def send_message_to_user(message: types.Message):
 
 @router.message(StateFilter(PostStates.waiting_for_post))
 async def handle_post_with_photo(message: types.Message, state: FSMContext):
-    buttons = [[InlineKeyboardButton(text="reset_post", callback_data="reset_post")], [InlineKeyboardButton(text="Отправить всем", callback_data="send_to_users"), InlineKeyboardButton(text="Отправить разрабам", callback_data="send_to_us"), InlineKeyboardButton(text="Отправить @natailini", callback_data="send_to_natailini")]]
+    buttons = [[InlineKeyboardButton(text="Отправить всем", callback_data="send_to_users"), InlineKeyboardButton(text="Отменить отправку", callback_data="reset_post")], [InlineKeyboardButton(text="Отправить разрабам", callback_data="send_to_us"), InlineKeyboardButton(text="Отправить @natailini", callback_data="send_to_natailini")]]
     try:
         if message.photo:
             photo = message.photo[-1]
