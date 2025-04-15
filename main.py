@@ -2407,16 +2407,17 @@ async def user_active_command(message: types.Message):
 
 @router.message(Command("rassilka_test"))
 async def start_test(message: types.Message, state: FSMContext):
-    if message.from_user.id not in ["464682207", "389054202", "7726313921"]:
-        message.answer("You shall not pass!")
+    if message.from_user.id not in [464682207, 389054202, 7726313921]:
+        print("Not_In_db_attempted_breach")
+        await message.answer("You shall not pass!")
         return
     await message.answer("📝 Пришли мне пост <i>Текст(html-форматирование) + фото</i> и я пришлю тебе то как он будет выглядеть")
     await state.set_state(PostStates.waiting_for_post)
 
-@dp.message(Command("messagetouser"))
+@router.message(Command("messagetouser"))
 async def send_message_to_user(message: types.Message):
-    if message.from_user.id not in ["464682207", "389054202", "7726313921"]:
-        message.answer("You shall not pass!")
+    if message.from_user.id not in [464682207, 389054202, 7726313921]:
+        await message.answer("You shall not pass!")
         return
     try:
         parts = message.text.split(maxsplit=2)
@@ -2508,7 +2509,7 @@ async def handle_buttons(callback_query: types.CallbackQuery, state: FSMContext)
         caption = data.get("caption", data.get("text", ""))
         photo_id = data.get("photo_id")
         # user_list = await get_user_list(True)
-        user_list = ["464682207", "389054202", "7726313921"] #
+        user_list = [464682207, 389054202, 7726313921] #
 
         for user_id in user_list:
             try:
