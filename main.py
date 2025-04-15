@@ -2407,29 +2407,60 @@ async def user_active_command(message: types.Message):
 
 @router.message(Command("rassilka_test"))
 async def start_test(message: types.Message, state: FSMContext):
-    await message.answer("📝 Send me a post (image + text), and I'll copy it back!")
+    if message.from_user.id not in ["464682207", "389054202", "7726313921"]:
+        message.answer("You shall not pass!")
+        return
+    await message.answer("📝 Пришли мне пост <i>Текст(html-форматирование) + фото</i> и я пришлю тебе то как он будет выглядеть")
     await state.set_state(PostStates.waiting_for_post)
+
+@dp.message(Command("messagetouser"))
+async def send_message_to_user(message: types.Message):
+    if message.from_user.id not in ["464682207", "389054202", "7726313921"]:
+        message.answer("You shall not pass!")
+        return
+    try:
+        parts = message.text.split(maxsplit=2)
+        if len(parts) < 3:
+            await message.reply("Usage: /messagetouser_<user_id> <message>")
+            return
+            
+        user_id = int(parts[0].split('_')[1])
+        message_text = parts[2]
+        
+        await bot.send_message(user_id, message_text)
+        await message.reply(f"Message sent to user {user_id}")
+        
+    except IndexError:
+        await message.reply("Invalid format. Use: /messagetouser_<user_id> <message>")
+    except ValueError:
+        await message.reply("Invalid user ID. It should be a number.")
+    except Exception as e:
+        await message.reply(f"Failed to send message: {str(e)}")
 
 @router.message(StateFilter(PostStates.waiting_for_post))
 async def handle_post_with_photo(message: types.Message, state: FSMContext):
-    buttons = [[InlineKeyboardButton(text="reset_post", callback_data="reset_post")], [InlineKeyboardButton(text="send_to_users", callback_data="send_to_users"), InlineKeyboardButton(text="send_to_us", callback_data="send_to_us")]]
-    if message.photo:
-        photo = message.photo[-1]
-        caption = message.caption if message.caption else ""
-        
-        await state.update_data(photo_id=photo.file_id, caption=caption)
-        await state.set_state(PostStates.post_received)
-        
-        await bot.send_photo(
-            chat_id=message.chat.id,
-            photo=photo.file_id,
-            caption=f"{caption}"
-        )
-    elif message.text:
-        await state.update_data(text=message.text)
-        await state.set_state(PostStates.post_received)
-        await message.answer(f"{message.text}")
-    await message.answer("Что делаем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    buttons = [[InlineKeyboardButton(text="reset_post", callback_data="reset_post")], [InlineKeyboardButton(text="Отправить всем", callback_data="send_to_users"), InlineKeyboardButton(text="Отправить разрабам", callback_data="send_to_us"), InlineKeyboardButton(text="Отправить @natailini", callback_data="send_to_natailini")]]
+    try:
+        if message.photo:
+            photo = message.photo[-1]
+            caption = message.caption if message.caption else ""
+            
+            await state.update_data(photo_id=photo.file_id, caption=caption)
+            await state.set_state(PostStates.post_received)
+            
+            await bot.send_photo(
+                chat_id=message.chat.id,
+                photo=photo.file_id,
+                caption=f"{caption}"
+            )
+        elif message.text:
+            await state.update_data(text=message.text)
+            await state.set_state(PostStates.post_received)
+            await message.answer(f"{message.text}")
+        await message.answer("Что делаем?", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    except Exception as e:
+        error_message = f"Произошла ошибка: {str(e)}"
+        await message.answer(error_message)
 
 @router.callback_query(StateFilter(PostStates.post_received))
 async def handle_buttons(callback_query: types.CallbackQuery, state: FSMContext):
@@ -2472,6 +2503,38 @@ async def handle_buttons(callback_query: types.CallbackQuery, state: FSMContext)
         f"❌ Unsuccessful: {unsuccessful}\n"
         f"📊 Total attempted: {len(user_list)}")
         await callback_query.message.answer(result_message)
+
+    elif callback_query.data == "send_to_natailini":
+        caption = data.get("caption", data.get("text", ""))
+        photo_id = data.get("photo_id")
+        # user_list = await get_user_list(True)
+        user_list = ["464682207", "389054202", "7726313921"] #
+
+        for user_id in user_list:
+            try:
+                if photo_id:
+                    await bot.send_photo(
+                        chat_id=user_id,
+                        photo=photo_id,
+                        caption=f"{caption}",
+                        parse_mode="HTML"
+                    )
+                else:
+                    await bot.send_message(
+                        chat_id=user_id,
+                        text=f"{caption}",
+                        parse_mode="HTML"
+                    )
+                successful += 1
+            except Exception as e:
+                print(f"Failed to send to {user_id}: {e}")
+                unsuccessful += 1
+        result_message = (
+        f"Результат отправки поста:\n"
+        f"✅ Удачно: {successful}\n"
+        f"❌ Неудачно: {unsuccessful}\n"
+        f"📊 Всего пользователей: {len(user_list)}")
+        await callback_query.message.answer(result_message)
     
     elif callback_query.data == "send_to_users":
         caption = data.get("caption", data.get("text", ""))
@@ -2499,10 +2562,10 @@ async def handle_buttons(callback_query: types.CallbackQuery, state: FSMContext)
                 unsuccessful += 1
         # print((f"Post sent to {len(user_list)} users!"))
         result_message = (
-        f"Post delivery results:\n"
-        f"✅ Successful: {successful}\n"
-        f"❌ Unsuccessful: {unsuccessful}\n"
-        f"📊 Total attempted: {len(user_list)}")
+        f"Результат отправки поста:\n"
+        f"✅ Удачно: {successful}\n"
+        f"❌ Неудачно: {unsuccessful}\n"
+        f"📊 Всего пользователей: {len(user_list)}")
         await callback_query.message.answer(result_message)
 
 
