@@ -2416,27 +2416,32 @@ async def start_test(message: types.Message, state: FSMContext):
 
 @router.message(Command("messagetouser"))
 async def send_message_to_user(message: types.Message):
-    if message.from_user.id not in [464682207, 389054202, 7726313921]:
-        await message.answer("You shall not pass!")
-        return
     try:
-        parts = message.text.split(maxsplit=2)
+        # Split into: ["/messagetouser", "12345", "message text..."]
+        parts = message.text.split(maxsplit=2)  # Split only first 2 spaces
+        
         if len(parts) < 3:
-            await message.reply("Usage: /messagetouser_<user_id> <message>")
+            await message.reply(
+                "❌ <b>Usage:</b> <code>/messagetouser &lt;user_id&gt; &lt;message&gt;</code>\n"
+                "Example: <code>/messagetouser 12345 Hello there!</code>",
+                parse_mode="HTML"
+            )
             return
-            
-        user_id = int(parts[0].split('_')[1])
-        message_text = parts[2]
+
+        _, user_id_str, message_text = parts
         
+        try:
+            user_id = int(user_id_str)
+        except ValueError:
+            await message.reply("❌ <b>Invalid User ID!</b> Must be a number.", parse_mode="HTML")
+            return
+
+        # Try sending the message
         await bot.send_message(user_id, message_text)
-        await message.reply(f"Message sent to user {user_id}")
-        
-    except IndexError:
-        await message.reply("Invalid format. Use: /messagetouser_<user_id> <message>")
-    except ValueError:
-        await message.reply("Invalid user ID. It should be a number.")
+        await message.reply(f"✅ <b>Message sent to</b> <code>{user_id}</code>", parse_mode="HTML")
+
     except Exception as e:
-        await message.reply(f"Failed to send message: {str(e)}")
+        await message.reply(f"❌ <b>Error:</b> <code>{str(e)}</code>", parse_mode="HTML")
 
 @router.message(StateFilter(PostStates.waiting_for_post))
 async def handle_post_with_photo(message: types.Message, state: FSMContext):
