@@ -114,7 +114,7 @@ async def process_l5_step_7(poll_answer, state):
         chat_id=poll_answer.user.id,
         question="<b>Вопрос 6</b> \n«Мне очень грустно. Этот чизкейк явно меня порадует». Съесть вкусное, когда грустно. Как тебе такой план?",
         options=["Нормальный план, это работает", "Мою грусть сладости и фастфуд не лечат"],
-        correct_option_id=0,
+        correct_option_id=1,
         is_anonymous=False,
         type="quiz",
         explanation="Это и правда работает! Но лучше искать источники радости не только в еде, но и в общении, движении, разных хобби."

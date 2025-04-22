@@ -203,27 +203,28 @@ async def process_prefirst(message, state):
 #     await message.answer(text, reply_markup=None)
 
 async def process_first(message, state):
-    text = f"<b>Как тебя зовут?</b>"
+    text = f"<b>Как могу к тебе обращаться?</b>"
     await message.answer(text, reply_markup=None)
 
 async def process_mail(message, state):
     answer = await check_mail(message.from_user.id, message.text)
     print(answer)
     if answer == "true":
-        text = "<b>Аккаунт активирован</b>"
+        text = "<b>Поздравляю!\nУ тебя есть подписка на Нутри 🥂</b>"
         buttons = [
         [InlineKeyboardButton(text="Начать урок 1", callback_data="lesson_0_done")],
-        [InlineKeyboardButton(text="⏏️", callback_data="menu_back")],
+        [InlineKeyboardButton(text="В меню ⏏️", callback_data="menu_back")],
         ]
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
         await message.answer(text, reply_markup=keyboard)
         await state.set_state(UserState.menu)
     elif answer == "false":
         # await state.clear()
-        text = "К сожалению, я не нашла твою почту. Напиши пожалуйста в тех поддержку  @nutri_care"
+        text = "Кажется, у тебя еще нет подписки на Нутри. Хочешь оформить сейчас?"
         buttons = [
+        [InlineKeyboardButton(text="Да, оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")],
         [InlineKeyboardButton(text="Попробовать еще раз", callback_data="retry_mail")],
-        [InlineKeyboardButton(text="Поддержка", url="t.me/nutri_care")],
+        [InlineKeyboardButton(text="🆘 Написать в поддержку", url="t.me/nutri_care")],
         ]
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
         await message.answer(text, reply_markup=keyboard)

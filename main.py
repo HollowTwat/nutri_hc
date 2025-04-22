@@ -2470,6 +2470,7 @@ async def handle_post_with_photo(message: types.Message, state: FSMContext):
 
 @router.callback_query(StateFilter(PostStates.post_received))
 async def handle_buttons(callback_query: types.CallbackQuery, state: FSMContext):
+    await callback_query.answer()
     data = await state.get_data()
     successful = 0
     unsuccessful = 0
