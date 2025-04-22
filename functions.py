@@ -301,9 +301,11 @@ async def run_assistant(thread, assistant):
         while run.status != "completed":
             if run.status == "failed":
                 messages = await aclient.beta.threads.messages.list(thread_id=thread.id)
-                raise Exception(f"error should be {run.last_error}  messages: {messages}, run: {run}")
+                raise Exception(f"RUN FAILED {run.last_error}  messages: {messages}, run: {run}")
                     # f"Run failed with status: \n{run.status} \nand generated \n{messages.data[0]} \nrun.failed_at: \n{run.failed_at} \nrun.incomplete_details: \n{run.incomplete_details}")
-
+            if run.status == "expired":
+                messages = await aclient.beta.threads.messages.list(thread_id=thread.id)
+                raise Exception(f"RUN EXPIRED {run.last_error}  messages: {messages}, run: {run}")
             print(run.status)
             await asyncio.sleep(1.5)
             run = await aclient.beta.threads.runs.retrieve(
