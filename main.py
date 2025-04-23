@@ -2079,26 +2079,27 @@ async def main_process_part3(callback_query: types.CallbackQuery, state: FSMCont
     await process_part3(callback_query.message, state)
     await state.set_state(Questionnaire.jogging)
 
-@router.message(StateFilter(Questionnaire.jogging))
-async def main_process_jogging(message: Message, state: FSMContext):
-    pattern = r'^[0-9.]+$'
-    if re.match(pattern, message.text):
+@router.callback_query(StateFilter(Questionnaire.jogging))
+async def main_process_jogging(callback_query: types.CallbackQuery, state: FSMContext):
+    # pattern = r'^[0-9.]+$'
+    # if re.match(pattern, message.text):
+    await callback_query.message.edit_text("Записала!\nУделять время движению так же важно, как и составлению рациона.")
 
-        await state.update_data(jogging=message.text)
-        await process_jogging(message, state)
-        await state.set_state(Questionnaire.lifting)
-    else: 
-        await message.answer("Попробуй ввести число ещё раз, с первого раза я не поняла.")
+    await state.update_data(jogging=callback_query.data)
+    await process_jogging(callback_query.message, state)
+    await state.set_state(Questionnaire.lifting)
+    # else: 
+    #     await message.answer("Попробуй ввести число ещё раз, с первого раза я не поняла.")
 
-@router.message(StateFilter(Questionnaire.lifting))
-async def main_process_lifting(message: Message, state: FSMContext):
-    pattern = r'^[0-9.]+$'
-    if re.match(pattern, message.text):
-        await state.update_data(lifting=message.text)
-        await process_lifting(message, state)
-        await state.set_state(Questionnaire.stress)
-    else: 
-        await message.answer("Попробуй ввести число ещё раз, с первого раза я не поняла.")
+@router.callback_query(StateFilter(Questionnaire.lifting))
+async def main_process_lifting(callback_query: types.CallbackQuery, state: FSMContext):
+    if callback_query.data == "0":
+        await callback_query.message.edit_text("Поддерживаю! Я тоже больше люблю йогу и бег. Силовые для меня — стресс.")
+    else:
+        await callback_query.message.edit_text("Искренне восхищаюсь! Для меня поход в спортзал — стресс. Я больше люблю йогу и бег.")
+    await state.update_data(lifting=callback_query.data)
+    await process_lifting(callback_query.message, state)
+    await state.set_state(Questionnaire.stress)
 
 @router.callback_query(StateFilter(Questionnaire.stress), lambda c: True)
 async def main_process_stress(callback_query: types.CallbackQuery, state: FSMContext):
