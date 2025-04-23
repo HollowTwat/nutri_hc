@@ -210,7 +210,7 @@ async def process_mail(message, state):
     answer = await check_mail(message.from_user.id, message.text)
     print(answer)
     if answer == "true":
-        text = "<b>Поздравляю!\nУ тебя есть подписка на Нутри 🥂</b>"
+        text = "Поздравляю!\nУ тебя есть подписка на Нутри 🥂"
         buttons = [
         [InlineKeyboardButton(text="Начать урок 1", callback_data="lesson_0_done")],
         [InlineKeyboardButton(text="В меню ⏏️", callback_data="menu_back")],
@@ -222,7 +222,7 @@ async def process_mail(message, state):
         # await state.clear()
         text = "Кажется, у тебя еще нет подписки на Нутри. Хочешь оформить сейчас?"
         buttons = [
-        [InlineKeyboardButton(text="Да, оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")],
+        [InlineKeyboardButton(text="Да, оплатить", url="https://nutri-ai.ru/?promo=nutribot&utm_medium=referral&utm_source=telegram&utm_campaign=nutribot")],
         [InlineKeyboardButton(text="Попробовать еще раз", callback_data="retry_mail")],
         [InlineKeyboardButton(text="🆘 Написать в поддержку", url="t.me/nutri_care")],
         ]
