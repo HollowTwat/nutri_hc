@@ -2263,7 +2263,7 @@ async def main_premail_ask_a_question(callback_query: types.CallbackQuery, state
     id = callback_query.from_user.id
     isActive = await check_is_active_state(id, state)
     if not isActive:
-        await callback_query.message.edit_text("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно")
+        await callback_query.message.edit_text("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате 🙏")
         await state.set_state(Questionnaire.mail)
     else:
         await state.set_state(LessonStates.step_1)
@@ -2275,7 +2275,7 @@ async def main_process_mail(message: Message, state: FSMContext):
     if re.match(pattern, message.text):
         await process_mail(message, state)
     else:
-        await message.answer("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно")
+        await message.answer("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате 🙏")
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 

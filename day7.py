@@ -73,7 +73,7 @@ async def process_l7_step_4(poll_answer, state):
     await state.set_state(LessonStates7.step_5)
     await bot.send_poll(
         chat_id=poll_answer.user.id,
-        question="Вопрос 4 \nООпределить, какой тип голода испытываешь: физиологический, вкусовой или эмоциональный",
+        question="Вопрос 4 \nОпределить, какой тип голода испытываешь: физиологический, вкусовой или эмоциональный",
         options=["Сделано!", "Нет"],
         is_anonymous=False
     )

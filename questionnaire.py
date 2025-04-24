@@ -220,9 +220,9 @@ async def process_mail(message, state):
         await state.set_state(UserState.menu)
     elif answer == "false":
         # await state.clear()
-        text = "Кажется, у тебя еще нет подписки на Нутри. Хочешь оформить сейчас?"
+        text = "Кажется, у тебя еще нет подписки на Нутри. Хочешь оформить сейчас с супер скидкой -70%?"
         buttons = [
-        [InlineKeyboardButton(text="Да, оплатить", url="https://nutri-ai.ru/?promo=nutribot&utm_medium=referral&utm_source=telegram&utm_campaign=nutribot")],
+        [InlineKeyboardButton(text="Да, купить со скидкой -70%", url="https://nutri-ai.ru/?promo=nutribot&utm_medium=referral&utm_source=telegram&utm_campaign=nutribot")],
         [InlineKeyboardButton(text="Попробовать еще раз", callback_data="retry_mail")],
         [InlineKeyboardButton(text="🆘 Написать в поддержку", url="t.me/nutri_care")],
         ]
