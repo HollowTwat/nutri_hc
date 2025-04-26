@@ -470,6 +470,7 @@ async def process_menu_settings_sub(callback_query, state):
     if subtype == False:
         bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
         await callback_query.message.answer("У тебя нету подписки или произошла ошибка при получении информации о ней \n\n Если ты не вводил почту, то твоя подписка не привязана к аккаунту", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
+        return
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
     step0txt = f"Твой текущий тариф:   \n\n☑️ Подписка на сервис Нутри {subtype} \n☑️ Дата автоматического продления: {repayment_time}"
     message = "Твой текущий тариф:\n\n"
