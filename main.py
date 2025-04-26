@@ -662,7 +662,8 @@ async def dnevnik_functional(message: Message, state: FSMContext):
     if not isActive:
         bttns = [
             [InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], 
-            [InlineKeyboardButton(text="🆘 Помощь", url="t.me/nutri_care")]
+            [InlineKeyboardButton(text="🆘 Помощь", url="t.me/nutri_care")],
+            [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]
             ]
         await message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", message.from_user.id))
@@ -823,7 +824,7 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     id = callback_query.from_user.id
     isActive = await check_is_active_state(id, state)
     if not isActive:
-        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
+        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
         await callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
         return
@@ -866,7 +867,7 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     id = callback_query.from_user.id
     isActive = await check_is_active_state(id, state)
     if not isActive:
-        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
+        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
         await callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
         return
@@ -896,7 +897,7 @@ async def main_meal_rate_day(callback_query: CallbackQuery, state: FSMContext):
         id = callback_query.from_user.id
         isActive = await check_is_active_state(id, state)
         if not isActive:
-            bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")]]
+            bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
             await callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
             asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
             return
@@ -2251,7 +2252,7 @@ async def main_process_community_invite(callback_query: types.CallbackQuery, sta
     await process_community_invite(callback_query.message, state)
     await state.set_state(Questionnaire.premail)
 
-@router.message(Command("test_premail"))
+@router.message(Command("premail_debug"))
 async def test_premail(message: types.Message, state: FSMContext):
     await state.set_state(Questionnaire.premail)
     await message.answer("Тык", reply_markup=(InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="тык", callback_data="tik")]])))
