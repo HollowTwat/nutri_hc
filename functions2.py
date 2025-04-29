@@ -362,7 +362,7 @@ async def process_img_rec(message, state, text, buttons):
     print(vision)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
-        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/ai_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
         await sticker_mssg.delete()
         # await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
         await message.answer(f"Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
@@ -386,7 +386,7 @@ async def process_audio_rec(message, state, text, buttons):
     vision = await generate_response(transcription, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
-        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/ai_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
         await sticker_mssg.delete()
         # await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
         await message.answer(f"Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
@@ -409,7 +409,7 @@ async def process_txt_rec(message, state, text, buttons):
     vision = await generate_response(message.text, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
-        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/ai_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
         await sticker_mssg.delete()
         # await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
         await message.answer(f"Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
@@ -432,7 +432,7 @@ async def edit_txt_rec(message, state, text, buttons):
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
-        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/ai_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
         await sticker_mssg.delete()
         # await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
         await message.answer(f"Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
@@ -455,7 +455,7 @@ async def edit_audio_rec(message, state, text, buttons):
     vision = await generate_response(request_mssg, id, VISION_ASS_ID_2)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:
-        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
+        errorkeyboard = [[InlineKeyboardButton(text="Написать в поддержку", url="t.me/ai_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
         await sticker_mssg.delete()
         # await message.answer(f"ошибка!!! \n{pretty}", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
         await message.answer(f"Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))

@@ -451,7 +451,7 @@ async def process_menu_settings_profile(callback_query, state):
 async def process_menu_settings_help(callback_query, state):
     buttons = [
         # [InlineKeyboardButton(text="Задать вопрос", callback_data="menu_settings_help_question")],
-        [InlineKeyboardButton(text="Задать вопрос", url="t.me/nutri_care")],
+        [InlineKeyboardButton(text="Задать вопрос", url="t.me/ai_care")],
         [InlineKeyboardButton(text=arrow_back, callback_data="menu_settings"),
          InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
@@ -468,7 +468,7 @@ async def process_menu_settings_sub(callback_query, state):
          InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
     if subtype == False:
-        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
+        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/ai_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
         await callback_query.message.answer("У тебя нету подписки или произошла ошибка при получении информации о ней \n\n Если ты не вводил почту, то твоя подписка не привязана к аккаунту", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         return
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)

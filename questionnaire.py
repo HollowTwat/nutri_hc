@@ -224,7 +224,7 @@ async def process_mail(message, state):
         buttons = [
         [InlineKeyboardButton(text="Да, купить со скидкой -70%", url="https://nutri-ai.ru/?promo=nutribot&utm_medium=referral&utm_source=telegram&utm_campaign=nutribot")],
         [InlineKeyboardButton(text="Попробовать еще раз", callback_data="retry_mail")],
-        [InlineKeyboardButton(text="🆘 Написать в поддержку", url="t.me/nutri_care")],
+        [InlineKeyboardButton(text="🆘 Написать в поддержку", url="t.me/ai_care")],
         ]
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
         await message.answer(text, reply_markup=keyboard)

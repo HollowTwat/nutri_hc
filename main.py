@@ -92,7 +92,7 @@ storage = MemoryStorage()
 router = Router()
 dp = Dispatcher(storage=storage)
 
-errorbuttons = [[InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
+errorbuttons = [[InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/ai_care")], [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
 errorkeys = InlineKeyboardMarkup(inline_keyboard=errorbuttons)
 noanketbuttons = [[InlineKeyboardButton(text="Заполнить анкету", callback_data="menu_settings_profile_re-anket")],[InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]]
 noankeys = InlineKeyboardMarkup(inline_keyboard=noanketbuttons)
@@ -149,30 +149,36 @@ async def main_menu_cb_handler(callback_query: CallbackQuery, state: FSMContext)
 
 @router.callback_query(lambda c: c.data == 'menu_back')
 async def main_menu_back_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
+    await state.set_state(UserState.menu)
     await menu_back_handler(callback_query, state)
 
 @router.callback_query(lambda c: c.data == 'menu_no_edit')
 async def main_menu_no_edit(callback_query: CallbackQuery, state: FSMContext) -> None:
+    await state.set_state(UserState.menu)
     asyncio.create_task(log_user_callback(callback_query))
     await menu_no_edit(callback_query, state)
 
 @router.callback_query(lambda c: c.data == 'menu_course')
 async def main_process_menu_course(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.menu)
     asyncio.create_task(log_user_callback(callback_query))
     await process_menu_course(callback_query.message, state, callback_query.from_user.id)
 
 @router.callback_query(lambda c: c.data == 'menu_dnevnik')
 async def main_process_menu_dnevnik(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.menu)
     asyncio.create_task(log_user_callback(callback_query))
     await process_menu_dnevnik(callback_query.message, state)
 
 @router.callback_query(lambda c: c.data == 'menu_nutri')
 async def main_process_menu_nutri(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.menu)
     asyncio.create_task(log_user_callback(callback_query))
     await process_menu_nutri(callback_query.message, state)
 
 @router.callback_query(lambda c: c.data == 'menu_settings')
 async def main_process_menu_settings(callback_query: CallbackQuery, state: FSMContext):
+    await state.set_state(UserState.menu)
     asyncio.create_task(log_user_callback(callback_query))
     await process_menu_settings(callback_query.message, state)
 
@@ -204,6 +210,115 @@ async def menu_main_process_menu_settings(message: Message, state: FSMContext) -
     asyncio.create_task(log_user_message(message))
     await process_menu_settings(message, state)
 ################## MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU MENU ##################
+
+@router.callback_query(lambda c: c.data in ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2","d6","d6_2","d7","d8","d8_2","d9","d9_2","d10","d10_2","d11","d11_2","d12","d12_2","d13","d13_2","d14","d15","d15_2","d16","d16_2","d17","d17_2","d18","d19","d20","d21"])
+async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContext):
+    asyncio.create_task(log_user_callback(callback_query))
+    if callback_query.data == "d1":
+        await state.set_state(LessonStates.step_1)
+        await process_step_1(callback_query, state)
+    elif callback_query.data == "d2":
+        await state.set_state(LessonStates2.step_1)
+        await process_l2_step_1(callback_query, state)
+    elif callback_query.data == "d2_2":
+        await state.set_state(LessonStates2.step_11)
+        await process_l2_step_11(callback_query, state)
+    elif callback_query.data == "d3":
+        await state.set_state(LessonStates3.step_1)
+        await process_l3_step_1(callback_query, state)
+    elif callback_query.data == "d3_2":
+        await state.set_state(LessonStates3.step_11)
+        await process_l3_step_11(callback_query, state)
+    elif callback_query.data == "d4":
+        await state.set_state(LessonStates4.step_1)
+        await process_l4_step_1(callback_query, state)
+    elif callback_query.data == "d4_2":
+        await state.set_state(LessonStates4.step_11)
+        await process_l4_step_11(callback_query, state)
+    elif callback_query.data == "d5":
+        await state.set_state(LessonStates5.step_1)
+        await process_l5_step_1(callback_query, state)
+    elif callback_query.data == "d5_2":
+        await state.set_state(LessonStates5.step_11)
+        await process_l5_step_11(callback_query, state)
+    elif callback_query.data == "d6":
+        await state.set_state(LessonStates6.step_1)
+        await process_l6_step_1(callback_query, state)
+    elif callback_query.data == "d6_2":
+        await state.set_state(LessonStates6.step_11)
+        await process_l6_step_11(callback_query, state)
+    elif callback_query.data == "d7":
+        await state.set_state(LessonStates7.step_1)
+        await process_l7_step_1(callback_query, state)
+    elif callback_query.data == "d8":
+        await state.set_state(LessonStates8.step_1)
+        await process_l8_step_1(callback_query, state)
+    elif callback_query.data == "d8_2":
+        await state.set_state(LessonStates8.step_11)
+        await process_l8_step_11(callback_query, state)
+    elif callback_query.data == "d9":
+        await state.set_state(LessonStates9.step_1)
+        await process_l9_step_1(callback_query, state)
+    elif callback_query.data == "d9_2":
+        await state.set_state(LessonStates9.step_11)
+        await process_l9_step_11(callback_query, state)
+    elif callback_query.data == "d10":
+        await state.set_state(LessonStates10.step_1)
+        await process_l10_step_1(callback_query, state)
+    elif callback_query.data == "d10_2":
+        await state.set_state(LessonStates10.step_11)
+        await process_l10_step_11(callback_query, state)
+    elif callback_query.data == "d11":
+        await state.set_state(LessonStates11.step_1)
+        await process_l11_step_1(callback_query, state)
+    elif callback_query.data == "d11_2":
+        await state.set_state(LessonStates11.step_11)
+        await process_l11_step_11(callback_query, state)
+    elif callback_query.data == "d12":
+        await state.set_state(LessonStates12.step_1)
+        await process_l12_step_1(callback_query, state)
+    elif callback_query.data == "d12_2":
+        await state.set_state(LessonStates12.step_11)
+        await process_l12_step_11(callback_query, state)
+    elif callback_query.data == "d13":
+        await state.set_state(LessonStates13.step_1)
+        await process_l13_step_1(callback_query, state)
+    elif callback_query.data == "d13_2":
+        await state.set_state(LessonStates13.step_11)
+        await process_l13_step_11(callback_query, state)
+    elif callback_query.data == "d14":
+        await state.set_state(LessonStates14.step_1)
+        await process_l14_step_1(callback_query, state)
+    elif callback_query.data == "d15":
+        await state.set_state(LessonStates15.step_1)
+        await process_l15_step_1(callback_query, state)
+    elif callback_query.data == "d15_2":
+        await state.set_state(LessonStates15.step_11)
+        await process_l15_step_11(callback_query, state)
+    elif callback_query.data == "d16":
+        await state.set_state(LessonStates16.step_1)
+        await process_l16_step_1(callback_query, state)
+    elif callback_query.data == "d16_2":
+        await state.set_state(LessonStates16.step_11)
+        await process_l16_step_11(callback_query, state)
+    elif callback_query.data == "d17":
+        await state.set_state(LessonStates17.step_1)
+        await process_l17_step_1(callback_query, state)
+    elif callback_query.data == "d17_2":
+        await state.set_state(LessonStates17.step_11)
+        await process_l17_step_11(callback_query, state)
+    elif callback_query.data == "d18":
+        await state.set_state(LessonStates18.step_1)
+        await process_l18_step_1(callback_query, state)
+    elif callback_query.data == "d19":
+        await state.set_state(LessonStates19.step_1)
+        await process_l19_step_1(callback_query, state)
+    elif callback_query.data == "d20":
+        await state.set_state(LessonStates20.step_1)
+        await process_l20_step_1(callback_query, state)
+    elif callback_query.data == "d21":
+        await state.set_state(LessonStates21.step_1)
+        await process_l21_step_1(callback_query, state)
 
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
@@ -638,7 +753,7 @@ async def process_media_group_after_delay(message: Message, media_group_id: str,
         if Iserror:
             await sticker_mssg.delete()
             errorkeyboard = [
-                [InlineKeyboardButton(text="Написать в поддержку", url="t.me/nutri_care")],
+                [InlineKeyboardButton(text="Написать в поддержку", url="t.me/ai_care")],
                 [InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")]
             ]
             await message.answer("Не могу распознать еду", reply_markup=InlineKeyboardMarkup(inline_keyboard=errorkeyboard))
@@ -662,7 +777,7 @@ async def dnevnik_functional(message: Message, state: FSMContext):
     if not isActive:
         bttns = [
             [InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], 
-            [InlineKeyboardButton(text="🆘 Помощь", url="t.me/nutri_care")],
+            [InlineKeyboardButton(text="🆘 Помощь", url="t.me/ai_care")],
             [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]
             ]
         await message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
@@ -824,7 +939,7 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     id = callback_query.from_user.id
     isActive = await check_is_active_state(id, state)
     if not isActive:
-        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
+        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/ai_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
         await callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
         return
@@ -867,7 +982,7 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
     id = callback_query.from_user.id
     isActive = await check_is_active_state(id, state)
     if not isActive:
-        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
+        bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/ai_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
         await callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
         asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
         return
@@ -897,7 +1012,7 @@ async def main_meal_rate_day(callback_query: CallbackQuery, state: FSMContext):
         id = callback_query.from_user.id
         isActive = await check_is_active_state(id, state)
         if not isActive:
-            bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/nutri_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
+            bttns = [[InlineKeyboardButton(text="Хочу оплатить", url="https://nutri-ai.ru/?promo=COMMUNITY&utm_medium=referral&utm_source=telegram&utm_campaign=COMMUNITY")], [InlineKeyboardButton(text=" 🆘 Помощь", url="t.me/ai_care")], [InlineKeyboardButton(text="Уже оплачено, ввести почту", callback_data="retry_mail")]]
             await callback_query.message.answer("Ваша подписка не активна", reply_markup=InlineKeyboardMarkup(inline_keyboard=bttns))
             asyncio.create_task(log_bot_response(f"СТАТУС ПОДПИСКИ {isActive}", id))
             return
@@ -1237,114 +1352,6 @@ async def lessons_manage_command(message: types.Message, state: FSMContext):
 
 # dayslist = ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2","d6","d6_2","d7","d8","d8_2","d9","d9_2","d10","d10_2","d11","d11_2","d12","d12_2","d13","d13_2","d14","d15","d15_2","d16","d16_2","d17","d17_2","d18","d19","d20","d21"]
 # @router.callback_query(lambda c: c.data in dayslist)
-@router.callback_query(lambda c: c.data in ["d1", "d2", "d2_2", "d3", "d3_2", "d4", "d4_2", "d5", "d5_2","d6","d6_2","d7","d8","d8_2","d9","d9_2","d10","d10_2","d11","d11_2","d12","d12_2","d13","d13_2","d14","d15","d15_2","d16","d16_2","d17","d17_2","d18","d19","d20","d21"])
-async def set_lesson_state(callback_query: types.CallbackQuery, state: FSMContext):
-    asyncio.create_task(log_user_callback(callback_query))
-    if callback_query.data == "d1":
-        await state.set_state(LessonStates.step_1)
-        await process_step_1(callback_query, state)
-    elif callback_query.data == "d2":
-        await state.set_state(LessonStates2.step_1)
-        await process_l2_step_1(callback_query, state)
-    elif callback_query.data == "d2_2":
-        await state.set_state(LessonStates2.step_11)
-        await process_l2_step_11(callback_query, state)
-    elif callback_query.data == "d3":
-        await state.set_state(LessonStates3.step_1)
-        await process_l3_step_1(callback_query, state)
-    elif callback_query.data == "d3_2":
-        await state.set_state(LessonStates3.step_11)
-        await process_l3_step_11(callback_query, state)
-    elif callback_query.data == "d4":
-        await state.set_state(LessonStates4.step_1)
-        await process_l4_step_1(callback_query, state)
-    elif callback_query.data == "d4_2":
-        await state.set_state(LessonStates4.step_11)
-        await process_l4_step_11(callback_query, state)
-    elif callback_query.data == "d5":
-        await state.set_state(LessonStates5.step_1)
-        await process_l5_step_1(callback_query, state)
-    elif callback_query.data == "d5_2":
-        await state.set_state(LessonStates5.step_11)
-        await process_l5_step_11(callback_query, state)
-    elif callback_query.data == "d6":
-        await state.set_state(LessonStates6.step_1)
-        await process_l6_step_1(callback_query, state)
-    elif callback_query.data == "d6_2":
-        await state.set_state(LessonStates6.step_11)
-        await process_l6_step_11(callback_query, state)
-    elif callback_query.data == "d7":
-        await state.set_state(LessonStates7.step_1)
-        await process_l7_step_1(callback_query, state)
-    elif callback_query.data == "d8":
-        await state.set_state(LessonStates8.step_1)
-        await process_l8_step_1(callback_query, state)
-    elif callback_query.data == "d8_2":
-        await state.set_state(LessonStates8.step_11)
-        await process_l8_step_11(callback_query, state)
-    elif callback_query.data == "d9":
-        await state.set_state(LessonStates9.step_1)
-        await process_l9_step_1(callback_query, state)
-    elif callback_query.data == "d9_2":
-        await state.set_state(LessonStates9.step_11)
-        await process_l9_step_11(callback_query, state)
-    elif callback_query.data == "d10":
-        await state.set_state(LessonStates10.step_1)
-        await process_l10_step_1(callback_query, state)
-    elif callback_query.data == "d10_2":
-        await state.set_state(LessonStates10.step_11)
-        await process_l10_step_11(callback_query, state)
-    elif callback_query.data == "d11":
-        await state.set_state(LessonStates11.step_1)
-        await process_l11_step_1(callback_query, state)
-    elif callback_query.data == "d11_2":
-        await state.set_state(LessonStates11.step_11)
-        await process_l11_step_11(callback_query, state)
-    elif callback_query.data == "d12":
-        await state.set_state(LessonStates12.step_1)
-        await process_l12_step_1(callback_query, state)
-    elif callback_query.data == "d12_2":
-        await state.set_state(LessonStates12.step_11)
-        await process_l12_step_11(callback_query, state)
-    elif callback_query.data == "d13":
-        await state.set_state(LessonStates13.step_1)
-        await process_l13_step_1(callback_query, state)
-    elif callback_query.data == "d13_2":
-        await state.set_state(LessonStates13.step_11)
-        await process_l13_step_11(callback_query, state)
-    elif callback_query.data == "d14":
-        await state.set_state(LessonStates14.step_1)
-        await process_l14_step_1(callback_query, state)
-    elif callback_query.data == "d15":
-        await state.set_state(LessonStates15.step_1)
-        await process_l15_step_1(callback_query, state)
-    elif callback_query.data == "d15_2":
-        await state.set_state(LessonStates15.step_11)
-        await process_l15_step_11(callback_query, state)
-    elif callback_query.data == "d16":
-        await state.set_state(LessonStates16.step_1)
-        await process_l16_step_1(callback_query, state)
-    elif callback_query.data == "d16_2":
-        await state.set_state(LessonStates16.step_11)
-        await process_l16_step_11(callback_query, state)
-    elif callback_query.data == "d17":
-        await state.set_state(LessonStates17.step_1)
-        await process_l17_step_1(callback_query, state)
-    elif callback_query.data == "d17_2":
-        await state.set_state(LessonStates17.step_11)
-        await process_l17_step_11(callback_query, state)
-    elif callback_query.data == "d18":
-        await state.set_state(LessonStates18.step_1)
-        await process_l18_step_1(callback_query, state)
-    elif callback_query.data == "d19":
-        await state.set_state(LessonStates19.step_1)
-        await process_l19_step_1(callback_query, state)
-    elif callback_query.data == "d20":
-        await state.set_state(LessonStates20.step_1)
-        await process_l20_step_1(callback_query, state)
-    elif callback_query.data == "d21":
-        await state.set_state(LessonStates21.step_1)
-        await process_l21_step_1(callback_query, state)
     
     
     
