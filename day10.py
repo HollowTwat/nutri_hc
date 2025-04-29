@@ -45,7 +45,7 @@ IMG5 = "AgACAgIAAxkBAAEEZyFn2pQ-cGB3wqobrX-n_6Zr8ucPuQACu_ExG1ap2UqM4Pbhc-lCGwEA
 async def process_l10_step_1(callback_query, state):
     iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
     if last_lesson < 9:
-        callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        await callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
         return
     await state.set_state(LessonStates10.step_2)
     await callback_query.message.answer(
