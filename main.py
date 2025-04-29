@@ -1957,6 +1957,11 @@ async def main_process_l21_step_2(callback_query: types.CallbackQuery, state: FS
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
+@router.callback_query(lambda c: c.data == 'menu_nutri_etiketka')
+async def main_ad_to_buy(callback_query: CallbackQuery, state: FSMContext):
+    await callback_query.answer()
+    await process_ad_to_buy(callback_query, state)
+
 @router.message(Command('questionaire'))
 async def main_questionaire_mail(message: Message, state: FSMContext):
     await state.set_state(Questionnaire.prefirst)
@@ -1965,7 +1970,7 @@ async def main_questionaire_mail(message: Message, state: FSMContext):
 @router.callback_query(lambda c: c.data == 'retry_mail')
 async def main_rerty_mail(callback_query: CallbackQuery, state: FSMContext):
     # await process_first(callback_query.message, state)
-    await callback_query.message.answer("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате — это важно")
+    await callback_query.message.answer("Какая у тебя электронная почта?\nПожалуйста введи ту же почту, что и при оплате  🙏")
     await state.set_state(Questionnaire.mail)
 
 @router.message(StateFilter(Questionnaire.prefirst))

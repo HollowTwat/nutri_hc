@@ -63,6 +63,14 @@ IMG14 = "AgACAgIAAxkBAAEEcFhn2v6uwfmHwA7qva0KXR0hyGAtHgAC4PUxG1ap2UpvoQ_GgRf3iAE
 IMG15 = "AgACAgIAAxkBAAEEcFxn2v63_G2AcZsAAYYfxxgfyPfbZqAAAuH1MRtWqdlKniihs_5WwgUBAAMCAAN5AAM2BA"
 IMG16 = "AgACAgIAAxkBAAEEcGBn2v7Ah5q9wQFLnMMUaHfOMg748wAC4vUxG1ap2UobmMFSob7mOAEAAwIAA3kAAzYE"
 
+ADD_IMG_1 = "AgACAgIAAxkBAAEHZeZoEWVEG1K8zhxx1D5HayiddU2p_AACTvQxG4dsiUhJ8DL-jB3JlwEAAwIAA3kAAzYE"
+ADD_IMG_2 = "AgACAgIAAxkBAAEHZfJoEWV1pbUIGwYim-O2YgABdo5kkvEAAn35MRs6RIhItW3sVBZUHwMBAAMCAAN5AAM2BA"
+ADD_IMG_3 = "AgACAgIAAxkBAAEHZepoEWVX6TLhtikxLa4NXw6gW9qo9gACe_kxGzpEiEi5dqYcYfsruwEAAwIAA3kAAzYE"
+ADD_IMG_4 = "AgACAgIAAxkBAAEHZe5oEWVroLIu7N-9K4KcrYss2GMFzwACfPkxGzpEiEjRBQtxkaBRuQEAAwIAA3kAAzYE"
+ADD_IMG_5 = "AgACAgIAAxkBAAEHZfZoEWWRbjNxwPlBil6WZqStwZyXzgACfvkxGzpEiEiiC_55JbaX7wEAAwIAA3kAAzYE"
+ADD_IMG_6 = "AgACAgIAAxkBAAEHZfpoEWWZwzIymGkd8Adqn3WAnIexdAACf_kxGzpEiEj1EV-c520pagEAAwIAA3kAAzYE"
+ADD_IMG_7 = "AgACAgIAAxkBAAEHZgJoEWWkys4peASKFi4IuU1cRDh7CgACgPkxGzpEiEiwggb2u2OI0QEAAwIAA3kAAzYE"
+
 def calculate_pal(hours_light, hours_heavy):
     effective_hours = hours_light + 1.5 * hours_heavy
 
@@ -220,15 +228,29 @@ async def process_mail(message, state):
         await state.set_state(UserState.menu)
     elif answer == "false":
         # await state.clear()
-        text = "Кажется, у тебя еще нет подписки на Нутри. Хочешь оформить сейчас с супер скидкой -70%?"
+        text = "Кажется, у тебя еще нет подписки на Нутри. \nХочешь оформить сейчас с супер скидкой -70%?"
         buttons = [
-        [InlineKeyboardButton(text="Да, купить со скидкой -70%", url="https://nutri-ai.ru/?promo=nutribot&utm_medium=referral&utm_source=telegram&utm_campaign=nutribot")],
+        [InlineKeyboardButton(text="Да, купить со скидкой -70%", callback_data="send_purchase_add")], #url="https://nutri-ai.ru/?promo=nutribot&utm_medium=referral&utm_source=telegram&utm_campaign=nutribot"
         [InlineKeyboardButton(text="Попробовать еще раз", callback_data="retry_mail")],
         [InlineKeyboardButton(text="🆘 Написать в поддержку", url="t.me/ai_care")],
         ]
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
         await message.answer(text, reply_markup=keyboard)
 
+async def process_ad_to_buy(callback_query, state):
+    text = "🔥 <b>ВАУ! -70% на подписку Nutri + крутые подарки!</b> 🔥\n\nОплачивай подписку сейчас по <b>суперцене</b> и <b>получай бонусы</b>, которые помогут тебе прокачать питание, здоровье и осознанность!\n\n💎 НАВСЕГДА -70%\nвсего <b>3 590₽</b> вместо  <b><s>13 300₽</s>!\n\n🎁 <b>3 недели обучения</b> – курс по нутрициологии, чтобы ты точно знал, как питаться сбалансировано.\n🎁 <b>1 год подписки на Prosto</b> – приложение №1 для медитаций от Ирены Понарошку.\n🎁 <b>Умные весы Picooc Basic</b> – если пройдешь курс и ежедневно будешь заполнять дневник питания в первый месяц.\n\n💎 НА 1 ГОД -70%\nвсего <b>2 990₽</b> вместо <b><s>9 990₽</s></b>!\n\n💎 НА 3 МЕСЯЦА -70%\nвсего <b>1 990₽</b> вместо  <b><s>6 600₽</s></b>!\n\n⏰ <b>Только 24 часа! Успей забрать Nutri по лучшей цене и бонусы! Жми на кнопку!</b>"
+    buttons = [[InlineKeyboardButton(text="Купить", url="https://nutri-ai.ru/?promo=nutribot&utm_medium=referral&utm_source=telegram&utm_campaign=nutribot")]]
+    media_group = [
+        InputMediaPhoto(media=ADD_IMG_1, caption="<b>Скидка -70% только для тебя</b> 💚\n\nЧто входит в любой тариф👇"),
+        InputMediaPhoto(media=ADD_IMG_2),
+        InputMediaPhoto(media=ADD_IMG_3),
+        InputMediaPhoto(media=ADD_IMG_4),
+        InputMediaPhoto(media=ADD_IMG_5),
+        InputMediaPhoto(media=ADD_IMG_6),
+        InputMediaPhoto(media=ADD_IMG_7),
+        ]
+    await callback_query.message.answer_media_group(media=media_group)
+    await callback_query.message.answer(text=text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 
 async def process_reanket(callback_query, state):
     text = "<b>Как тебя зовут?</b>"
