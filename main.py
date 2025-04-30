@@ -1957,7 +1957,7 @@ async def main_process_l21_step_2(callback_query: types.CallbackQuery, state: FS
 
 ################## QUESTIONNAIRE  QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE QUESTIONNAIRE ##################
 
-@router.callback_query(lambda c: c.data == 'menu_nutri_etiketka')
+@router.callback_query(lambda c: c.data == 'send_purchase_add')
 async def main_ad_to_buy(callback_query: CallbackQuery, state: FSMContext):
     await callback_query.answer()
     await process_ad_to_buy(callback_query, state)
