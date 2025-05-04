@@ -154,7 +154,7 @@ async def get_user_lessons(id):
                 lesson_data = await response.json()
                 lessons_dict = {}
                 for i, status in enumerate(lesson_data):
-                    if i >= 21:
+                    if i > 21:
                         break
                     lessons_dict[f"lesson{i+1}_done"] = status
                 return False, lessons_dict
