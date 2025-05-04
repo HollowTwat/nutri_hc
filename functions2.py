@@ -152,8 +152,11 @@ async def get_user_lessons(id):
         try:
             async with session.get(url=url) as response:
                 lesson_data = await response.json()
-                max_lessons = 20
-                lessons_dict = {f"lesson{i+1}_done": status for i, status in enumerate(lesson_data[:max_lessons])}
+                lessons_dict = {}
+                for i, status in enumerate(lesson_data):
+                    if i >= 21:
+                        break
+                    lessons_dict[f"lesson{i+1}_done"] = status
                 return False, lessons_dict
         except aiohttp.ClientError as e:
             return True, e
