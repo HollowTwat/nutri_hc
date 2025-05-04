@@ -201,6 +201,9 @@ async def process_menu_course_info(callback_query, state):
     step = current_lesson-lesson_week*7
     step1txt = f"Сейчас ты на {step} уроке этапа {lesson_week+1} 🧡"
     step2txt = f"{current_lesson-1} уроков из 21 дня пройдено 💪  Осталось {22-current_lesson} уроков"
+    if current_lesson == 21:
+        step1txt = "Поздравляю, ты завершил курс Нутри"
+        step2txt = "При желании можешь перепройти уроки"
     buttons = [
         [InlineKeyboardButton(text="Посмотреть пройденные уроки", callback_data=f"menu_course_info_lessons_week_{lesson_week+1}")],
         [InlineKeyboardButton(text=arrow_back, callback_data="menu_course"), 
