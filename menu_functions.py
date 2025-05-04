@@ -209,6 +209,12 @@ async def process_menu_course_info(callback_query, state):
         [InlineKeyboardButton(text=arrow_back, callback_data="menu_course"), 
          InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
         ]
+    if lesson_week >=3:
+        buttons = [
+        [InlineKeyboardButton(text="Посмотреть пройденные уроки", callback_data=f"menu_course_info_lessons_week_{lesson_week}")],
+        [InlineKeyboardButton(text=arrow_back, callback_data="menu_course"), 
+         InlineKeyboardButton(text=arrow_menu, callback_data="menu_back")],
+        ]
     keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
 
     await callback_query.message.delete()
