@@ -156,7 +156,7 @@ async def get_user_lessons(id):
                 for i, status in enumerate(lesson_data):
                     if i > 21:
                         break
-                    lessons_dict[f"lesson{i+1}_done"] = status
+                    lessons_dict[f"lesson{i}_done"] = status
                 return False, lessons_dict
         except aiohttp.ClientError as e:
             return True, e

@@ -32,6 +32,7 @@ async def process_l19_step_1(callback_query, state):
     iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
     if last_lesson < 18:
         await callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        await state.set_state(UserState.menu)
         return
     await callback_query.message.answer(
         "Доброе утро! \nУже три недели мы идём к твоей цели! \nСамое время увидеть первые ощутимые результаты! \nНиже — твой прогресс на этом этапе."

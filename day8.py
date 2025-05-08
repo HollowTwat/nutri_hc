@@ -72,6 +72,7 @@ async def process_l8_step_1(callback_query, state):
     iserror, last_lesson = await get_last_user_lesson(callback_query.from_user.id)
     if last_lesson < 7:
         await callback_query.message.answer("Ты пока не прошел прошлый урок, так-что этот тебе не доступен")
+        await state.set_state(UserState.menu)
         return
     await state.set_state(LessonStates8.step_2)
     
