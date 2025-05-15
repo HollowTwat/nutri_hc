@@ -508,6 +508,7 @@ async def main_process_etiketka_input(message: Message, state: FSMContext):
         if isempty == "true":
             await sticker_mssg.delete()
             await message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
+            await state.set_state(UserState.menu)
             return
         allergies = user_info.get("user_info_meals_ban")
         url = await get_url(message.photo[-1].file_id)
@@ -566,6 +567,7 @@ async def main_process_menu_nutri_rec_Inputtype(callback_query: CallbackQuery, s
         if isempty == "true":
             await sticker_mssg.delete()
             await callback_query.message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
+            await state.set_state(UserState.menu)
             return
         question = f"Придумай полезный и вкусный рецепт {meal_type_mapping.get(meal_type)} для пользователя с информацией: {user_data}"
         iserror, gptresponse = await create_reciepie(question, callback_query.from_user.id)
@@ -603,6 +605,7 @@ async def main_process_reci_input(message: Message, state: FSMContext):
     if isempty == "true":
         await sticker_mssg.delete()
         await message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
+        await state.set_state(UserState.menu)
         return
     buttons = [[InlineKeyboardButton(text="Да, спасибо", callback_data="menu")], [InlineKeyboardButton(text="Изменить продукты", callback_data="reciIt_2")], [InlineKeyboardButton(text="Нет, подбери другой рецепт", callback_data="reciIt_retry")]]
     if message.text:
@@ -680,6 +683,7 @@ async def yapp_functional(message: Message, state: FSMContext):
                 await sticker_mssg.delete()
                 if response == "Ваша анкета не заполнена":
                     await message.answer(response, reply_markup=noankeys)    
+                    await state.set_state(UserState.menu)
                     return
                 await message.answer("Упс, поймали ошибку", reply_markup=errorkeys)
                 # await message.answer(errormessage)
@@ -956,6 +960,7 @@ async def main_meal_rate(callback_query: CallbackQuery, state: FSMContext):
     if isempty == "true":
         await sticker_mssg.delete()
         await callback_query.message.answer("Ваша анкета не заполнена", reply_markup=noankeys)
+        await state.set_state(UserState.menu)
         return
     if Iserror:
         await sticker_mssg.delete()
@@ -994,6 +999,7 @@ async def main_meal_rate_week(callback_query: CallbackQuery, state: FSMContext):
         await callback_query.answer()
         if resp == "Ваша анкета не заполнена":
             await callback_query.message.answer(resp, reply_markup=noankeys)
+            await state.set_state(UserState.menu)
             return
         await callback_query.message.answer("Ошибка в обработке оценки", reply_markup=errorkeys)
     buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu")]]
@@ -1023,6 +1029,7 @@ async def main_meal_rate_day(callback_query: CallbackQuery, state: FSMContext):
             await callback_query.answer()
             if resp == "Ваша анкета не заполнена":
                 await callback_query.message.answer(resp, reply_markup=noankeys)
+                await state.set_state(UserState.menu)
                 return
             print(f"user {callback_query.from_user.id} error {resp}")
             await callback_query.message.answer("Упс, поймали ошибку", reply_markup=errorkeys)
