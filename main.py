@@ -1195,6 +1195,11 @@ async def main_process_menu_settings_sub(callback_query: CallbackQuery, state: F
     asyncio.create_task(log_user_callback(callback_query))
     await process_menu_settings_sub(callback_query, state)
 
+@router.callback_query(lambda c: c.data == 'menu_settings_profile_re-anket')
+async def main_process_reanket_from_anywhere(callback_query: CallbackQuery, state: FSMContext):
+    await process_reanket(callback_query, state)
+    await state.set_state(Questionnaire.name)
+
 @router.callback_query(StateFilter(UserState.change_user_info), lambda c: True)
 async def main_change_user_info(callback_query: CallbackQuery, state: FSMContext):
     asyncio.create_task(log_user_callback(callback_query))
@@ -1213,11 +1218,6 @@ async def main_change_user_info(callback_query: CallbackQuery, state: FSMContext
         await change_user_timeslide(callback_query, state, timeslide)
     elif callback_query.data == "menu_settings_profile_notif":
         await change_user_notifs(callback_query, state)
-
-@router.callback_query(lambda c: c.data == 'menu_settings_profile_re-anket')
-async def main_process_reanket_from_anywhere(callback_query: CallbackQuery, state: FSMContext):
-    await process_reanket(callback_query, state)
-    await state.set_state(Questionnaire.name)
 
 @router.message(StateFilter(UserState.name_change))
 async def main_change_name(message: types.Message, state:FSMContext):
