@@ -243,7 +243,7 @@ async def process_menu_cource_info_lessons(callback_query, state):
     week = int(callback_query.data.split("_")[5])
     lessons_dict = await ensure_lessons_dict(state, callback_query.from_user.id)
     buttons = make_lesson_week_buttons(lessons_dict, week)
-    await callback_query.message.edit_text("Неделя 1", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+    await callback_query.message.edit_text(f"Неделя {week}", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
 ################## DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU DNEVNIK_MENU ##################
