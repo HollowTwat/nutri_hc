@@ -70,7 +70,9 @@ async def process_l21_step_2(callback_query, state):
     link = "https://telegra.ph/9-sovetov-o-tom-kak-sohranit-dostignutye-rezultaty-istochniki-informacii-07-16"
     text = f"<b>Бонусный урок для самых целеустремлённых! \n9 советов о том, как сохранить достигнутые результаты</b> \n\nВ США с 1994 года 30 лет существует Национальный реестр контроля веса. Он собирает данные о людях, которые потеряли не меньше 13,6 кг (30 фунтов) и удерживали этот вес не меньше года. Их в реестре около 5 тысяч. \n\nЧто помогло им не откатиться назад? Рассказываю в карточках о результатах этого и нескольких других больших исследований. Надеюсь, они помогут тебе сохранить результаты и продолжить получать радость и пользу от еды! \n\nИсточники, по которым мы написали этот урок — <a href=\'{link}\'>по ссылке</a>."
     media_files = [
-        InputMediaPhoto(media=IMG3, caption=text),
+        InputMediaPhoto(media=IMG1, caption=text),
+        InputMediaPhoto(media=IMG2),
+        InputMediaPhoto(media=IMG3),
         InputMediaPhoto(media=IMG4),
         InputMediaPhoto(media=IMG5),
         InputMediaPhoto(media=IMG6),
