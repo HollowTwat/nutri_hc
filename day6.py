@@ -75,8 +75,7 @@ async def process_l6_step_2(callback_query, state):
     await callback_query.message.answer_media_group(media=media_files)
     text = "✍️<b>Задание на день:</b> \n\n🍎 Попроси помощи Нутри. \n\nДля этого нажми кнопку «Задать вопрос», а потом напиши текст или голосовое примерно со следующей просьбой, например: \n\n<i>«Нутри, подскажи как я могу разнообразить свое питание?»</i>"
     await callback_query.message.answer(text,reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="💬 Задать вопрос", callback_data="next")],
-            [InlineKeyboardButton(text="📖 Дневник питания", callback_data="stop")]
+            [InlineKeyboardButton(text="Хорошо", callback_data="next")]
         ])
     )
     
@@ -96,6 +95,6 @@ async def process_l6_step_2_2(callback_query, state):
 
 async def process_l6_step_11(callback_query, state):
     await callback_query.message.answer(
-        "Вечер — время душевных разговоров. Если весь день было не до вопросов Нутри, то сейчас — самое время спросить всё, что ты хотел(а) узнать о питании, но боялся(лась) спросить!",
+        "Время душевных разговоров. Если весь день было не до вопросов Нутри, то сейчас — самое время спросить всё, что ты хотел(а) узнать о питании, но боялся(лась) спросить!",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="💬 Задать вопрос", callback_data="menu_nutri_yapp")]]))
     await callback_query.answer()
