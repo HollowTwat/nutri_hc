@@ -1484,6 +1484,10 @@ async def main_process_l4_step_2(callback_query: types.CallbackQuery, state: FSM
 
 ################################
 
+@router.callback_query(StateFilter(LessonStates4.step_11), lambda c: True)
+async def main_process_l4_step_3(callback_query: types.CallbackQuery, state: FSMContext):
+    await process_l4_step_11(callback_query, state)
+
 @router.callback_query(StateFilter(LessonStates4.step_12), lambda c: True)
 async def main_process_l4_step_11(callback_query: types.CallbackQuery, state: FSMContext):
     if callback_query.data == "next":
@@ -1532,7 +1536,7 @@ async def main_process_l5_step_8(poll_answer: types.PollAnswer, state: FSMContex
 
 @router.callback_query(StateFilter(LessonStates5.step_10), lambda c: True)
 async def main_process_l5_step_9(callback_query: types.CallbackQuery, state: FSMContext):
-    await main_menu_cb_handler(callback_query, state)
+    await process_l5_step_11(callback_query, state)
 
 @router.callback_query(StateFilter(LessonStates5.step_12), lambda c: True)
 async def main_process_l5_step_11(callback_query: types.CallbackQuery, state: FSMContext):
@@ -1556,7 +1560,7 @@ async def main_process_l6_step_1(callback_query: types.CallbackQuery, state: FSM
 
 @router.callback_query(StateFilter(LessonStates6.step_3), lambda c: True)
 async def main_process_l6_step_2(callback_query: types.CallbackQuery, state: FSMContext):
-    await main_menu_cb_handler(callback_query, state)
+    await process_l6_step_11(callback_query, state)
 
 @router.callback_query(StateFilter(LessonStates6.step_11), lambda c: True)
 async def main_process_l6_step_11(callback_query: types.CallbackQuery, state: FSMContext):
@@ -1611,7 +1615,7 @@ async def main_process_l8_step_2(callback_query: types.CallbackQuery, state: FSM
 
 @router.callback_query(StateFilter(LessonStates8.step_4), lambda c: True)
 async def main_process_l8_step_3(callback_query: types.CallbackQuery, state: FSMContext):
-    await main_menu_cb_handler(callback_query, state)
+    await process_l8_step_11(callback_query, state)
 
 
 @router.callback_query(StateFilter(LessonStates8.step_12), lambda c: True)

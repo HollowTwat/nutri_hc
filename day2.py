@@ -140,6 +140,7 @@ async def process_l2_step_4_2(callback_query, state):
     await callback_query.message.answer(text, disable_web_page_preview=True)
 
 async def process_l2_step_4(callback_query, state):
+    await state.set_state(LessonStates2.step_11)
     await callback_query.message.answer(
         "Не забудь занести в дневник питания следующий приём пищи! \n\nЕсли хочешь заранее проверить калорийность блюда, можешь прислать его фото или описание в чат, и я дам совет."
     )
@@ -154,13 +155,13 @@ async def process_l2_step_4(callback_query, state):
     link = "https://telegra.ph/Kak-naedatsya-no-ne-pereedat-istochniki-informacii-07-21"
     text = f"<b>Как наедаться, но не переедать</b> \n\n«Нутри, а что делать, если я вроде бы наедаюсь, но через полчаса опять приходит чувство голода? Или вроде бы голода нет, но всё равно хочется чего-нибудь сладкого или солёного?» \n\nКак поесть так, чтобы наесться — действительно целая наука. Ближайшие 3 недели мы будем её изучать. А пока листай к карточки с самыми простыми правилами, которые помогут тебе утолить голод и при этом не переесть. \n\nИсточники информации, по которым мы написали эти карточки — <a href=\'{link}\'>по ссылке.</a>"
     await callback_query.message.answer(text, disable_web_page_preview=True, 
-    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Меню", callback_data="menu")]]))
+    reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Окей", callback_data="next")]]))
     await callback_query.answer()
     ############ EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING EVENING_PING #############
 
 async def process_l2_step_11(callback_query, state):
     await callback_query.message.answer(
-        "Завершился второй день с Нутри, и ты по-прежнему здесь! 🎉 Кажется, у тебя серьёзные намерения! \n\nКак тебе наше общение? Удалось ли сделать задание дня и хотя бы разочек определить уровень насыщения?",
+        "Завершился второй день с Нутри, и ты по-прежнему здесь! 🎉 \n\nКак тебе наше общение? \nУдалось ли сделать задание дня и хотя бы разочек определить уровень насыщения?",
         reply_markup=InlineKeyboardMarkup(inline_keyboard=[[InlineKeyboardButton(text="Да!", callback_data="next"),InlineKeyboardButton(text="Нет, давай сделаем сейчас", callback_data="stop")]]))
     await callback_query.answer()
 
