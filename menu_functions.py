@@ -550,7 +550,8 @@ async def process_menu_settings_notif_toggle(callback_query, state):
 
 async def ping_change_start(callback_query, state):
     buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
-    text = "В какое время тебе удобно получать от меня утренний план на день?\n\nИдеально, если это будет перед едой: так ты сможешь делать все мои задания вовремя.\n\nУкажи время в формате ЧЧ:ММ Например 10:00"
+    text = "В какое время тебе удобно получать от меня уведомления?\n\nУкажи время в формате ЧЧ:ММ\nНапример 10:00"
+    # text = "В какое время тебе удобно получать от меня утренний план на день?\n\nИдеально, если это будет перед едой: так ты сможешь делать все мои задания вовремя.\n\nУкажи время в формате ЧЧ:ММ Например 10:00"
     await callback_query.message.edit_text(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
     await state.set_state(UserState.morning_ping_change)
 
@@ -561,11 +562,14 @@ async def change_morning_ping(message, state):
             "user_info_morning_ping" : f"{message.text}"
         }
     }
-    text = "Договорились! А во сколько присылать вечерние итоги?\n\nУкажи время в формате ЧЧ:ММ Например, 20:00"  
+    # text = "Договорились! А во сколько присылать вечерние итоги?\n\nУкажи время в формате ЧЧ:ММ Например, 20:00"  
+    text = "Я обновила твои данные ✅"
+    buttons = [[InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]]
     iserror, answer = await add_or_update_usr_info(json.dumps(data))
     if not iserror:
-        await message.answer(text)
-        await state.set_state(UserState.evening_ping_change)
+        await message.answer(text, reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
+        await state.set_state(UserState.menu)
+        # await state.set_state(UserState.evening_ping_change)
 
 async def change_evening_ping(message, state):
     data = {

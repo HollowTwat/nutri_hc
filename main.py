@@ -2197,23 +2197,23 @@ async def main_process_city(message: Message, state: FSMContext):
     # timeslide, city = await process_city(message, state)
     # state.update_data(timeslide=timeslide, city=city)
     await process_city(message, state)
-    await state.set_state(Questionnaire.morning_ping)
+    await state.set_state(Questionnaire.evening_ping)
 
-@router.message(StateFilter(Questionnaire.morning_ping))
-async def main_process_morning_ping(message: Message, state: FSMContext):
-    pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
-    if re.match(pattern, message.text):
-        await state.update_data(morning_ping=message.text)
-        await process_morning_ping(message, state)
-        await state.set_state(Questionnaire.evening_ping)
-    else:
-        await message.answer("Не поняла, попробуй, пожалуйста, ещё раз")
+# @router.message(StateFilter(Questionnaire.morning_ping))
+# async def main_process_morning_ping(message: Message, state: FSMContext):
+#     pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
+#     if re.match(pattern, message.text):
+#         await state.update_data(morning_ping=message.text)
+#         await process_morning_ping(message, state)
+#         await state.set_state(Questionnaire.evening_ping)
+#     else:
+#         await message.answer("Не поняла, попробуй, пожалуйста, ещё раз")
 
 @router.message(StateFilter(Questionnaire.evening_ping))
 async def main_process_evening_ping(message: Message, state: FSMContext):
     pattern = r'^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$'
     if re.match(pattern, message.text):
-        await state.update_data(evening_ping=message.text)
+        await state.update_data(morning_ping=message.text)
         await process_evening_ping(message, state)
         await state.set_state(Questionnaire.community_invite)
         state_data = await state.get_data()
@@ -2223,7 +2223,7 @@ async def main_process_evening_ping(message: Message, state: FSMContext):
                 "user_info_name": state_data["name"],
                 "user_info_timeslide" : state_data["timeslide"],
                 "user_info_morning_ping": state_data["morning_ping"],
-                "user_info_evening_ping": state_data["evening_ping"],
+                # "user_info_evening_ping": state_data["evening_ping"],
                 "user_info_city": state_data["city"],
                 "user_info_bmi":  state_data["bmi"],
                 "target_calories": state_data["target_calories"],
