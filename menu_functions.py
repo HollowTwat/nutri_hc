@@ -525,7 +525,7 @@ async def change_user_timeslide(callback_query, state, timeslide):
 async def change_user_notifs(callback_query, state):
     buttons = [
         [InlineKeyboardButton(text="Изменить время", callback_data="user_change_notif_time")],
-        [InlineKeyboardButton(text="Отключить все уведомления", callback_data="user_notif_toggle")],
+        [InlineKeyboardButton(text="Вкл/Выкл", callback_data="user_notif_toggle")],
         [InlineKeyboardButton(text=arrow_menu, callback_data="menu"), InlineKeyboardButton(text=arrow_back, callback_data="menu_settings_profile")]
     ]
     await callback_query.message.edit_text("Меню уведомлений", reply_markup=InlineKeyboardMarkup(inline_keyboard=buttons))
