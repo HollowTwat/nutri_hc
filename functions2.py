@@ -362,7 +362,8 @@ async def process_img_rec(message, state, text, buttons):
     sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
     id = str(message.from_user.id)
     url = await get_url(message.photo[-1].file_id)
-    vision = await process_url(url, id, VISION_ASS_ID_2)
+    caption = message.caption if message.caption else None
+    vision = await process_url(url, id, VISION_ASS_ID_2, caption)
     print(vision)
     Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
     if Iserror:

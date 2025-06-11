@@ -101,7 +101,7 @@ async def generate_response(message_body, usr_id, assistant):
     new_message = await run_assistant(thread, assistant)
     return new_message
 
-async def process_url(url, usr_id, assistant):
+async def process_url(url, usr_id, assistant, caption=None):
     thread_id = await check_if_thread_exists(usr_id)
 
     if thread_id is None:
@@ -113,18 +113,38 @@ async def process_url(url, usr_id, assistant):
         print(f"Retrieving existing thread {usr_id}")
         thread = await aclient.beta.threads.retrieve(thread_id)
     print(url)
+    content = [
+        {
+            "type": "image_url",
+            "image_url": {"url": url},
+        }
+    ]
+    if caption:
+        content.insert(0, {
+            "type": "text",
+            "text": caption
+        })
+        
     thread = await aclient.beta.threads.create(
         messages=[
             {
                 "role": "user",
-                "content": [
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": url},
-                    },]
+                "content": content
             },
         ]
     )
+    # thread = await aclient.beta.threads.create(
+    #     messages=[
+    #         {
+    #             "role": "user",
+    #             "content": [
+    #                 {
+    #                     "type": "image_url",
+    #                     "image_url": {"url": url},
+    #                 },]
+    #         },
+    #     ]
+    # )
     await store_thread(usr_id, thread.id)
 
     new_message = await run_assistant(thread, assistant)
