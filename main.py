@@ -736,6 +736,7 @@ async def process_media_group_after_delay(message: Message, media_group_id: str,
     sticker_mssg = await message.answer_sticker(random.choice(STICKER_IDS))
     await asyncio.sleep(delay)
     lock = get_lock_for_user(user_id)
+    caption = message.caption
     async with lock:
         state_data = await state.get_data()
         media_group = state_data.get("media_group", {})
@@ -751,7 +752,7 @@ async def process_media_group_after_delay(message: Message, media_group_id: str,
             await state.update_data(media_group=state_data["media_group"])
     
     if urls:
-        vision = await process_urls(urls, user_id, VISION_ASS_ID_2)
+        vision = await process_urls(urls, user_id, VISION_ASS_ID_2, caption)
         print("Vision response:", vision)
         Iserror, food, pretty = await prettify_and_count(vision, detailed_format=True)
         if Iserror:

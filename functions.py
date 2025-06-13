@@ -152,19 +152,26 @@ async def process_url(url, usr_id, assistant, caption=None):
     return new_message
 
 
-async def process_urls(urls, usr_id, assistant):
+async def process_urls(urls, usr_id, assistant, caption=None):
     print(urls)
+    content = [
+        {
+            "type": "image_url",
+            "image_url": {"url": url},
+        }
+        for url in urls
+    ]
+    if caption:
+        content.insert(0, {
+            "type": "text",
+            "text": f"Пользователь добавил: '{caption}'. Пожалуйста учти это при анализе"
+        })
+
     thread = await aclient.beta.threads.create(
         messages=[
             {
                 "role": "user",
-                "content": [
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": url},
-                    }
-                    for url in urls
-                ]
+                "content": content
             },
         ]
     )
