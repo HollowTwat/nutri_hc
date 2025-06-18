@@ -146,6 +146,17 @@ def make_lesson_week_buttons(dict, week):
 
     return buttons
 
+async def get_user_vote(id, vote):
+    async with aiohttp.ClientSession() as session:
+        url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/SetUserVote?UserTgId={id}&vote={vote}"
+        try:
+            async with session.get(url=url) as response:
+                voteok = await response.text()
+                if voteok == "true": return True
+                else: return False
+        except aiohttp.ClientError as e:
+            return True, e
+
 async def get_user_lessons(id):
     async with aiohttp.ClientSession() as session:
         url = f"https://nutridb-production.up.railway.app/api/TypesCRUD/GetUserLessons?UserTgId={id}"

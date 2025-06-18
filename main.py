@@ -339,6 +339,14 @@ async def main_process_menu_cource_info_lessons(callback_query: CallbackQuery, s
 
 ################## COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU COURSE_MENU ##################
 
+@router.callback_query(lambda c: c.data.startswith('vote_'))
+async def main_process_votes(callback_query: CallbackQuery, state: FSMContext):
+    await callback_query.answer()
+    vote_num = callback_query.data.split("_")[1]
+    succesfull_count = await get_user_vote(callback_query.from_user.id, vote_num)
+    asyncio.create_task(log_user_callback(callback_query))
+    await callback_query.message.answer("Спасибо за участие в опросе")
+
 ################## Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover Layover ##################
 
 async def dnevnik_layover(message, state, callback_mssg):
